@@ -20,7 +20,8 @@ from tkinter import Canvas
 
 
 ### TODO
-# - Mouse and Keybord event
+# - Datenbank?
+# - Gui
 ###
 global windowList
 windowList = []
