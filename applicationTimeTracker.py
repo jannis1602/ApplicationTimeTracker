@@ -18,10 +18,11 @@ from tkinter import Listbox
 from tkinter import Frame
 from tkinter import Canvas
 
-
-# TODO
-# - Mouse and Keybord event
+### TODO
+# - Datenbank?
+# - Gui
 ###
+
 global windowList
 windowList = []
 windowObjList = []
