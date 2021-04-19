@@ -18,6 +18,10 @@ from tkinter import Frame
 from tkinter import Canvas
 
 
+
+### TODO
+# - Mouse and Keybord event
+###
 global windowList
 windowList = []
 windowObjList = []
@@ -31,9 +35,6 @@ for s in gw.getAllTitles():
     if len(s) >= 1 and blacklist.count(s) == 0:
         print(s)
 print('#' * 50)
-# tracking list - strings als Filter
-# fensterNamen = ["Visual Studio Code", "Opera", "Discord",
-#                 "OneNote"]  # wird eigentlich nicht gebraucht!
 
 global configWindow
 global frame_configWindowList
@@ -99,16 +100,9 @@ def addToFilter():
         entry_addString.delete(0, "end")
 
 
-# def closeConfigWindow():
-#     global configWindow
-#     configWindow.quit()
-
-
 def hideConfigWindow():
     global configWindow
     configWindow.withdraw()
-    # configWindow.destroy()
-    # configWindow.destroy()#TODO destroy or quit?
 
 
 def loadConfigStringList():
@@ -159,30 +153,21 @@ def showConfigWindow():
 def end():
     print("EXIT...")
     saveList()
-    # icon.visible = False
     icon.stop()
-    # try:
     global configWindow
-    # configWindow.destroy()
     configWindow.quit()
-    # except:
-    #     print("No configWindow defined...")
     global running
     running = False
     sys.exit()
 
 
-def configWindowThread():  # nur Temp! -> #TODO change visibility?
-    # showConfigWindow()
+def configWindowThread():
     try:
         configWindow.deiconify()
     except:
         print("error")
         configWindowThread = threading.Thread(target=showConfigWindow)
         configWindowThread.start()
-    # configWindowThread = threading.Thread(target=showConfigWindow)
-    # configWindowThread.start()
-    # configWindowThread.run()
 
 
 # -----------------load-----------------------
@@ -196,17 +181,18 @@ for w in windowList:
     print(w.getTimeString())
 print('*'*50)
 
-# ----------------start-------------------
+# temp: threadList
+# for thread in threading.enumerate(): 
+#     print(thread.name)
 
 
-def loop():  # MainLoop ------------------------------------------------------------------
+# MainLoop ------------------------------------------------------------------
+def loop(): 
     icon.visible = True
     lastTime = time.time()
     global running
     while running:
         if time.time()-lastTime > 1:
-            for thread in threading.enumerate(): 
-                print(thread.name)
             for w in windowList:
                 if str(wingui.GetWindowText(wingui.GetForegroundWindow())).count(w.windowName) == 1:
                     w.addSec()
@@ -229,6 +215,5 @@ icon = pystray.Icon("ApplicationTimeTracker", image, "ApplicationTimeTracker", m
 # loop
 loopThread = threading.Thread(target=loop)
 loopThread.start()
-
 # start trayIcon
 icon.run()
