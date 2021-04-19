@@ -111,7 +111,7 @@ def loadConfigStringList():
     for w in windowList:
         global frame_configWindowList
         windowObjList.append(w.getConfigMenu(frame_configWindowList, 2+windowList.index(w),
-                             lambda: remove(w.windowName))) 
+                             lambda: remove(w.windowName)))
 
 
 def remove(wname):
@@ -158,7 +158,10 @@ def end():
     saveList()
     icon.visible = False
     icon.stop()
-    configWindow.quit()
+    try:
+        closeConfigWindow()
+    except:
+        print("No configWindow defined...")
     global running
     running = False
     sys.exit()
@@ -170,6 +173,7 @@ def configWindowThread():  # nur Temp! -> #TODO change visibility
     # global configWindow
     # configWindow.focus()  #TODO !!!
 
+
 # -----------------load-----------------------
 loadList()
 # funktion testen
@@ -177,9 +181,8 @@ loadList()
 # removeWindowName("Email")
 
 
-for window in windowList:
-    print(window.windowName, "Vergangene Zeit:",
-          int(window.getTime()/60), "Minuten")
+for w in windowList:
+    print(w.getTimeString())
 print('*'*50)
 
 # ----------------start-------------------
