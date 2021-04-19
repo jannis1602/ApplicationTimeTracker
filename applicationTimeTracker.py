@@ -39,13 +39,14 @@ print('#' * 50)
 global configWindow
 global frame_configWindowList
 global entry_addString
+saveFile="applicationTimeTracker/time.save"
 # configWindow.title("ApplicationTimeTracker")
 
 
 def loadList():
     import os.path
-    if os.path.exists('save.save'):
-        myfile = open('save.save')
+    if os.path.exists(saveFile):
+        myfile = open(saveFile)
         lines = myfile.readlines()
         for l in lines:
             wobj = WindowObject(l.split('#')[0], int(l.split('#')[1]))
@@ -54,7 +55,7 @@ def loadList():
 
 
 def saveList():
-    with open('save.save', "w") as myfile:
+    with open(saveFile, "w") as myfile:
         for w in windowList:
             myfile.write("%s\n" % w.getSaveString())
         myfile.close()
