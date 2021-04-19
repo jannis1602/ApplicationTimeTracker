@@ -16,8 +16,6 @@ class WindowObject:
     def addSec(self):
         self.passedTime += 1
         print(self.getTimeString())
-        # print(self.windowName, ">>> Vergangene Zeit:",
-        #       self.passedTime, "Sekunden ->", int(self.passedTime/60), "Minuten ->", int(self.passedTime/60/60), "Stunden")
 
     def getTime(self):
         hh = int(self.passedTime/60/60)
@@ -25,17 +23,12 @@ class WindowObject:
         ss = int(self.passedTime)-60*60*hh-60*mm
         return [hh, mm, ss]
 
-    def getTimeString(self, formart=0):
-        # hh = int(self.passedTime/60/60)
-        # mm = int(self.passedTime/60)-60*hh
-        # ss = int(self.passedTime)-60*60*hh-60*mm
-
+    def getTimeString(self, name=True):
         timeString = str(self.windowName + " >>> Vergangene Zeit: " + str(self.getTime()[0]) +
                          " Stunden " + str(self.getTime()[1]) + " Minuten " + str(self.getTime()[2]) + " Sekunden")
-        if formart == 1:
+        if name == False:
             timeString = str("Vergangene Zeit: " + str(self.getTime()[0]) +
                              " Stunden " + str(self.getTime()[1]) + " Minuten " + str(self.getTime()[2]) + " Sekunden")
-
         return timeString
 
     def getSaveString(self):
@@ -43,7 +36,7 @@ class WindowObject:
 
     def getConfigMenu(self, configWindow, gridRow, com):
         lableText = Label(configWindow, text=self.windowName)
-        lableTime = Label(configWindow, text=self.getTimeString(1))
+        lableTime = Label(configWindow, text=self.getTimeString(False))
         button_remove = Button(
             configWindow, text="remove", command=com)
         lableText.grid(row=gridRow, column=0)
