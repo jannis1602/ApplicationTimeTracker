@@ -3,6 +3,7 @@ import sys
 import time
 import pystray
 import threading
+import win32api
 import pygetwindow as gw
 import win32gui as wingui
 from PIL import Image
@@ -17,12 +18,11 @@ from tkinter import Listbox
 from tkinter import Frame
 from tkinter import Canvas
 
-
-
 ### TODO
 # - Datenbank?
 # - Gui
 ###
+
 global windowList
 windowList = []
 windowObjList = []
@@ -41,6 +41,11 @@ global configWindow
 global frame_configWindowList
 global entry_addString
 saveFile = "applicationTimeTracker/time.save"
+maxIdleTime = 2*60 # 120 sec -> 2 min 
+
+
+def getIdleTime():  # returns time from last userinput
+    return (win32api.GetTickCount() - win32api.GetLastInputInfo()) / 1000.0
 
 
 def loadList():
@@ -183,26 +188,29 @@ for w in windowList:
 print('*'*50)
 
 # temp: threadList
-# for thread in threading.enumerate(): 
+# for thread in threading.enumerate():
 #     print(thread.name)
 
 
 # MainLoop ------------------------------------------------------------------
-def loop(): 
+def loop():
     icon.visible = True
     lastTime = time.time()
     global running
     while running:
         if time.time()-lastTime > 1:
-            for w in windowList:
-                if str(wingui.GetWindowText(wingui.GetForegroundWindow())).count(w.windowName) == 1:
-                    w.addSec()
+            print(getIdleTime())
+            if(getIdleTime() < maxIdleTime):
+                for w in windowList:
+                    if str(wingui.GetWindowText(wingui.GetForegroundWindow())).count(w.windowName) == 1:
+                        w.addSec()
             saveList()
             lastTime += 1
 
 # configWindowThread()
 
 # ----------pystray----------
+
 
 # image = Image.open("threeLines.png")
 width = 16
@@ -212,7 +220,8 @@ dc = ImageDraw.Draw(image)
 dc.rectangle([(0, height/5), (width, height/5*2)], fill=(120, 120, 120))
 dc.rectangle([(0, height/5*3), (width, height/5*4)], fill=(120, 120, 120))
 menu = (MenuItem("Show Window", configWindowThread), MenuItem("Exit", end))
-icon = pystray.Icon("ApplicationTimeTracker", image, "ApplicationTimeTracker", menu)
+icon = pystray.Icon("ApplicationTimeTracker", image,
+                    "ApplicationTimeTracker", menu)
 # loop
 loopThread = threading.Thread(target=loop)
 loopThread.start()
