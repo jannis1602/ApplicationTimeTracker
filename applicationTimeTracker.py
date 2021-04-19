@@ -101,10 +101,10 @@ def addToFilter():
 
 
 def closeConfigWindow():
-    # global configWindow
-    # configWindow.quit()
     global configWindow
-    configWindow.destroy()
+    configWindow.quit()
+    # global configWindow
+    # configWindow.destroy()
 
 
 def loadConfigStringList():
