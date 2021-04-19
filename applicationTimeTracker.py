@@ -35,17 +35,16 @@ print('#' * 50)
 # fensterNamen = ["Visual Studio Code", "Opera", "Discord",
 #                 "OneNote"]  # wird eigentlich nicht gebraucht!
 
-# configWindow
 global configWindow
 global frame_configWindowList
 global entry_addString
-# configWindow.title("ApplicationTimeTracker")
+saveFile = "applicationTimeTracker/time.save"
 
 
 def loadList():
     import os.path
-    if os.path.exists('save.save'):
-        myfile = open('save.save')
+    if os.path.exists(saveFile):
+        myfile = open(saveFile)
         lines = myfile.readlines()
         for l in lines:
             wobj = WindowObject(l.split('#')[0], int(l.split('#')[1]))
@@ -54,7 +53,7 @@ def loadList():
 
 
 def saveList():
-    with open('save.save', "w") as myfile:
+    with open(saveFile, "w") as myfile:
         for w in windowList:
             myfile.write("%s\n" % w.getSaveString())
         myfile.close()
@@ -100,11 +99,16 @@ def addToFilter():
         entry_addString.delete(0, "end")
 
 
-def closeConfigWindow():
+# def closeConfigWindow():
+#     global configWindow
+#     configWindow.quit()
+
+
+def hideConfigWindow():
     global configWindow
-    configWindow.quit()
-    # global configWindow
+    configWindow.withdraw()
     # configWindow.destroy()
+    # configWindow.destroy()#TODO destroy or quit?
 
 
 def loadConfigStringList():
@@ -121,7 +125,6 @@ def remove(wname):
 
 
 def showConfigWindow():
-    print("show window...")
     global configWindow
     global frame_configWindowList
     global entry_addString
@@ -149,29 +152,37 @@ def showConfigWindow():
     menuBar.grid(row=0, column=0)
     frame_configWindowList.grid(row=1, column=0)
 
-    configWindow.protocol("WM_DELETE_WINDOW", closeConfigWindow)
+    configWindow.protocol("WM_DELETE_WINDOW", hideConfigWindow)
     configWindow.mainloop()
 
 
 def end():
     print("EXIT...")
     saveList()
-    icon.visible = False
+    # icon.visible = False
     icon.stop()
-    try:
-        closeConfigWindow()
-    except:
-        print("No configWindow defined...")
+    # try:
+    global configWindow
+    # configWindow.destroy()
+    configWindow.quit()
+    # except:
+    #     print("No configWindow defined...")
     global running
     running = False
     sys.exit()
 
 
-def configWindowThread():  # nur Temp! -> #TODO change visibility
-    configWindowThread = threading.Thread(target=showConfigWindow)
-    configWindowThread.start()
-    # global configWindow
-    # configWindow.focus()  #TODO !!!
+def configWindowThread():  # nur Temp! -> #TODO change visibility?
+    # showConfigWindow()
+    try:
+        configWindow.deiconify()
+    except:
+        print("error")
+        configWindowThread = threading.Thread(target=showConfigWindow)
+        configWindowThread.start()
+    # configWindowThread = threading.Thread(target=showConfigWindow)
+    # configWindowThread.start()
+    # configWindowThread.run()
 
 
 # -----------------load-----------------------
@@ -187,6 +198,25 @@ print('*'*50)
 
 # ----------------start-------------------
 
+
+def loop():  # MainLoop ------------------------------------------------------------------
+    icon.visible = True
+    lastTime = time.time()
+    global running
+    while running:
+        if time.time()-lastTime > 1:
+            for thread in threading.enumerate(): 
+                print(thread.name)
+            for w in windowList:
+                if str(wingui.GetWindowText(wingui.GetForegroundWindow())).count(w.windowName) == 1:
+                    w.addSec()
+            saveList()
+            lastTime += 1
+
+# configWindowThread()
+
+# ----------pystray----------
+
 # image = Image.open("threeLines.png")
 width = 16
 height = 16
@@ -195,29 +225,10 @@ dc = ImageDraw.Draw(image)
 dc.rectangle([(0, height/5), (width, height/5*2)], fill=(120, 120, 120))
 dc.rectangle([(0, height/5*3), (width, height/5*4)], fill=(120, 120, 120))
 menu = (MenuItem("Show Window", configWindowThread), MenuItem("Exit", end))
-icon = pystray.Icon("", image, "WindowTimeTracker", menu)
-
-
-def loop():  # MainLoop ------------------------------------------------------------------
-    # addWindowName("testName")
-    icon.visible = True
-    lastTime = time.time()
-    global running
-    while running:
-        if time.time()-lastTime > 1:
-            for w in windowList:
-                if str(wingui.GetWindowText(wingui.GetForegroundWindow())).count(w.windowName) == 1:
-                    w.addSec()
-            saveList()
-            lastTime += 1
-
-
-# configWindowThread()
-
-# configWindowThread = threading.Thread(target=showConfigWindow)
-# configWindowThread.start()
-
+icon = pystray.Icon("ApplicationTimeTracker", image, "ApplicationTimeTracker", menu)
+# loop
 loopThread = threading.Thread(target=loop)
 loopThread.start()
 
+# start trayIcon
 icon.run()
