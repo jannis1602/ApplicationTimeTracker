@@ -10,10 +10,6 @@ class WindowObject:
         self.windowName = windowName
         self.passedTime = startTime
 
-
-    def load(self):
-        print("Loading save file...")
-
     def getTime(self):
         return self.passedTime
 
@@ -25,7 +21,7 @@ class WindowObject:
     def getSaveString(self):
         return self.windowName+'#'+str(self.passedTime)
 
-    def getConfigMenue(self, configWindow, gridRow, com):
+    def getConfigMenu(self, configWindow, gridRow, com):
         lableText = Label(configWindow, text=self.windowName)
         lableTime = Label(configWindow, text=str(
             int(self.passedTime/60))+" Minuten  "+str(int(self.passedTime % 60))+" Sekunden")  # TODO UPDATEN!!!

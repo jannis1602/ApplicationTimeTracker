@@ -110,7 +110,7 @@ def closeConfigWindow():
 def loadConfigStringList():
     for w in windowList:
         global frame_configWindowList
-        windowObjList.append(w.getConfigMenue(frame_configWindowList, 2+windowList.index(w),
+        windowObjList.append(w.getConfigMenu(frame_configWindowList, 2+windowList.index(w),
                              lambda: remove(w.windowName))) 
 
 
