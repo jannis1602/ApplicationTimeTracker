@@ -2,23 +2,16 @@ import database
 from PIL import Image, ImageDraw
 import time
 import pystray
-import threading
+import datetime
 import win32api
+import threading
 import pygetwindow as gw
-import win32gui as wingui
 from PIL import Image
 from pystray import MenuItem
 from WindowObject import WindowObject
-from tkinter import Tk
-from tkinter import Button
-from tkinter import Entry
-from tkinter import Label
-from tkinter import Scrollbar
-from tkinter import Listbox
-from tkinter import Frame
-from tkinter import Canvas
+from tkinter import Tk, Button, Entry, Label, Scrollbar, Listbox, Frame, Canvas
 
-# TODO
+# TODO #10
 # - Datenbank?
 # - Gui
 ###
@@ -222,7 +215,7 @@ def loop():
         if time.time()-lastTime > 1:
             if(getIdleTime() < maxIdleTime):
                 for w in windowList:
-                    if str(wingui.GetWindowText(wingui.GetForegroundWindow())).count(w.windowName) == 1:
+                    if str(win32api.GetWindowText(win32api.GetForegroundWindow())).count(w.windowName) == 1:
                         w.addSec()
             saveList()
             lastTime += 1
