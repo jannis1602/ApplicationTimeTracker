@@ -34,21 +34,23 @@ def get_time_by_program_date(name, date):
         return c.fetchone()
 
 
-def get_time_by_program(name):
+def get_times_by_program(name):
     with conn:
         c.execute("SELECT * FROM programs WHERE name=:name",
                   {"name": name})
-        return c.fetchone()
+        return c.fetchall()
 
 
 print(get_time_by_program_date("Opera", "2021-04-20"))
+add_time("Opera","2021-04-20",1)
 
-add_program("VScode", "2021-04-20", 10)
+if(get_time_by_program_date("Opera","2021-04-20")== None):
+    add_program("Opera", "2021-04-20", 0)
 
-print(get_time_by_program("VScode"))
+print(get_time_by_program_date("VScode","2021-04-20"))
 
-add_time("VScode", "2021-04-20", 10)
-print(get_time_by_program("VScode"))
+add_time("VScode", "2021-04-10", 100)
+print(get_times_by_program("VScode"))
 
 conn.close()
 
