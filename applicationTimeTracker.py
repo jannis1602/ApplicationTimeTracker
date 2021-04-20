@@ -1,5 +1,4 @@
 from PIL import Image, ImageDraw
-import sys
 import time
 import pystray
 import threading
@@ -160,18 +159,20 @@ def end():
     print("EXIT...")
     saveList()
     icon.stop()
-    global configWindow
-    configWindow.quit()
+    try:
+        global configWindow
+        configWindow.quit()
+    except:
+        pass
     global running
     running = False
-    sys.exit()
+    quit()
 
 
 def configWindowThread():
     try:
         configWindow.deiconify()
     except:
-        print("error")
         configWindowThread = threading.Thread(target=showConfigWindow)
         configWindowThread.start()
 
@@ -199,7 +200,6 @@ def loop():
     global running
     while running:
         if time.time()-lastTime > 1:
-            print(getIdleTime())
             if(getIdleTime() < maxIdleTime):
                 for w in windowList:
                     if str(wingui.GetWindowText(wingui.GetForegroundWindow())).count(w.windowName) == 1:
