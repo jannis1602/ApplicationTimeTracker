@@ -218,7 +218,7 @@ def loop():
             if(getIdleTime() < maxIdleTime):
                 for w in windowList:
                     if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) == 1:#TODO: #12 alle fenster...
-                        w.addSec()
+                        w.addSec()                  #TODO: #13 filter2: nach speicherort???
             saveList()
             lastTime += 1
 
