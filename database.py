@@ -11,7 +11,15 @@ except:
                 time integer
                 )""")
 
-#TODO: #15 get all programnames
+
+def get_all_programs():
+    with conn:
+        programs = []
+        c.execute("SELECT * FROM programs")
+        for p in c.fetchall():
+            if programs.count(p[0]) == 0:
+                programs.append(p[0])
+    return programs
 
 
 def add_program(name, date, time=0):
