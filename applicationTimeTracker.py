@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw
 import time
 import pystray
 import datetime
+import win32gui
 import win32api
 import threading
 import pygetwindow as gw
@@ -12,7 +13,7 @@ from WindowObject import WindowObject
 from tkinter import Tk, Button, Entry, Label, Scrollbar, Listbox, Frame, Canvas
 
 
-# TODO #11
+# TODO:
 # - Datenbank?
 # - Gui
 ###
@@ -216,7 +217,7 @@ def loop():
         if time.time()-lastTime > 1:
             if(getIdleTime() < maxIdleTime):
                 for w in windowList:
-                    if str(win32api.GetWindowText(win32api.GetForegroundWindow())).count(w.windowName) == 1:
+                    if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) == 1:#TODO: #12 alle fenster...
                         w.addSec()
             saveList()
             lastTime += 1
