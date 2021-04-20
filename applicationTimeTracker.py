@@ -11,7 +11,8 @@ from pystray import MenuItem
 from WindowObject import WindowObject
 from tkinter import Tk, Button, Entry, Label, Scrollbar, Listbox, Frame, Canvas
 
-# TODO #10
+
+# TODO #11
 # - Datenbank?
 # - Gui
 ###
