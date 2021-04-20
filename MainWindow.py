@@ -1,6 +1,4 @@
 from tkinter import Tk, Label, Button, Frame, Canvas, Scrollbar, Entry
-# import applicationTimeTracker as apptt
-
 
 class MainWindow:
 
@@ -46,19 +44,19 @@ class MainWindow:
         reload_button.pack(side='left', padx='5', pady='5', expand=False)
     # Exit-Button
         exit_button = Button(
-            master=menu_bar_frame, text="EXIT", command=self.action)
+            master=menu_bar_frame, text="EXIT", command=self.action)        #TODO: #21 @superxyxy add end methode
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
 
         # self.createWindowFrame(self.root) # test
 
     # ------------------------ list ------------------------
 
-        self.createListFrame(root)
+        self.createListFrame()
 
         root.mainloop()
 
-    def createListFrame(self, root):
-        global list_frame
+    def createListFrame(self):
+        global root, list_frame
         list_frame = Frame(master=root)
         list_frame.pack(side='left', padx=1,
                         pady=1, fill="both", expand=True)
@@ -93,17 +91,24 @@ class MainWindow:
         # for i in range(10):
         #     self.createWindowFrame(self.list_frame)
 
-    def remove(self, frame):
-        self.windowFrameList.pop()
-        global root, list_frame
+    def remove(self,name):
+        self.windowFrameList.remove(name)
+        global list_frame
         list_frame.destroy()
-        self.createListFrame(root)
+        self.createListFrame()
 
-        # global canvas, scroll_y
-        # canvas.pack(fill='both', expand=True, side='left')
-        # scroll_y.pack(fill='y', side='right')
+    def reload(self):
+        global list_frame
+        list_frame.destroy()
+        self.createListFrame()
 
-    def createWindowFrame(self, master):
+    def add(self,name):
+        self.windowFrameList.append(name)
+        global list_frame
+        list_frame.destroy()
+        self.createListFrame()
+
+    def createWindowFrame(self, master):    #TODO WindowObject...
         temp_frame = Frame(
             master=master, height=20, width=200, bg="red")
         temp_frame.pack(side='bottom', padx=5,
