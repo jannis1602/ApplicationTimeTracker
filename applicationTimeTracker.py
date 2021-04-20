@@ -11,7 +11,7 @@ from PIL import Image
 from pystray import MenuItem
 from WindowObject import WindowObject
 from tkinter import Tk, Button, Entry, Label, Scrollbar, Listbox, Frame, Canvas
-
+import MainWindow
 
 # TODO:
 # - Datenbank?
@@ -244,7 +244,7 @@ def loop():
             lastTimeMin += 60
 
 # configWindowThread()
-
+MainWindow.createMainWindow()
 # ----------pystray----------
 
 
