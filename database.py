@@ -11,6 +11,8 @@ except:
                 time integer
                 )""")
 
+#TODO: #15 get all programnames
+
 
 def add_program(name, date, time=0):
     with conn:
