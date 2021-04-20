@@ -38,6 +38,10 @@ global entry_addString
 saveFile = "applicationTimeTracker/time.save"
 maxIdleTime = 2*60  # 120 sec -> 2 min
 
+# -------------------
+
+saveListDatabase = []  # savelist for database
+
 
 def getIdleTime():  # returns time from last userinput
     return (win32api.GetTickCount() - win32api.GetLastInputInfo()) / 1000.0
@@ -165,7 +169,7 @@ def end():
         configWindow.quit()
     except:
         pass
-    quit(0) #or sys.exit(0) ?
+    quit(0)  # or sys.exit(0) ?
 
 
 def configWindowThread():
@@ -224,6 +228,11 @@ def loop():
                     # TODO: #12 alle fenster...
                     if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
                         w.addSec()  # TODO: #13 filter2: nach speicherort???
+                        if saveListDatabase.count(w.windowName) == 1:
+                            print(saveListDatabase.index(w.windowName))
+                        else:
+                            saveListDatabase.append(w.windowName)
+
                         # add window with time to save-list
 
             saveList()
