@@ -1,3 +1,4 @@
+import database
 from PIL import Image, ImageDraw
 import time
 import pystray
@@ -17,7 +18,7 @@ from tkinter import Listbox
 from tkinter import Frame
 from tkinter import Canvas
 
-### TODO
+# TODO
 # - Datenbank?
 # - Gui
 ###
@@ -40,7 +41,7 @@ global configWindow
 global frame_configWindowList
 global entry_addString
 saveFile = "applicationTimeTracker/time.save"
-maxIdleTime = 2*60 # 120 sec -> 2 min 
+maxIdleTime = 2*60  # 120 sec -> 2 min
 
 
 def getIdleTime():  # returns time from last userinput
@@ -182,6 +183,17 @@ loadList()
 # funktion testen
 # addWindowName("Email")
 # removeWindowName("Email")
+
+# -----------------------sqlite-------------------
+print('*'*100)
+
+if(database.get_time_by_program_date("Opera", "2021-04-20") == None):
+    database.add_program("Opera","2021-04-20",0)
+print(database.get_times_by_program("Opera"))
+print(database.get_times_by_program("VScode"))
+print('*'*100)
+
+# ------------------------------
 
 
 for w in windowList:
