@@ -185,13 +185,21 @@ loadList()
 # removeWindowName("Email")
 
 # -----------------------sqlite-------------------
-print('*'*100)
+# print('*'*100)
 
-if(database.get_time_by_program_date("Opera", "2021-04-20") == None):
-    database.add_program("Opera","2021-04-20",0)
-print(database.get_times_by_program("Opera"))
-print(database.get_times_by_program("VScode"))
-print('*'*100)
+
+# if(database.get_time_by_program_date("email", "2021-04-20") == None):
+#     database.add_program("email","2021-04-20",0)
+# database.add_time("email","2021-04-20",5)
+
+# database.delete_by_name("email")
+# print(database.get_times_by_program("email"))
+
+# if(database.get_time_by_program_date("Opera", "2021-04-20") == None):
+#     database.add_program("Opera","2021-04-20",0)
+# print(database.get_times_by_program("Opera"))
+# print(database.get_times_by_program("VScode"))
+# print('*'*100)
 
 # ------------------------------
 

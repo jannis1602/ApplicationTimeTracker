@@ -11,6 +11,7 @@ except:
                 time integer
                 )""")
 
+
 def add_program(name, date, time=0):
     with conn:
         c.execute(
@@ -20,7 +21,7 @@ def add_program(name, date, time=0):
 def set_time(name, date, time):
     with conn:
         c.execute(
-            "UPDATE programs SET time=:time WHERE date=:date AND name=:name", {"name": name,"date": date, "time": time})
+            "UPDATE programs SET time=:time WHERE date=:date AND name=:name", {"name": name, "date": date, "time": time})
 
 
 def add_time(name, date, time):
@@ -47,20 +48,19 @@ def get_fulltime_by_program(name):
     with conn:
         c.execute("SELECT * FROM programs WHERE name=:name",
                   {"name": name})
-        fulltime=0
+        fulltime = 0
         for day in c.fetchall():
             fulltime += day[2]
         return fulltime
 
-# print(get_time_by_program_date("Opera", "2021-04-20"))
-# add_time("Opera","2021-04-20",1)
 
-# if(get_time_by_program_date("Opera","2021-04-20")== None):
-#     add_program("Opera", "2021-04-20", 0)
+def delete_by_name(name):
+    with conn:
+        c.execute("DELETE FROM programs WHERE name=:name",
+                  {"name": name})
 
-# print(get_time_by_program_date("VScode","2021-04-20"))
 
-# add_time("VScode", "2021-04-10", 100)
-# print(get_times_by_program("VScode"))
-
-# conn.close()
+def delete_by_name_and_date(name, date):
+    with conn:
+        c.execute("DELETE FROM programs WHERE name=:name AND date=:date",
+                  {"name": name, "date": date})
