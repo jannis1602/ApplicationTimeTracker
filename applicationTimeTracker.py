@@ -1,23 +1,19 @@
+import database
 from PIL import Image, ImageDraw
 import time
 import pystray
-import threading
+import datetime
+import win32gui
 import win32api
+import threading
 import pygetwindow as gw
-import win32gui as wingui
 from PIL import Image
 from pystray import MenuItem
 from WindowObject import WindowObject
-from tkinter import Tk
-from tkinter import Button
-from tkinter import Entry
-from tkinter import Label
-from tkinter import Scrollbar
-from tkinter import Listbox
-from tkinter import Frame
-from tkinter import Canvas
+from tkinter import Tk, Button, Entry, Label, Scrollbar, Listbox, Frame, Canvas
 
-### TODO
+
+# TODO:
 # - Datenbank?
 # - Gui
 ###
@@ -40,7 +36,11 @@ global configWindow
 global frame_configWindowList
 global entry_addString
 saveFile = "applicationTimeTracker/time.save"
-maxIdleTime = 2*60 # 120 sec -> 2 min 
+maxIdleTime = 2*60  # 120 sec -> 2 min
+
+# -------------------
+
+saveListDatabase = []  # savelist for database
 
 
 def getIdleTime():  # returns time from last userinput
@@ -157,16 +157,19 @@ def showConfigWindow():
 
 def end():
     print("EXIT...")
+    global running
+    running = False
+    # loopThread.join() # ???
     saveList()
+    # save save-list to database
+    icon.visible = False
     icon.stop()
     try:
         global configWindow
         configWindow.quit()
     except:
         pass
-    global running
-    running = False
-    quit()
+    quit(0)  # or sys.exit(0) ?
 
 
 def configWindowThread():
@@ -183,6 +186,25 @@ loadList()
 # addWindowName("Email")
 # removeWindowName("Email")
 
+# -----------------------sqlite-------------------
+# print('*'*100)
+
+
+# if(database.get_time_by_program_date("email", "2021-04-20") == None):
+#     database.add_program("email","2021-04-20",0)
+# database.add_time("email","2021-04-20",5)
+
+# database.delete_by_name("email")
+# print(database.get_times_by_program("email"))
+
+# if(database.get_time_by_program_date("Opera", "2021-04-20") == None):
+#     database.add_program("Opera","2021-04-20",0)
+# print(database.get_times_by_program("Opera"))
+# print(database.get_times_by_program("VScode"))
+# print('*'*100)
+
+# ------------------------------
+
 
 for w in windowList:
     print(w.getTimeString())
@@ -197,15 +219,29 @@ print('*'*50)
 def loop():
     icon.visible = True
     lastTime = time.time()
+    lastTimeMin = time.time()
     global running
     while running:
         if time.time()-lastTime > 1:
-            if(getIdleTime() < maxIdleTime):
+            if getIdleTime() < maxIdleTime:
                 for w in windowList:
-                    if str(wingui.GetWindowText(wingui.GetForegroundWindow())).count(w.windowName) == 1:
-                        w.addSec()
+                    # TODO: #12 alle fenster...
+                    if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
+                        w.addSec()  # TODO: #13 filter2: nach speicherort???
+                        if saveListDatabase.count(w.windowName) == 1:
+                            print(saveListDatabase.index(w.windowName))
+                        else:
+                            saveListDatabase.append(w.windowName)
+
+                        # add window with time to save-list
+
             saveList()
             lastTime += 1
+        if time.time()-lastTimeMin > 60:
+            print("save minute")
+            # save  save-list to database
+            # save times to database
+            lastTimeMin += 60
 
 # configWindowThread()
 
