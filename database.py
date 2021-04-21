@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect("ApplicationTimeTracker/data.db")
+conn = sqlite3.connect("ApplicationTimeTracker/data.db",check_same_thread=False)
 c = conn.cursor()
 try:
     c.execute("SELECT * FROM programs").fetchall()

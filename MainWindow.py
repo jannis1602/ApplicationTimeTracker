@@ -4,14 +4,18 @@ from WindowObject import WindowObject
 
 class MainWindow:
 
-    windowObjectLise = []
+    windowObjectList = []
     global root, list_frame
 
-    def __init__(self):
+    def __init__(self,windowObjectList):
         print("hallo")
 
-    def createMainWindow(self, windowObjectLise):
-        self.windowObjectLise = windowObjectLise
+        self.createMainWindow(windowObjectList)
+        # hier create?
+
+    def createMainWindow(self, windowObjectList):
+        print("create...")
+        self.windowObjectList = windowObjectList
         global root
         root = Tk()
         root.title("Window")
@@ -39,12 +43,24 @@ class MainWindow:
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
 
         # self.createWindowFrame(self.root) # test
+        root.protocol("WM_DELETE_WINDOW", self.hide)
+
 
     # ------------------------ list ------------------------
 
         self.createListFrame()
-
         root.mainloop()
+
+    def show(self):
+        try:
+            global root
+            root.deiconify()
+        except:
+            print("error while showing mainWindow!")
+    
+    def hide(self):
+        global root
+        root.withdraw()
 
     def createListFrame(self):
         global root, list_frame
@@ -63,7 +79,12 @@ class MainWindow:
         #     master=scroll_frame, height=20, width=400, bg="orange")
         # temp_frame.pack(side='bottom', padx='5',
         #                 pady='1', fill="x", expand=True)
-        for e in self.windowObjectLise:
+
+        void_label = Label(master=scroll_frame,
+                           text="  "*100, bg="gray")
+        void_label.pack(padx=2, pady=2, side="bottom")
+
+        for e in self.windowObjectList:
             self.createWindowFrame(scroll_frame, windowObject=e)
 
         canvas.create_window(0, 0, anchor='nw', window=scroll_frame)
@@ -83,7 +104,7 @@ class MainWindow:
         #     self.createWindowFrame(self.list_frame)
 
     def remove(self, windowObject):
-        self.windowObjectLise.remove(windowObject)
+        self.windowObjectList.remove(windowObject)
         global list_frame
         list_frame.destroy()
         self.createListFrame()
@@ -94,7 +115,7 @@ class MainWindow:
         self.createListFrame()
 
     def add(self, name):
-        self.windowFrameList.append(name)
+        self.windowObjectList.append(name)
         global list_frame
         list_frame.destroy()
         self.createListFrame()
@@ -136,12 +157,10 @@ class MainWindow:
         # self.close_button.pack()
 
 
-windowList = []
-for i in range(20):
-    windowList.append(WindowObject("test"+str(i)))
-windowList.append(WindowObject("Opera"))
-windowList.append(WindowObject("VScode"))
+# windowList = []
+# for i in range(20):
+#     windowList.append(WindowObject("test"+str(i)))
+# windowList.append(WindowObject("Opera"))
+# windowList.append(WindowObject("VScode"))
 
-
-
-MainWindow().createMainWindow(windowList)
+# MainWindow(windowList)

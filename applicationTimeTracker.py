@@ -18,6 +18,10 @@ from MainWindow import MainWindow
 # - Gui
 ###
 
+# test
+global mainWindow
+##
+
 global windowList
 windowList = []
 windowObjList = []
@@ -174,10 +178,16 @@ def end():
 
 def configWindowThread():
     try:
-        configWindow.deiconify()
+        global mainWindow
+        mainWindow.show()
     except:
-        configWindowThread = threading.Thread(target=showConfigWindow)
-        configWindowThread.start()
+        mainWindowThread = threading.Thread(target=createMainWindow)
+        mainWindowThread.start()
+# try:
+#     configWindow.deiconify()
+# except:
+#     configWindowThread = threading.Thread(target=showConfigWindow)
+#     configWindowThread.start()
 
 
 # -----------------load-----------------------
@@ -245,8 +255,24 @@ def loop():
 
 
 # configWindowThread()
-mw=MainWindow()
-mw.createMainWindow()
+
+# --------------create mainWindow--------------------
+
+def createMainWindow():
+    windowList = []
+    for i in range(20):
+        windowList.append(WindowObject("test"+str(i)))
+    windowList.append(WindowObject("Opera"))
+    windowList.append(WindowObject("VScode"))
+    global mainWindow
+    mainWindow = MainWindow(windowList)
+    mainWindow.hide()
+
+# mainWindowThread = threading.Thread(target=createMainWindow)
+# mainWindowThread.start()
+
+# mw=MainWindow()
+# mw.createMainWindow()
 # ----------pystray----------
 
 
