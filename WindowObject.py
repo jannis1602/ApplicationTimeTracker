@@ -20,10 +20,17 @@ class WindowObject:
         self.passedTime += 1
         print(self.getTimeString())
 
+    # def getTime(self):
+    #     hh = int(self.passedTime/60/60)
+    #     mm = int(self.passedTime/60)-60*hh
+    #     ss = int(self.passedTime)-60*60*hh-60*mm
+    #     return [hh, mm, ss]
+
     def getTime(self):
-        hh = int(self.passedTime/60/60)
-        mm = int(self.passedTime/60)-60*hh
-        ss = int(self.passedTime)-60*60*hh-60*mm
+        fulltime=self.getFullTime()
+        hh = int(fulltime/60/60)
+        mm = int(fulltime/60)-60*hh
+        ss = int(fulltime)-60*60*hh-60*mm
         return [hh, mm, ss]
 
     def getTimeString(self, name=True):
