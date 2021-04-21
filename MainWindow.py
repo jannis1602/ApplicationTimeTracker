@@ -19,11 +19,11 @@ class MainWindow(tk.Tk):
         menu_bar_frame.pack(side='top', padx=2,
                             pady=2, fill="x", expand=False)
     # String-Entry
-        string_entry = Entry(menu_bar_frame, bd=2, width=40)
-        string_entry.pack(side='left', padx='5', pady='5', expand=False)
+        self.string_entry = Entry(menu_bar_frame, bd=2, width=40)
+        self.string_entry.pack(side='left', padx='5', pady='5', expand=False)
     # Add-Button
         addfilter_button = Button(
-            master=menu_bar_frame, text="Add to Filter", command=self.action)
+            master=menu_bar_frame, text="Add to Filter", command=self.addStringToFilter)
         addfilter_button.pack(side='left', padx='5', pady='5', expand=False)
     # reload-Button
         reload_button = Button(
@@ -33,14 +33,30 @@ class MainWindow(tk.Tk):
         exit_button = Button(
             master=menu_bar_frame, text="EXIT", command=self.action)  # TODO: #21 @superxyxy add end methode
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
+
         self.protocol("WM_DELETE_WINDOW", self.hide)
         self.createListFrame()
 
         # self.mainloop()  # is blocking
-
         while self.running:
             self.update()
         self.destroy()
+
+    def addStringToFilter(self):
+        print(self.string_entry.get())
+        if len(self.string_entry.get()) > 1 and self.checkForWindowName(self.string_entry.get()) == False:
+            print("add", self.string_entry.get(), "to Filter")
+            self.windowObjectList.append(WindowObject(self.string_entry.get()))
+            self.string_entry.delete(0, "end")
+            self.reload()
+
+            # addStringToFilter(self.string_entry.get()) #TODO
+
+    def checkForWindowName(self, nameString):
+        for w in self.windowObjectList:
+            if w.windowName.lower() == nameString.lower():
+                return True
+        return False
 
     def stopRunning(self):
         print("quit MainWindow...")
@@ -88,9 +104,6 @@ class MainWindow(tk.Tk):
         # self.list_frame = Frame(
         #     master=root, height=20, width=640, bg="gray")
         # self.list_frame.pack(side='left', padx='5', pady='5')
-
-        # for i in range(10):
-        #     self.createWindowFrame(self.list_frame)
 
     def remove(self, windowObject):
         self.windowObjectList.remove(windowObject)
