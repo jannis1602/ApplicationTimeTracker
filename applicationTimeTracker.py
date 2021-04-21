@@ -102,6 +102,18 @@ def reload():
     loadConfigStringList()
 
 
+def checkIfFilterExists(nameString):
+    for w in windowList:
+        if w.windowName.lower() == nameString.lower():
+            return True
+    return False
+
+
+def addStringToFilter(name):
+    if len(name) > 1 and checkIfFilterExists(name) == False:
+        windowList.append(WindowObject(name))
+
+
 def addToFilter():
     if len(entry_addString.get()) > 1:
         print("add", entry_addString.get(), "to Filter")
@@ -250,12 +262,13 @@ def loop():
     while running:
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
+                print(len(windowList))
                 for w in windowList:
                     # TODO: #12 alle fenster...
                     if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
                         w.addSec()  # TODO: #13 filter2: nach speicherort???
                         # if saveListDatabase.count(w.windowName) == 1:
-                            # print(saveListDatabase.index(w.windowName))
+                        # print(saveListDatabase.index(w.windowName))
                         # else:
                         #     saveListDatabase.append(w.windowName)
 
@@ -290,7 +303,7 @@ image = Image.new('RGB', (width, height), color=(255, 255, 255))
 dc = ImageDraw.Draw(image)
 dc.rectangle([(0, height/5), (width, height/5*2)], fill=(120, 120, 120))
 dc.rectangle([(0, height/5*3), (width, height/5*4)], fill=(120, 120, 120))
-menu = (MenuItem("Show Window", createMainWindow), MenuItem("Exit", end))
+menu = (MenuItem("Show Window", showMainWindow), MenuItem("Exit", end))
 icon = pystray.Icon("ApplicationTimeTracker", image,
                     "ApplicationTimeTracker", menu)
 # loop
