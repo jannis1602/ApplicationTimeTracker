@@ -1,24 +1,25 @@
-from tkinter import Tk, Label, Button, Frame, Canvas, Scrollbar, Entry
+import tkinter as tk
+from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry
 from WindowObject import WindowObject
 
 
-class MainWindow(Tk):
+class MainWindow(tk.Tk):
 
     def __init__(self, windowObjectList):
-        self.root = Tk()
-        self.windowObjectList= windowObjectList
+        self.windowObjectList = windowObjectList
+        tk.Tk.__init__(self)
+        self.title("Window")
+        self.geometry('800x400')
+        self.resizable(False, False)
         self.createMainWindow()
         # hier create?
 
     def createMainWindow(self):
         # global root
         # root = Tk()
-        self.root.title("Window")
-        self.root.geometry('800x400')
-        self.root.resizable(False, False)
 
         menu_bar_frame = Frame(
-            master=self.root, height=20, width=640, bg="gray")
+            master=self, height=20, width=640, bg="gray")
         menu_bar_frame.pack(side='top', padx='5',
                             pady='5', fill="x", expand=False)
     # String-Entry
@@ -38,29 +39,29 @@ class MainWindow(Tk):
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
 
         # self.createWindowFrame(self.root) # test
-        self.root.protocol("WM_DELETE_WINDOW", self.hide)
+        self.protocol("WM_DELETE_WINDOW", self.hide)
 
     # ------------------------ list ------------------------
 
         self.createListFrame()
-        self.root.mainloop()
+        self.mainloop()
 
     def end(self):
         print("quit MainWindow...")
-        self.root.destroy()
+        self.destroy()
         quit()
 
     def show(self):
         try:
-            self.root.deiconify()
+            self.deiconify()
         except:
             print("error while showing mainWindow!")
 
     def hide(self):
-        self.root.withdraw()
+        self.withdraw()
 
     def createListFrame(self):
-        self.list_frame = Frame(master=self.root)
+        self.list_frame = Frame(master=self)
         self.list_frame.pack(side='left', padx=1,
                              pady=1, fill="both", expand=True)
 
@@ -155,5 +156,4 @@ class MainWindow(Tk):
 #     windowList.append(WindowObject("test"+str(i)))
 # windowList.append(WindowObject("Opera"))
 # windowList.append(WindowObject("Visual Studio Code"))
-# root = Tk()
-# MainWindow(root, windowList)
+# MainWindow(windowList)
