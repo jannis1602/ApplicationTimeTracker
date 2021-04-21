@@ -2,16 +2,16 @@ import tkinter as tk
 from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry
 from WindowObject import WindowObject
 
-
 class MainWindow(tk.Tk):
 
     def __init__(self, windowObjectList):
-        self.windowObjectList = windowObjectList
+        # self.windowObjectList = windowObjectList
         tk.Tk.__init__(self)
         self.title("Window")
         self.geometry('800x400')
         self.resizable(False, False)
         self.running = True
+
 
     def createMainWindow(self):
         menu_bar_frame = Frame(
@@ -44,13 +44,11 @@ class MainWindow(tk.Tk):
 
     def addStringToFilter(self):
         print(self.string_entry.get())
-        if len(self.string_entry.get()) > 1 and self.checkForWindowName(self.string_entry.get()) == False:
+        if len(self.string_entry.get()) > 1 and self.checkForWindowName(self.string_entry.get())==False:
             print("add", self.string_entry.get(), "to Filter")
             self.windowObjectList.append(WindowObject(self.string_entry.get()))
             self.string_entry.delete(0, "end")
             self.reload()
-
-            # addStringToFilter(self.string_entry.get()) #TODO
 
     def checkForWindowName(self, nameString):
         for w in self.windowObjectList:
@@ -154,7 +152,7 @@ class MainWindow(tk.Tk):
 
         # self.close_button = Button(root, text="Close", command=root.quit)
         # self.close_button.pack()
-
+        
 
 # windowList = []
 # for i in range(20):
