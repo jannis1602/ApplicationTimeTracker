@@ -237,21 +237,6 @@ def createMainWindow():
 
 # database.add_program("Visual Studio Code")
 # database.add_program("Opera")
-print(database.get_all_programs())
-
-for s in database.get_all_programs():
-    windowList.append(WindowObject(s))
-
-# loadList()
-
-for w in windowList:
-    print(w.getTimeString())
-print('*'*50)
-
-# temp: threadList
-# for thread in threading.enumerate():
-#     print(thread.name)
-
 
 # MainLoop ------------------------------------------------------------------
 def loop():
@@ -281,6 +266,26 @@ def loop():
             # save  save-list to database
             # save times to database
             lastTimeMin += 60
+
+
+# if __name__ == '__main__': # test
+print(database.get_all_programs())
+
+for s in database.get_all_programs():
+    windowList.append(WindowObject(s))
+
+# loadList()
+
+for w in windowList:
+    print(w.getTimeString())
+print('*'*50)
+
+# temp: threadList
+# for thread in threading.enumerate():
+#     print(thread.name)
+
+
+
 
 
 # configWindowThread()
