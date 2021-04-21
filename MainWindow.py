@@ -12,12 +12,8 @@ class MainWindow(tk.Tk):
         self.geometry('800x400')
         self.resizable(False, False)
         self.running = True
-        # hier create?
 
     def createMainWindow(self):
-        # global root
-        # root = Tk()
-
         menu_bar_frame = Frame(
             master=self, height=20, width=640, bg="gray")
         menu_bar_frame.pack(side='top', padx=2,
@@ -31,35 +27,27 @@ class MainWindow(tk.Tk):
         addfilter_button.pack(side='left', padx='5', pady='5', expand=False)
     # reload-Button
         reload_button = Button(
-            master=menu_bar_frame, text="reload", command=self.action)
+            master=menu_bar_frame, text="reload", command=self.reload)
         reload_button.pack(side='left', padx='5', pady='5', expand=False)
     # Exit-Button
         exit_button = Button(
-            master=menu_bar_frame, text="EXIT", command=self.end)  # TODO: #21 @superxyxy add end methode
+            master=menu_bar_frame, text="EXIT", command=self.action)  # TODO: #21 @superxyxy add end methode
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
-
-        # self.createWindowFrame(self.root) # test
         self.protocol("WM_DELETE_WINDOW", self.hide)
-
-    # ------------------------ list ------------------------
         self.createListFrame()
 
         # self.mainloop()  # is blocking
 
         while self.running:
             self.update()
+        self.destroy()
 
-    def end(self):
+    def stopRunning(self):
         print("quit MainWindow...")
         self.running = False
-        # self.destroy()
-        # quit(0)
 
     def show(self):
-        # try:
         self.deiconify()
-        # except:
-        #     print("error while showing mainWindow!")
 
     def hide(self):
         self.withdraw()
@@ -129,7 +117,7 @@ class MainWindow(tk.Tk):
         name_label.pack(padx=2, pady=2, side="left")
 
         name_label = Label(master=temp_frame,
-                           text="time: "+str(windowObject.getFullTime())+" Sekunden", bg="gray")
+                           text=windowObject.getTimeString(name=False), bg="gray")
         name_label.pack(padx=2, pady=2, side="left")
 
         # void_label = Label(master=temp_frame,
