@@ -20,6 +20,7 @@ from MainWindow import MainWindow
 
 # test
 global mainWindow
+global mainWindowThread
 ##
 
 global windowList
@@ -168,21 +169,29 @@ def end():
     # save save-list to database
     icon.visible = False
     icon.stop()
-    try:
-        global configWindow
-        configWindow.quit()
-    except:
-        pass
+    mainWindow.stopRunning()
     quit(0)  # or sys.exit(0) ?
 
 
-def configWindowThread():
+def showMainWindow():
     try:
         global mainWindow
         mainWindow.show()
     except:
-        mainWindowThread = threading.Thread(target=createMainWindow)
-        mainWindowThread.start()
+        createMainWindow()
+
+
+def createMainWindow():
+    windowList = []
+    # for i in range(20):
+    #     windowList.append(WindowObject("test"+str(i)))
+    windowList.append(WindowObject("Opera"))
+    windowList.append(WindowObject("Visual Studio Code"))
+    global mainWindow
+    mainWindow = MainWindow(windowList)
+    mainWindowThread = threading.Thread(
+        target=mainWindow.createMainWindow(), name="mainWindow-Thread", daemon=True)
+    mainWindowThread.start()
 # try:
 #     configWindow.deiconify()
 # except:
@@ -191,7 +200,6 @@ def configWindowThread():
 
 
 # -----------------load-----------------------
-loadList()
 # funktion testen
 # addWindowName("Email")
 # removeWindowName("Email")
@@ -215,6 +223,14 @@ loadList()
 
 # ------------------------------
 
+# database.add_program("Visual Studio Code")
+# database.add_program("Opera")
+print(database.get_all_programs())
+
+for s in database.get_all_programs():
+    windowList.append(WindowObject(s))
+
+# loadList()
 
 for w in windowList:
     print(w.getTimeString())
@@ -238,10 +254,10 @@ def loop():
                     # TODO: #12 alle fenster...
                     if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
                         w.addSec()  # TODO: #13 filter2: nach speicherort???
-                        if saveListDatabase.count(w.windowName) == 1:
-                            print(saveListDatabase.index(w.windowName))
-                        else:
-                            saveListDatabase.append(w.windowName)
+                        # if saveListDatabase.count(w.windowName) == 1:
+                            # print(saveListDatabase.index(w.windowName))
+                        # else:
+                        #     saveListDatabase.append(w.windowName)
 
                         # add window with time to save-list
 
@@ -258,21 +274,12 @@ def loop():
 
 # --------------create mainWindow--------------------
 
-def createMainWindow():
-    windowList = []
-    for i in range(20):
-        windowList.append(WindowObject("test"+str(i)))
-    windowList.append(WindowObject("Opera"))
-    windowList.append(WindowObject("VScode"))
-    global mainWindow
-    mainWindow = MainWindow(windowList)
-    mainWindow.hide()
-
 # mainWindowThread = threading.Thread(target=createMainWindow)
 # mainWindowThread.start()
 
-# mw=MainWindow()
-# mw.createMainWindow()
+
+# configWindowThread()
+
 # ----------pystray----------
 
 
@@ -283,11 +290,11 @@ image = Image.new('RGB', (width, height), color=(255, 255, 255))
 dc = ImageDraw.Draw(image)
 dc.rectangle([(0, height/5), (width, height/5*2)], fill=(120, 120, 120))
 dc.rectangle([(0, height/5*3), (width, height/5*4)], fill=(120, 120, 120))
-menu = (MenuItem("Show Window", configWindowThread), MenuItem("Exit", end))
+menu = (MenuItem("Show Window", createMainWindow), MenuItem("Exit", end))
 icon = pystray.Icon("ApplicationTimeTracker", image,
                     "ApplicationTimeTracker", menu)
 # loop
-loopThread = threading.Thread(target=loop)
+loopThread = threading.Thread(target=loop, name="loop-Thread")
 loopThread.start()
 # start trayIcon
 icon.run()
