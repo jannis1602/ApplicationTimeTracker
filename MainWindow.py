@@ -1,28 +1,35 @@
 import tkinter as tk
-from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry
+from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text
 from WindowObject import WindowObject
 import database
+import pygetwindow as gw
 
 
 class MainWindow(tk.Tk):
 
-    def __init__(self, windowList, updateWindowList,exitProgram):
+    def __init__(self, windowList, updateWindowList, exitProgram):
         self.windowList = windowList
         tk.Tk.__init__(self)
-        self.title("Window")
+        self.title("ApplicationTimeTracker")
         self.geometry('800x400')
         self.resizable(False, False)
         self.running = True
         self.updateWindowList = updateWindowList
-        self.exitProgram=exitProgram
+        self.exitProgram = exitProgram
 
     def createMainWindow(self):
         menu_bar_frame = Frame(
             master=self, height=20, width=640, bg="gray")
         menu_bar_frame.pack(side='top', padx=2,
                             pady=2, fill="x", expand=False)
+
+    # ShowNames-Button
+        show_names_button = Button(
+            master=menu_bar_frame, text="show all names", command=self.windowNamesWindow)  # TODO: #21 @superxyxy add end methode
+        show_names_button.pack(side='left', padx='5', pady='5', expand=False)
     # String-Entry
-        self.string_entry = Entry(menu_bar_frame, bd=2, width=40,bg="lightgray")
+        self.string_entry = Entry(
+            menu_bar_frame, bd=2, width=40, bg="lightgray")
         self.string_entry.pack(side='left', padx='5', pady='5', expand=False)
     # Add-Button
         addfilter_button = Button(
@@ -36,6 +43,10 @@ class MainWindow(tk.Tk):
         exit_button = Button(
             master=menu_bar_frame, text="EXIT", command=self.exitProgram)  # TODO: #21 @superxyxy add end methode
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
+    # Settings-Button
+        settings_button = Button(
+            master=menu_bar_frame, text="Settings", command=self.action)  # TODO: #21 @superxyxy add end methode
+        settings_button.pack(side='right', padx='5', pady='5', expand=False)
 
         self.protocol("WM_DELETE_WINDOW", self.hide)
         self.createListFrame()
@@ -44,6 +55,22 @@ class MainWindow(tk.Tk):
         while self.running:
             self.update()
         self.destroy()
+
+    def windowNamesWindow(self):
+        root = tk.Tk()
+        S = Scrollbar(root)
+        T = Text(root, height=20, width=80)
+        S.pack(side="right", fill="y")
+        T.pack(side="left", fill="y")
+        S.config(command=T.yview)
+        T.config(yscrollcommand=S.set)
+        text = ""
+        for s in gw.getAllTitles():
+            if len(s) >= 1:
+                text += s+"\n"
+        T.insert(tk.END, text)
+        T.config(state=tk.DISABLED)
+        root.mainloop()
 
     def addStringToFilter(self):
         name = self.string_entry.get()
@@ -81,7 +108,7 @@ class MainWindow(tk.Tk):
         canvas = Canvas(self.list_frame, bg="gray")
         scroll_y = Scrollbar(self.list_frame, orient="vertical",
                              command=canvas.yview)
-        scroll_frame = Frame(canvas, bg="gray")#blue
+        scroll_frame = Frame(canvas, bg="gray")  # blue
         # for i in range(20):
         #     Label(scroll_frame, text='label %i' % i).pack()#
 
@@ -165,10 +192,10 @@ class MainWindow(tk.Tk):
         # self.close_button = Button(root, text="Close", command=root.quit)
         # self.close_button.pack()
 
-
-# windowList = []
-# for i in range(20):
-#     windowList.append(WindowObject("test"+str(i)))
-# windowList.append(WindowObject("Opera"))
-# windowList.append(WindowObject("Visual Studio Code"))
-# MainWindow(windowList)
+# if __name__ == '__main__': # test
+#     windowList = []
+#     for i in range(20):
+#         windowList.append(WindowObject("test"+str(i)))
+    # windowList.append(WindowObject("Opera"))
+    # windowList.append(WindowObject("Visual Studio Code"))
+    # MainWindow(windowList)
