@@ -3,6 +3,7 @@ from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text
 from WindowObject import WindowObject
 import database
 import pygetwindow as gw
+import tkinter.messagebox
 
 
 class MainWindow(tk.Tk):
@@ -138,7 +139,20 @@ class MainWindow(tk.Tk):
         # self.list_frame.pack(side='left', padx='5', pady='5')
 
     def remove(self, windowObject):
-        self.windowList.remove(windowObject)
+        result = tkinter.messagebox.askquestion(
+            "Delete", "Are You Sure?", icon='warning')
+        if result == 'yes':
+            pass
+        else:
+            return
+        try:        #TODO: verbessern!!!
+            self.windowList.remove(windowObject)
+        except:
+            print("deleted by name")
+            for w in self.windowList:
+                if w.getWindowName()==windowObject.getWindowName():
+                    self.windowList.remove(w)
+
         self.list_frame.destroy()
         self.createListFrame()
         # ---- test ----
@@ -149,8 +163,8 @@ class MainWindow(tk.Tk):
         self.list_frame.destroy()
         self.createListFrame()
 
-    def add(self, name):
-        self.windowList.append(name)
+    def add(self, windowObject):
+        self.windowList.append(windowObject)
         self.list_frame.destroy()
         self.createListFrame()
 
