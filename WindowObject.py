@@ -1,14 +1,17 @@
 from tkinter import Label
 from tkinter import Button
-
+import database
 
 class WindowObject:
     windowName = 0
     passedTime = 0
 
-    def __init__(self, windowName, startTime):
+    def __init__(self, windowName, startTime=0):
         self.windowName = windowName
         self.passedTime = startTime
+
+    def getWindowName(self):
+        return self.windowName
 
     def getTimeSeconds(self):
         return self.passedTime
@@ -33,6 +36,9 @@ class WindowObject:
 
     def getSaveString(self):
         return self.windowName+'#'+str(self.passedTime)
+
+    def getFullTime(self):
+        return database.get_fulltime_by_program(self.windowName)
 
     def getConfigMenu(self, configWindow, gridRow, com):
         lableText = Label(configWindow, text=self.windowName)

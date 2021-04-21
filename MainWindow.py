@@ -1,26 +1,17 @@
 from tkinter import Tk, Label, Button, Frame, Canvas, Scrollbar, Entry
+from WindowObject import WindowObject
+
 
 class MainWindow:
 
-    windowFrameList = []
+    windowObjectLise = []
     global root, list_frame
 
     def __init__(self):
         print("hallo")
-        self.windowFrameList.append("test1")
-        self.windowFrameList.append("test2")
-        self.windowFrameList.append("test3")
-        self.windowFrameList.append("test4")
-        self.windowFrameList.append("test5")
-        self.windowFrameList.append("test6")
-        self.windowFrameList.append("test11")
-        self.windowFrameList.append("test22")
-        self.windowFrameList.append("test33")
-        self.windowFrameList.append("test44")
-        self.windowFrameList.append("test55")
-        self.windowFrameList.append("test66")
 
-    def createMainWindow(self):
+    def createMainWindow(self, windowObjectLise):
+        self.windowObjectLise = windowObjectLise
         global root
         root = Tk()
         root.title("Window")
@@ -44,7 +35,7 @@ class MainWindow:
         reload_button.pack(side='left', padx='5', pady='5', expand=False)
     # Exit-Button
         exit_button = Button(
-            master=menu_bar_frame, text="EXIT", command=self.action)        #TODO: #21 @superxyxy add end methode
+            master=menu_bar_frame, text="EXIT", command=self.action)  # TODO: #21 @superxyxy add end methode
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
 
         # self.createWindowFrame(self.root) # test
@@ -72,8 +63,8 @@ class MainWindow:
         #     master=scroll_frame, height=20, width=400, bg="orange")
         # temp_frame.pack(side='bottom', padx='5',
         #                 pady='1', fill="x", expand=True)
-        for e in self.windowFrameList:
-            self.createWindowFrame(scroll_frame)
+        for e in self.windowObjectLise:
+            self.createWindowFrame(scroll_frame, windowObject=e)
 
         canvas.create_window(0, 0, anchor='nw', window=scroll_frame)
         canvas.update_idletasks()
@@ -91,8 +82,8 @@ class MainWindow:
         # for i in range(10):
         #     self.createWindowFrame(self.list_frame)
 
-    def remove(self,name):
-        self.windowFrameList.remove(name)
+    def remove(self, windowObject):
+        self.windowObjectLise.remove(windowObject)
         global list_frame
         list_frame.destroy()
         self.createListFrame()
@@ -102,23 +93,24 @@ class MainWindow:
         list_frame.destroy()
         self.createListFrame()
 
-    def add(self,name):
+    def add(self, name):
         self.windowFrameList.append(name)
         global list_frame
         list_frame.destroy()
         self.createListFrame()
 
-    def createWindowFrame(self, master):    #TODO WindowObject...
+    def createWindowFrame(self, master, windowObject):  # TODO WindowObject...
         temp_frame = Frame(
             master=master, height=20, width=200, bg="red")
         temp_frame.pack(side='bottom', padx=5,
                         pady=1, fill="x", expand=False)
 
-        name_label = Label(master=temp_frame, text="window", bg="gray")
+        name_label = Label(master=temp_frame,
+                           text=windowObject.getWindowName(), bg="gray")
         name_label.pack(padx=2, pady=2, side="left")
 
         name_label = Label(master=temp_frame,
-                           text="time: 40 Sekunden", bg="gray")
+                           text="time: "+str(windowObject.getFullTime())+" Sekunden", bg="gray")
         name_label.pack(padx=2, pady=2, side="left")
 
         # void_label = Label(master=temp_frame,
@@ -126,7 +118,7 @@ class MainWindow:
         # void_label.pack(padx=2, pady=2, side="left")
 
         btn = Button(temp_frame, text="remove",
-                     bg="darkgray", command=lambda: self.remove(temp_frame))
+                     bg="darkgray", command=lambda: self.remove(windowObject))
         btn.pack(padx=2, pady=2, side="right", fill="x")
 
         # return btn
@@ -142,3 +134,14 @@ class MainWindow:
 
         # self.close_button = Button(root, text="Close", command=root.quit)
         # self.close_button.pack()
+
+
+windowList = []
+for i in range(20):
+    windowList.append(WindowObject("test"+str(i)))
+windowList.append(WindowObject("Opera"))
+windowList.append(WindowObject("VScode"))
+
+
+
+MainWindow().createMainWindow(windowList)
