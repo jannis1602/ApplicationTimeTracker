@@ -1,17 +1,20 @@
 import tkinter as tk
 from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry
 from WindowObject import WindowObject
+import database
+
 
 class MainWindow(tk.Tk):
 
-    def __init__(self, windowObjectList):
-        # self.windowObjectList = windowObjectList
+    def __init__(self, windowList, updateWindowList,exitProgram):
+        self.windowList = windowList
         tk.Tk.__init__(self)
         self.title("Window")
         self.geometry('800x400')
         self.resizable(False, False)
         self.running = True
-
+        self.updateWindowList = updateWindowList
+        self.exitProgram=exitProgram
 
     def createMainWindow(self):
         menu_bar_frame = Frame(
@@ -31,7 +34,7 @@ class MainWindow(tk.Tk):
         reload_button.pack(side='left', padx='5', pady='5', expand=False)
     # Exit-Button
         exit_button = Button(
-            master=menu_bar_frame, text="EXIT", command=self.action)  # TODO: #21 @superxyxy add end methode
+            master=menu_bar_frame, text="EXIT", command=self.exitProgram)  # TODO: #21 @superxyxy add end methode
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
 
         self.protocol("WM_DELETE_WINDOW", self.hide)
@@ -43,15 +46,19 @@ class MainWindow(tk.Tk):
         self.destroy()
 
     def addStringToFilter(self):
-        print(self.string_entry.get())
-        if len(self.string_entry.get()) > 1 and self.checkForWindowName(self.string_entry.get())==False:
-            print("add", self.string_entry.get(), "to Filter")
-            self.windowObjectList.append(WindowObject(self.string_entry.get()))
+        name = self.string_entry.get()
+        print(name)
+        if len(name) > 1 and self.checkForWindowName(name) == False:
+            print("add", name, "to Filter")
+            self.windowList.append(WindowObject(name))
             self.string_entry.delete(0, "end")
             self.reload()
+            # ---- test ----
+            database.add_program(name)
+            self.updateWindowList()
 
     def checkForWindowName(self, nameString):
-        for w in self.windowObjectList:
+        for w in self.windowList:
             if w.windowName.lower() == nameString.lower():
                 return True
         return False
@@ -87,7 +94,7 @@ class MainWindow(tk.Tk):
                            text=" "*255, bg="gray")
         void_label.pack(padx=2, pady=2, side="bottom")
 
-        for e in self.windowObjectList:
+        for e in self.windowList:
             self.createWindowFrame(scroll_frame, windowObject=e)
 
         canvas.create_window(0, 0, anchor='nw', window=scroll_frame)
@@ -104,24 +111,29 @@ class MainWindow(tk.Tk):
         # self.list_frame.pack(side='left', padx='5', pady='5')
 
     def remove(self, windowObject):
-        self.windowObjectList.remove(windowObject)
+        self.windowList.remove(windowObject)
         self.list_frame.destroy()
         self.createListFrame()
+        # ---- test ----
+        database.delete_by_name(windowObject.getWindowName())
+        self.updateWindowList()
 
     def reload(self):
         self.list_frame.destroy()
         self.createListFrame()
 
     def add(self, name):
-        self.windowObjectList.append(name)
+        self.windowList.append(name)
         self.list_frame.destroy()
         self.createListFrame()
 
     def createWindowFrame(self, master, windowObject):  # TODO WindowObject...
         temp_frame = Frame(
-            master=master, height=20, width=200, bg="red")
+            master=master, height=20, width=200, bg="darkgray")
         temp_frame.pack(side='bottom', padx=5,
                         pady=1, fill="x", expand=False)
+
+# TODO: add on/off Button
 
         name_label = Label(master=temp_frame,
                            text=windowObject.getWindowName(), bg="gray")
@@ -152,7 +164,7 @@ class MainWindow(tk.Tk):
 
         # self.close_button = Button(root, text="Close", command=root.quit)
         # self.close_button.pack()
-        
+
 
 # windowList = []
 # for i in range(20):
