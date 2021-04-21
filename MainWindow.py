@@ -81,7 +81,7 @@ class MainWindow(tk.Tk):
         canvas = Canvas(self.list_frame, bg="gray")
         scroll_y = Scrollbar(self.list_frame, orient="vertical",
                              command=canvas.yview)
-        scroll_frame = Frame(canvas, bg="blue")
+        scroll_frame = Frame(canvas, bg="gray")#blue
         # for i in range(20):
         #     Label(scroll_frame, text='label %i' % i).pack()#
 
