@@ -184,7 +184,7 @@ def end():
     global running
     running = False
     # loopThread.join() # ???
-    # saveList()
+    saveList()
     # save save-list to database
     icon.visible = False
     icon.stop()
@@ -241,7 +241,6 @@ def loop():
     while running:
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
-                print(len(windowList))
                 for w in windowList:
                     # TODO: #12 alle fenster...
                     if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
