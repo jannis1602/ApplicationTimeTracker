@@ -2,27 +2,23 @@ from tkinter import Tk, Label, Button, Frame, Canvas, Scrollbar, Entry
 from WindowObject import WindowObject
 
 
-class MainWindow:
+class MainWindow(Tk):
 
-    windowObjectList = []
-
-    def __init__(self, root, windowObjectList):
-        print("hallo")
-        self.root = root
-        self.createMainWindow(windowObjectList)
+    def __init__(self, windowObjectList):
+        self.root = Tk()
+        self.windowObjectList= windowObjectList
+        self.createMainWindow()
         # hier create?
 
-    def createMainWindow(self, windowObjectList):
-        self.windowObjectList = windowObjectList
+    def createMainWindow(self):
         # global root
         # root = Tk()
-        root = self.root
-        root.title("Window")
-        root.geometry('800x400')
-        root.resizable(False, False)
+        self.root.title("Window")
+        self.root.geometry('800x400')
+        self.root.resizable(False, False)
 
         menu_bar_frame = Frame(
-            master=root, height=20, width=640, bg="gray")
+            master=self.root, height=20, width=640, bg="gray")
         menu_bar_frame.pack(side='top', padx='5',
                             pady='5', fill="x", expand=False)
     # String-Entry
@@ -42,14 +38,15 @@ class MainWindow:
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
 
         # self.createWindowFrame(self.root) # test
-        root.protocol("WM_DELETE_WINDOW", self.hide)
+        self.root.protocol("WM_DELETE_WINDOW", self.hide)
 
     # ------------------------ list ------------------------
 
         self.createListFrame()
-        root.mainloop()
+        self.root.mainloop()
 
     def end(self):
+        print("quit MainWindow...")
         self.root.destroy()
         quit()
 
