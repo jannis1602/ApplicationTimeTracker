@@ -1,26 +1,38 @@
 from tkinter import Label
 from tkinter import Button
-
+import database
+import datetime
 
 class WindowObject:
     windowName = 0
     passedTime = 0
 
-    def __init__(self, windowName, startTime):
+    def __init__(self, windowName, startTime=0):
         self.windowName = windowName
         self.passedTime = startTime
+
+    def getWindowName(self):
+        return self.windowName
 
     def getTimeSeconds(self):
         return self.passedTime
 
     def addSec(self):
         self.passedTime += 1
+        database.add_time_if_name_exists(self.windowName,datetime.datetime.now().date(),1)
         print(self.getTimeString())
 
+    # def getTime(self):
+    #     hh = int(self.passedTime/60/60)
+    #     mm = int(self.passedTime/60)-60*hh
+    #     ss = int(self.passedTime)-60*60*hh-60*mm
+    #     return [hh, mm, ss]
+
     def getTime(self):
-        hh = int(self.passedTime/60/60)
-        mm = int(self.passedTime/60)-60*hh
-        ss = int(self.passedTime)-60*60*hh-60*mm
+        fulltime=self.getFullTime()
+        hh = int(fulltime/60/60)
+        mm = int(fulltime/60)-60*hh
+        ss = int(fulltime)-60*60*hh-60*mm
         return [hh, mm, ss]
 
     def getTimeString(self, name=True):
@@ -33,6 +45,9 @@ class WindowObject:
 
     def getSaveString(self):
         return self.windowName+'#'+str(self.passedTime)
+
+    def getFullTime(self):
+        return database.get_fulltime_by_program(self.windowName)
 
     def getConfigMenu(self, configWindow, gridRow, com):
         lableText = Label(configWindow, text=self.windowName)

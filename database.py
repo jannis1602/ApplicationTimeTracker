@@ -1,6 +1,8 @@
 import sqlite3
+import datetime
 
-conn = sqlite3.connect("ApplicationTimeTracker/data.db")
+conn = sqlite3.connect("ApplicationTimeTracker/data.db",
+                       check_same_thread=False)
 c = conn.cursor()
 try:
     c.execute("SELECT * FROM programs").fetchall()
@@ -22,7 +24,7 @@ def get_all_programs():
     return programs
 
 
-def add_program(name, date, time=0):
+def add_program(name, date=datetime.datetime.now().date(), time=0):
     with conn:
         c.execute(
             "INSERT INTO programs VALUES (:name,:date,:time)", {"name": name, "date": date, "time": time})
@@ -36,6 +38,14 @@ def set_time(name, date, time):
 
 def add_time(name, date, time):
     with conn:
+        c.execute(
+            "UPDATE programs SET time=time + :time WHERE date=:date AND name=:name", {"name": name, "date": date,  "time": time})
+
+
+def add_time_if_name_exists(name, date, time):
+    with conn:
+        if len(get_times_by_program(name)) > 1 and get_time_by_program_date(name=name, date=date) == 0:
+            add_program(name, date, 0)
         c.execute(
             "UPDATE programs SET time=time + :time WHERE date=:date AND name=:name", {"name": name, "date": date,  "time": time})
 
