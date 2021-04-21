@@ -37,16 +37,14 @@ for s in gw.getAllTitles():
         print(s)
 print('#' * 50)
 
-global configWindow
-global frame_configWindowList
-global entry_addString
+# global configWindow
+# global frame_configWindowList
+# global entry_addString
 saveFile = "applicationTimeTracker/time.save"
 maxIdleTime = 2*60  # 120 sec -> 2 min
 
 # -------------------
-
-saveListDatabase = []  # savelist for database
-
+saveListDatabase = []  # savelist for database #for later
 
 def getIdleTime():  # returns time from last userinput
     return (win32api.GetTickCount() - win32api.GetLastInputInfo()) / 1000.0
@@ -59,15 +57,15 @@ def loadWindowList():
         windowList.append(WindowObject(s))
 
 
-def loadList():
-    import os.path
-    if os.path.exists(saveFile):
-        myfile = open(saveFile)
-        lines = myfile.readlines()
-        for l in lines:
-            wobj = WindowObject(l.split('#')[0], int(l.split('#')[1]))
-            windowList.append(wobj)
-        myfile.close()
+# def loadList():
+#     import os.path
+#     if os.path.exists(saveFile):
+#         myfile = open(saveFile)
+#         lines = myfile.readlines()
+#         for l in lines:
+#             wobj = WindowObject(l.split('#')[0], int(l.split('#')[1]))
+#             windowList.append(wobj)
+#         myfile.close()
 
 
 def saveList():
@@ -102,11 +100,11 @@ def refresh():
     print("refresh")
 
 
-def reload():
-    for wol in windowObjList:
-        for wo in wol:
-            wo.destroy()
-    loadConfigStringList()
+# def reload():
+#     for wol in windowObjList:
+#         for wo in wol:
+#             wo.destroy()
+    # loadConfigStringList()
 
 
 def checkIfFilterExists(nameString):
@@ -121,62 +119,62 @@ def addStringToFilter(name):
         windowList.append(WindowObject(name))
 
 
-def addToFilter():
-    if len(entry_addString.get()) > 1:
-        print("add", entry_addString.get(), "to Filter")
-        addWindowName(str(entry_addString.get()))
-        loadConfigStringList()
-        entry_addString.delete(0, "end")
+# def addToFilter():
+#     if len(entry_addString.get()) > 1:
+#         print("add", entry_addString.get(), "to Filter")
+#         addWindowName(str(entry_addString.get()))
+#         loadConfigStringList()
+#         entry_addString.delete(0, "end")
 
 
-def hideConfigWindow():
-    global configWindow
-    configWindow.withdraw()
+# def hideConfigWindow():
+#     global configWindow
+#     configWindow.withdraw()
 
 
-def loadConfigStringList():
-    for w in windowList:
-        global frame_configWindowList
-        windowObjList.append(w.getConfigMenu(frame_configWindowList, 2+windowList.index(w),
-                             lambda: remove(w.windowName)))
+# def loadConfigStringList():
+#     for w in windowList:
+#         global frame_configWindowList
+#         windowObjList.append(w.getConfigMenu(frame_configWindowList, 2+windowList.index(w),
+#                              lambda: remove(w.windowName)))
 
 
-def remove(wname):
-    print("remove...", wname)
-    removeWindowName(wname)
-    reload()
+# def remove(wname):
+#     print("remove...", wname)
+#     removeWindowName(wname)
+#     reload()
 
 
-def showConfigWindow():
-    global configWindow
-    global frame_configWindowList
-    global entry_addString
-    configWindow = Tk()
-    configWindow.title("ApplicationTimeTracker")
-    configWindow.geometry('800x400')
-    frame_configWindowList = Frame(configWindow)
+# def showConfigWindow():
+#     global configWindow
+#     global frame_configWindowList
+#     global entry_addString
+#     configWindow = Tk()
+#     configWindow.title("ApplicationTimeTracker")
+#     configWindow.geometry('800x400')
+#     frame_configWindowList = Frame(configWindow)
 
-# MenuBar
-    menuBar = Frame(configWindow)
-    button_change = Button(
-        menuBar, text="Aktive Anwendungen (NoFunktion)", command=refresh)
-    entry_addString = Entry(menuBar, bd=2, width=40)
-    button_addString = Button(
-        menuBar, text="add to Filter", command=addToFilter)
-    button_reload = Button(
-        menuBar, text="reload", command=reload)
-    button_change.grid(row=0, column=0, padx=2)
-    entry_addString.grid(row=0, column=1, padx=2)
-    button_addString.grid(row=0, column=2, padx=2)
-    button_reload.grid(row=0, column=3, padx=2)
+# # MenuBar
+#     menuBar = Frame(configWindow)
+#     button_change = Button(
+#         menuBar, text="Aktive Anwendungen (NoFunktion)", command=refresh)
+#     entry_addString = Entry(menuBar, bd=2, width=40)
+#     button_addString = Button(
+#         menuBar, text="add to Filter", command=addToFilter)
+#     button_reload = Button(
+#         menuBar, text="reload", command=reload)
+#     button_change.grid(row=0, column=0, padx=2)
+#     entry_addString.grid(row=0, column=1, padx=2)
+#     button_addString.grid(row=0, column=2, padx=2)
+#     button_reload.grid(row=0, column=3, padx=2)
 
-    loadConfigStringList()
+#     loadConfigStringList()
 
-    menuBar.grid(row=0, column=0)
-    frame_configWindowList.grid(row=1, column=0)
+#     menuBar.grid(row=0, column=0)
+#     frame_configWindowList.grid(row=1, column=0)
 
-    configWindow.protocol("WM_DELETE_WINDOW", hideConfigWindow)
-    configWindow.mainloop()
+#     configWindow.protocol("WM_DELETE_WINDOW", hideConfigWindow)
+#     configWindow.mainloop()
 
 
 def end():
