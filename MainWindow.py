@@ -22,7 +22,7 @@ class MainWindow(tk.Tk):
         menu_bar_frame.pack(side='top', padx=2,
                             pady=2, fill="x", expand=False)
     # String-Entry
-        self.string_entry = Entry(menu_bar_frame, bd=2, width=40)
+        self.string_entry = Entry(menu_bar_frame, bd=2, width=40,bg="lightgray")
         self.string_entry.pack(side='left', padx='5', pady='5', expand=False)
     # Add-Button
         addfilter_button = Button(
