@@ -5,19 +5,19 @@ from WindowObject import WindowObject
 class MainWindow:
 
     windowObjectList = []
-    global root, list_frame
+    global list_frame
 
-    def __init__(self,windowObjectList):
+    def __init__(self, root, windowObjectList):
         print("hallo")
-
+        self.root = root
         self.createMainWindow(windowObjectList)
         # hier create?
 
     def createMainWindow(self, windowObjectList):
-        print("create...")
         self.windowObjectList = windowObjectList
-        global root
-        root = Tk()
+        # global root
+        # root = Tk()
+        root = self.root
         root.title("Window")
         root.geometry('800x400')
         root.resizable(False, False)
@@ -39,32 +39,33 @@ class MainWindow:
         reload_button.pack(side='left', padx='5', pady='5', expand=False)
     # Exit-Button
         exit_button = Button(
-            master=menu_bar_frame, text="EXIT", command=self.action)  # TODO: #21 @superxyxy add end methode
+            master=menu_bar_frame, text="EXIT", command=self.end)  # TODO: #21 @superxyxy add end methode
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
 
         # self.createWindowFrame(self.root) # test
         root.protocol("WM_DELETE_WINDOW", self.hide)
-
 
     # ------------------------ list ------------------------
 
         self.createListFrame()
         root.mainloop()
 
+    def end(self):
+        self.root.destroy()
+        quit()
+
     def show(self):
         try:
-            global root
-            root.deiconify()
+            self.root.deiconify()
         except:
             print("error while showing mainWindow!")
-    
+
     def hide(self):
-        global root
-        root.withdraw()
+        self.root.withdraw()
 
     def createListFrame(self):
-        global root, list_frame
-        list_frame = Frame(master=root)
+        global list_frame
+        list_frame = Frame(master=self.root)
         list_frame.pack(side='left', padx=1,
                         pady=1, fill="both", expand=True)
 
@@ -157,10 +158,10 @@ class MainWindow:
         # self.close_button.pack()
 
 
-# windowList = []
-# for i in range(20):
-#     windowList.append(WindowObject("test"+str(i)))
-# windowList.append(WindowObject("Opera"))
-# windowList.append(WindowObject("VScode"))
-
-# MainWindow(windowList)
+windowList = []
+for i in range(20):
+    windowList.append(WindowObject("test"+str(i)))
+windowList.append(WindowObject("Opera"))
+windowList.append(WindowObject("Visual Studio Code"))
+root = Tk()
+MainWindow(root, windowList)
