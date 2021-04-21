@@ -5,7 +5,6 @@ from WindowObject import WindowObject
 class MainWindow:
 
     windowObjectList = []
-    global list_frame
 
     def __init__(self, root, windowObjectList):
         print("hallo")
@@ -64,13 +63,12 @@ class MainWindow:
         self.root.withdraw()
 
     def createListFrame(self):
-        global list_frame
-        list_frame = Frame(master=self.root)
-        list_frame.pack(side='left', padx=1,
-                        pady=1, fill="both", expand=True)
+        self.list_frame = Frame(master=self.root)
+        self.list_frame.pack(side='left', padx=1,
+                             pady=1, fill="both", expand=True)
 
-        canvas = Canvas(list_frame, bg="green")
-        scroll_y = Scrollbar(list_frame, orient="vertical",
+        canvas = Canvas(self.list_frame, bg="green")
+        scroll_y = Scrollbar(self.list_frame, orient="vertical",
                              command=canvas.yview)
         scroll_frame = Frame(canvas, bg="blue")
         # for i in range(20):
@@ -106,19 +104,16 @@ class MainWindow:
 
     def remove(self, windowObject):
         self.windowObjectList.remove(windowObject)
-        global list_frame
-        list_frame.destroy()
+        self.list_frame.destroy()
         self.createListFrame()
 
     def reload(self):
-        global list_frame
-        list_frame.destroy()
+        self.list_frame.destroy()
         self.createListFrame()
 
     def add(self, name):
         self.windowObjectList.append(name)
-        global list_frame
-        list_frame.destroy()
+        self.list_frame.destroy()
         self.createListFrame()
 
     def createWindowFrame(self, master, windowObject):  # TODO WindowObject...
@@ -158,10 +153,10 @@ class MainWindow:
         # self.close_button.pack()
 
 
-windowList = []
-for i in range(20):
-    windowList.append(WindowObject("test"+str(i)))
-windowList.append(WindowObject("Opera"))
-windowList.append(WindowObject("Visual Studio Code"))
-root = Tk()
-MainWindow(root, windowList)
+# windowList = []
+# for i in range(20):
+#     windowList.append(WindowObject("test"+str(i)))
+# windowList.append(WindowObject("Opera"))
+# windowList.append(WindowObject("Visual Studio Code"))
+# root = Tk()
+# MainWindow(root, windowList)
