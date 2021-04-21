@@ -1,6 +1,7 @@
 from tkinter import Label
 from tkinter import Button
 import database
+import datetime
 
 class WindowObject:
     windowName = 0
@@ -18,6 +19,7 @@ class WindowObject:
 
     def addSec(self):
         self.passedTime += 1
+        database.add_time_if_name_exists(self.windowName,datetime.datetime.now().date(),1)
         print(self.getTimeString())
 
     # def getTime(self):
