@@ -52,6 +52,13 @@ def getIdleTime():  # returns time from last userinput
     return (win32api.GetTickCount() - win32api.GetLastInputInfo()) / 1000.0
 
 
+def loadWindowList():
+    global windowList
+    windowList.clear()
+    for s in database.get_all_programs():
+        windowList.append(WindowObject(s))
+
+
 def loadList():
     import os.path
     if os.path.exists(saveFile):
@@ -177,7 +184,7 @@ def end():
     global running
     running = False
     # loopThread.join() # ???
-    saveList()
+    # saveList()
     # save save-list to database
     icon.visible = False
     icon.stop()
@@ -194,32 +201,19 @@ def showMainWindow():
 
 
 def createMainWindow():
-    windowList = []
-    # for i in range(20):
-    #     windowList.append(WindowObject("test"+str(i)))
-    windowList.append(WindowObject("Opera"))
-    windowList.append(WindowObject("Visual Studio Code"))
+    # windowList.append(WindowObject("Opera"))
+    # windowList.append(WindowObject("Visual Studio Code"))
+
     global mainWindow
-    mainWindow = MainWindow(windowList)
+    mainWindow = MainWindow(windowList=windowList,
+                            updateWindowList=loadWindowList,
+                            exitProgram=end)
     mainWindowThread = threading.Thread(
         target=mainWindow.createMainWindow(), name="mainWindow-Thread", daemon=True)
     mainWindowThread.start()
-# try:
-#     configWindow.deiconify()
-# except:
-#     configWindowThread = threading.Thread(target=showConfigWindow)
-#     configWindowThread.start()
-
-
-# -----------------load-----------------------
-# funktion testen
-# addWindowName("Email")
-# removeWindowName("Email")
 
 # -----------------------sqlite-------------------
 # print('*'*100)
-
-
 # if(database.get_time_by_program_date("email", "2021-04-20") == None):
 #     database.add_program("email","2021-04-20",0)
 # database.add_time("email","2021-04-20",5)
@@ -258,7 +252,6 @@ def loop():
                         #     saveListDatabase.append(w.windowName)
 
                         # add window with time to save-list
-
             saveList()
             lastTime += 1
         if time.time()-lastTimeMin > 60:
@@ -285,9 +278,6 @@ print('*'*50)
 #     print(thread.name)
 
 
-
-
-
 # configWindowThread()
 
 # --------------create mainWindow--------------------
@@ -296,11 +286,7 @@ print('*'*50)
 # mainWindowThread.start()
 
 
-# configWindowThread()
-
 # ----------pystray----------
-
-
 # image = Image.open("threeLines.png")
 width = 16
 height = 16
