@@ -11,7 +11,7 @@ class MainWindow(tk.Tk):
         self.title("Window")
         self.geometry('800x400')
         self.resizable(False, False)
-        self.createMainWindow()
+        self.running = True
         # hier create?
 
     def createMainWindow(self):
@@ -20,8 +20,8 @@ class MainWindow(tk.Tk):
 
         menu_bar_frame = Frame(
             master=self, height=20, width=640, bg="gray")
-        menu_bar_frame.pack(side='top', padx='5',
-                            pady='5', fill="x", expand=False)
+        menu_bar_frame.pack(side='top', padx=2,
+                            pady=2, fill="x", expand=False)
     # String-Entry
         string_entry = Entry(menu_bar_frame, bd=2, width=40)
         string_entry.pack(side='left', padx='5', pady='5', expand=False)
@@ -42,30 +42,34 @@ class MainWindow(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.hide)
 
     # ------------------------ list ------------------------
-
         self.createListFrame()
-        self.mainloop()
+
+        # self.mainloop()  # is blocking
+
+        while self.running:
+            self.update()
 
     def end(self):
         print("quit MainWindow...")
-        self.destroy()
-        quit()
+        self.running = False
+        # self.destroy()
+        # quit(0)
 
     def show(self):
-        try:
-            self.deiconify()
-        except:
-            print("error while showing mainWindow!")
+        # try:
+        self.deiconify()
+        # except:
+        #     print("error while showing mainWindow!")
 
     def hide(self):
         self.withdraw()
 
     def createListFrame(self):
         self.list_frame = Frame(master=self)
-        self.list_frame.pack(side='left', padx=1,
-                             pady=1, fill="both", expand=True)
+        self.list_frame.pack(side='left', padx=0,
+                             pady=0, fill="both", expand=True)
 
-        canvas = Canvas(self.list_frame, bg="green")
+        canvas = Canvas(self.list_frame, bg="gray")
         scroll_y = Scrollbar(self.list_frame, orient="vertical",
                              command=canvas.yview)
         scroll_frame = Frame(canvas, bg="blue")
@@ -78,7 +82,7 @@ class MainWindow(tk.Tk):
         #                 pady='1', fill="x", expand=True)
 
         void_label = Label(master=scroll_frame,
-                           text="  "*100, bg="gray")
+                           text=" "*255, bg="gray")
         void_label.pack(padx=2, pady=2, side="bottom")
 
         for e in self.windowObjectList:
