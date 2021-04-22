@@ -152,9 +152,8 @@ def loop():
 
 # if __name__ == '__main__': # test
 print(database.get_all_programs())
+loadWindowList()
 
-for s in database.get_all_programs():
-    windowList.append(WindowObject(s))
 
 for w in windowList:
     print(w.getTimeString())
