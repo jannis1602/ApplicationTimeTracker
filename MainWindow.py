@@ -230,6 +230,9 @@ class MainWindow(tk.Tk):
     # MainWindow(windowList)
 
 
+# ----------- ToolTip -----------
+#TODO extra file
+
 class ToolTip(object):
 
     def __init__(self, widget):
