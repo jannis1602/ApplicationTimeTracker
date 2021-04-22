@@ -13,30 +13,22 @@ from tkinter import Tk, Button, Entry, Label, Scrollbar, Listbox, Frame, Canvas
 from WindowObject import WindowObject
 from MainWindow import MainWindow
 
-# TODO:
-# - Datenbank?
-# - Gui
-###
-
-# test
 global mainWindow
-global mainWindowThread
-##
-
 global windowList
-windowList = []
+global maxIdleTime  # global?
 global running
 running = True
+maxIdleTime = 2*60  # 120 sec -> 2 min
+saveListDatabase = []  # savelist for database #for later
+
+#TODO: database for active windows - change status on/off...
+
 print('#' * 50)
 print("Alle aktiven Fenster:")
 for s in gw.getAllTitles():
     if len(s) >= 1:
         print(s)
 print('#' * 50)
-maxIdleTime = 2*60  # 120 sec -> 2 min
-
-# -------------------
-saveListDatabase = []  # savelist for database #for later
 
 
 def getIdleTime():  # returns time from last userinput
@@ -45,20 +37,10 @@ def getIdleTime():  # returns time from last userinput
 
 def loadWindowList():
     global windowList
-    windowList.clear()
+    windowList = []
+    # windowList.clear()
     for s in database.get_all_programs():
         windowList.append(WindowObject(s))
-
-
-# def loadList():
-#     import os.path
-#     if os.path.exists(saveFile):
-#         myfile = open(saveFile)
-#         lines = myfile.readlines()
-#         for l in lines:
-#             wobj = WindowObject(l.split('#')[0], int(l.split('#')[1]))
-#             windowList.append(wobj)
-#         myfile.close()
 
 
 def addWindowName(winName):
