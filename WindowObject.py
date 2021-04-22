@@ -30,20 +30,11 @@ class WindowObject:
     #     ss = int(self.passedTime)-60*60*hh-60*mm
     #     return [hh, mm, ss]
 
-    def getTime(self, stringFormart=True):
+    def getTime(self):
         fulltime = self.getFullTime()
         hh = int(fulltime/60/60)
         mm = int(fulltime/60)-60*hh
         ss = int(fulltime)-60*60*hh-60*mm
-        if stringFormart:
-            tempString = [str(hh), str(mm), str(ss)]
-            returnString = []
-            for s in tempString:
-                if len(s) == 1:
-                    s = " "+s
-                    print(s)
-                returnString.append(s)
-            return returnString
         return [hh, mm, ss]
 
     def getTimeString(self, name=True):
