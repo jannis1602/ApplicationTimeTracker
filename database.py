@@ -1,11 +1,11 @@
 import sqlite3
 import datetime
 
-#TODO database for all programs: MainName/Title - status(on/off) - filterStrings - config: count in background
+# TODO database for all programs: MainName/Title - status(on/off) - filterStrings - config: count in background
 
-#TODO rename programs to programTimes...
+# TODO rename programs to programTimes...
 
-#TODO settings database
+# TODO settings database
 
 conn = sqlite3.connect("ApplicationTimeTracker/data.db",
                        check_same_thread=False)
@@ -18,6 +18,12 @@ except:
                 date text,
                 time integer
                 )""")
+
+
+def get_all():
+    with conn:
+        c.execute("SELECT * FROM programs")
+        return c.fetchall()
 
 
 def get_all_programs():
@@ -50,8 +56,9 @@ def add_time(name, date, time):
 
 def add_time_if_name_exists(name, date, time):
     with conn:
-        if len(get_times_by_program(name)) > 1 and get_time_by_program_date(name=name, date=date) == 0:
-            add_program(name, date, 0)
+        # TODO replace get times durch program/config database
+        if len(get_times_by_program(name)) >= 1 and get_time_by_program_date(name=name, date=date) == None:
+            add_program(name, date)
         c.execute(
             "UPDATE programs SET time=time + :time WHERE date=:date AND name=:name", {"name": name, "date": date,  "time": time})
 
