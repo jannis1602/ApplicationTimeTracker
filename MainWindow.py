@@ -51,6 +51,7 @@ class MainWindow(tk.Tk):
 
         self.protocol("WM_DELETE_WINDOW", self.hide)
         self.createListFrame()
+        self.after(1, lambda: self.focus_force())
 
         # self.mainloop()  # is blocking
         while self.running:
