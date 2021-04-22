@@ -25,26 +25,19 @@ global mainWindowThread
 
 global windowList
 windowList = []
-windowObjList = []
 global running
 running = True
-blacklist = ["NVIDIA GeForce Overlay", "Program Manager",
-             "Microsoft Text Input Application"]  # für später
 print('#' * 50)
 print("Alle aktiven Fenster:")
 for s in gw.getAllTitles():
-    if len(s) >= 1 and blacklist.count(s) == 0:
+    if len(s) >= 1:
         print(s)
 print('#' * 50)
-
-# global configWindow
-# global frame_configWindowList
-# global entry_addString
-saveFile = "applicationTimeTracker/time.save"
 maxIdleTime = 2*60  # 120 sec -> 2 min
 
 # -------------------
 saveListDatabase = []  # savelist for database #for later
+
 
 def getIdleTime():  # returns time from last userinput
     return (win32api.GetTickCount() - win32api.GetLastInputInfo()) / 1000.0
@@ -68,17 +61,10 @@ def loadWindowList():
 #         myfile.close()
 
 
-def saveList():
-    with open(saveFile, "w") as myfile:
-        for w in windowList:
-            myfile.write("%s\n" % w.getSaveString())
-        myfile.close()
-
-
 def addWindowName(winName):
     if checkForWindowName(winName) == False:
         windowList.append(WindowObject(winName, 0))
-    saveList()
+# ----> SAVE
 
 
 def removeWindowName(winName):
@@ -86,7 +72,7 @@ def removeWindowName(winName):
         for w in windowList:
             if w.windowName == winName:
                 windowList.remove(w)
-    saveList()
+# ----> SAVE
 
 
 def checkForWindowName(nameString):
@@ -98,13 +84,6 @@ def checkForWindowName(nameString):
 
 def refresh():
     print("refresh")
-
-
-# def reload():
-#     for wol in windowObjList:
-#         for wo in wol:
-#             wo.destroy()
-    # loadConfigStringList()
 
 
 def checkIfFilterExists(nameString):
@@ -182,10 +161,14 @@ def end():
     global running
     running = False
     # loopThread.join() # ???
-    saveList()
-    # save save-list to database
-    icon.visible = False
-    icon.stop()
+# ----> SAVE -- save save-list to database
+    try:
+        icon.visible = False
+        while icon.visible:
+            pass
+        icon.stop()
+    except:
+        pass
     mainWindow.stopRunning()
     quit(0)  # or sys.exit(0) ?
 
@@ -199,9 +182,6 @@ def showMainWindow():
 
 
 def createMainWindow():
-    # windowList.append(WindowObject("Opera"))
-    # windowList.append(WindowObject("Visual Studio Code"))
-
     global mainWindow
     mainWindow = MainWindow(windowList=windowList,
                             updateWindowList=loadWindowList,
@@ -231,6 +211,8 @@ def createMainWindow():
 # database.add_program("Opera")
 
 # MainLoop ------------------------------------------------------------------
+
+
 def loop():
     icon.visible = True
     lastTime = time.time()
@@ -249,7 +231,7 @@ def loop():
                         #     saveListDatabase.append(w.windowName)
 
                         # add window with time to save-list
-            saveList()
+# ----> SAVE
             lastTime += 1
         if time.time()-lastTimeMin > 60:
             print("save minute")
@@ -263,8 +245,6 @@ print(database.get_all_programs())
 
 for s in database.get_all_programs():
     windowList.append(WindowObject(s))
-
-# loadList()
 
 for w in windowList:
     print(w.getTimeString())
@@ -282,6 +262,8 @@ print('*'*50)
 # mainWindowThread = threading.Thread(target=createMainWindow)
 # mainWindowThread.start()
 
+# createMainWindow()
+# mainWindow.hide()
 
 # ----------pystray----------
 # image = Image.open("threeLines.png")
