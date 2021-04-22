@@ -5,6 +5,8 @@ import datetime
 
 #TODO rename programs to programTimes...
 
+#TODO settings database
+
 conn = sqlite3.connect("ApplicationTimeTracker/data.db",
                        check_same_thread=False)
 c = conn.cursor()
