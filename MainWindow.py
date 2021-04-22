@@ -174,9 +174,6 @@ class MainWindow(tk.Tk):
             master=master, height=20, width=200, bg="darkgray")
         temp_frame.pack(side='bottom', padx=5,
                         pady=1, fill="x", expand=False)
-
-# TODO: add on/off Button
-
         name_label = Label(master=temp_frame,
                            text=windowObject.getWindowName(), bg="gray")
         name_label.pack(padx=2, pady=2, side="left")
