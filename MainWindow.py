@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text,Toplevel
+from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text, Toplevel
 from WindowObject import WindowObject
 import database
 import pygetwindow as gw
@@ -134,7 +134,7 @@ class MainWindow(tk.Tk):
         # self.list_frame.pack(side='left', padx='5', pady='5')
 
     def remove(self, windowObject):
-    # delete-request
+        # delete-request
         result = tkinter.messagebox.askquestion(
             "Delete", "Are You Sure?", icon='warning')
         if result == 'yes':
@@ -243,7 +243,7 @@ class ToolTip(object):
         self.text = text
         if self.tipwindow or not self.text:
             return
-        x, y, cx, cy = self.widget.bbox("insert")
+        x, y, cy = self.widget.bbox("insert")  # x, y, cx, cy
         x = x + self.widget.winfo_rootx() + 57
         y = y + cy + self.widget.winfo_rooty() + 27
         self.tipwindow = tw = Toplevel(self.widget)
