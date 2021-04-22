@@ -145,12 +145,12 @@ class MainWindow(tk.Tk):
             pass
         else:
             return
-        try:        #TODO: verbessern!!!
+        try:  # TODO: verbessern!!!
             self.windowList.remove(windowObject)
         except:
             print("deleted by name")
             for w in self.windowList:
-                if w.getWindowName()==windowObject.getWindowName():
+                if w.getWindowName() == windowObject.getWindowName():
                     self.windowList.remove(w)
 
         self.list_frame.destroy()
@@ -188,9 +188,13 @@ class MainWindow(tk.Tk):
         #                    text="  "*60, bg="gray")
         # void_label.pack(padx=2, pady=2, side="left")
 
-        btn = Button(temp_frame, text="remove",
-                     bg="darkgray", command=lambda: self.remove(windowObject))
-        btn.pack(padx=2, pady=2, side="right", fill="x")
+        remove_button = Button(temp_frame, text="remove",
+                               bg="darkgray", command=lambda: self.remove(windowObject))
+        remove_button.pack(padx=2, pady=2, side="right", fill="x")
+    # On/Off button
+        onoff_button = Button(temp_frame, text="on/off",
+                              bg="darkgray", command=self.action)       # => change state in database
+        onoff_button.pack(padx=2, pady=2, side="right", fill="x")
 
         # return btn
 
