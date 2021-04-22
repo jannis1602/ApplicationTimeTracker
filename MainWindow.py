@@ -19,6 +19,8 @@ class MainWindow(tk.Tk):
         self.updateWindowList = updateWindowList
         self.exitProgram = exitProgram
 
+        # self.subWindows=[] #TODO immer nur ein window pro art
+
     def createMainWindow(self):
         menu_bar_frame = Frame(
             master=self, height=20, width=640, bg="gray")
@@ -197,7 +199,7 @@ class MainWindow(tk.Tk):
     def viewStats_Window(self, programName):
         root = tk.Tk()
         S = Scrollbar(root)
-        T = Text(root, height=20, width=80,bg="#4a4a4a")
+        T = Text(root, height=20, width=80, bg="#4a4a4a")
         S.pack(side="right", fill="y")
         T.pack(side="left", fill="y")
         S.config(command=T.yview)
