@@ -175,9 +175,7 @@ print('*'*50)
 mainWindowThread = threading.Thread(target=createMainWindow)
 mainWindowThread.start()
 
-# print(database.get_times_by_program("Opera")[0])
-
-print(database.get_all())
+# print(database.get_all())
 
 # ----------pystray----------
 # image = Image.open("threeLines.png")
