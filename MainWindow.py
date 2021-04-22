@@ -13,7 +13,7 @@ class MainWindow(tk.Tk):
         tk.Tk.__init__(self)
         self.title("ApplicationTimeTracker")
         self.geometry('800x400')
-#TODO icon
+# TODO icon
         self.resizable(False, False)
         self.running = True
         self.updateWindowList = updateWindowList
@@ -161,6 +161,7 @@ class MainWindow(tk.Tk):
 
     # TODO WindowObject... # TODO rename methode
     def createWindowFrame(self, master, windowObject):
+        # TODO rename temp_frame
         temp_frame = Frame(
             master=master, height=20, width=200, bg="darkgray")
         temp_frame.pack(side='bottom', padx=5,
@@ -174,9 +175,10 @@ class MainWindow(tk.Tk):
         if len(windowObject.getWindowName()) > 12:  # nur wenn string zu lang?
             CreateToolTip(name_label, text=windowObject.getWindowName())
 
-        name_label = Label(master=temp_frame,
-                           text=windowObject.getTimeString(name=False), width=70, bg="gray")
-        name_label.pack(padx=2, pady=2, side="left")
+        # TODO multiple lables for better formatting
+        time_label = Label(master=temp_frame,
+                           text=windowObject.getTimeString(name=False), width=64, bg="gray")
+        time_label.pack(padx=2, pady=2, side="left")
         # TODO add/edit filterStrings
         # -> new tkinter with Text(new line = new filterString)
 
@@ -187,6 +189,38 @@ class MainWindow(tk.Tk):
         onoff_button = Button(temp_frame, text="on/off",
                               bg="darkgray", command=self.action)       # => change state in database
         onoff_button.pack(padx=2, pady=2, side="right", fill="x")
+    # statistics-Button
+        statistics_button = Button(
+            master=temp_frame, text="statistics", bg="darkgray", command=lambda: self.viewStats_Window(windowObject.getWindowName()))
+        statistics_button.pack(padx=2, pady=2, side="right", fill="x")
+
+    def viewStats_Window(self, programName):
+        root = tk.Tk()
+        S = Scrollbar(root)
+        T = Text(root, height=20, width=80)
+        S.pack(side="right", fill="y")
+        T.pack(side="left", fill="y")
+        S.config(command=T.yview)
+        T.config(yscrollcommand=S.set)
+
+        # ---- stats to text ----
+        text = ""
+        for d in database.get_times_by_program(programName):
+            text += str(d[1])+" - "+self.convertToTimeString(d[2])+"\n"
+
+        # print(database.get_times_by_program(programName))
+
+        T.insert(tk.END, text)
+        T.config(state=tk.DISABLED)
+        root.mainloop()
+
+    def convertToTimeString(self, time):
+        hh = int(time/60/60)
+        mm = int(time/60)-60*hh
+        ss = int(time)-60*60*hh-60*mm
+        timeString = str(str(hh) +
+                         " Stunden " + str(mm) + " Minuten " + str(ss) + " Sekunden")
+        return timeString
 
     def editFilterStrings(self):
         root = tk.Tk()
@@ -201,7 +235,7 @@ class MainWindow(tk.Tk):
             if len(s) >= 1:
                 text += s+"\n"
         T.insert(tk.END, text)
-        T.config(state=tk.DISABLED)
+        # T.config(state=tk.DISABLED)
         root.mainloop()
 
     def action(self):
