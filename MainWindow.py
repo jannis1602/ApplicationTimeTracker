@@ -1,7 +1,5 @@
-from tkinter import *
 import tkinter as tk
-from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text
-from tkinter import font as tkfont
+from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text,Toplevel
 from WindowObject import WindowObject
 import database
 import pygetwindow as gw
@@ -136,6 +134,7 @@ class MainWindow(tk.Tk):
         # self.list_frame.pack(side='left', padx='5', pady='5')
 
     def remove(self, windowObject):
+    # delete-request
         result = tkinter.messagebox.askquestion(
             "Delete", "Are You Sure?", icon='warning')
         if result == 'yes':
@@ -250,9 +249,9 @@ class ToolTip(object):
         self.tipwindow = tw = Toplevel(self.widget)
         tw.wm_overrideredirect(1)
         tw.wm_geometry("+%d+%d" % (x, y))
-        label = Label(tw, text=self.text, justify=LEFT,
-                      background="gray", relief=SOLID, borderwidth=1,
-                      font=("tahoma", "8", "normal"))
+        label = Label(tw, text=self.text, justify="left",
+                      background="gray", relief="solid", borderwidth=1,
+                      font=("roboto", "10", "normal"))
         label.pack(ipadx=1)
 
     def hidetip(self):
