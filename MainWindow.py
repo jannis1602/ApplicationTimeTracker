@@ -13,6 +13,7 @@ class MainWindow(tk.Tk):
         tk.Tk.__init__(self)
         self.title("ApplicationTimeTracker")
         self.geometry('800x400')
+#TODO icon
         self.resizable(False, False)
         self.running = True
         self.updateWindowList = updateWindowList
@@ -127,16 +128,10 @@ class MainWindow(tk.Tk):
         canvas.pack(fill='both', expand=True, side='left')
         scroll_y.pack(fill='y', side='right')
 
-        # scroll_frame.pack(fill='both', expand=True, side='left') # -> scrollbar funktioniert dann nicht!
-
-        # self.list_frame = Frame(
-        #     master=root, height=20, width=640, bg="gray")
-        # self.list_frame.pack(side='left', padx='5', pady='5')
-
     def remove(self, windowObject):
         # delete-request
         result = tkinter.messagebox.askquestion(
-            "Delete", "Are You Sure?", icon='warning')
+            "Delete", "Sure?", icon='warning')
         if result == 'yes':
             pass
         else:
@@ -171,7 +166,7 @@ class MainWindow(tk.Tk):
         temp_frame.pack(side='bottom', padx=5,
                         pady=1, fill="x", expand=False)
         name_label = Label(master=temp_frame,
-                           text=windowObject.getWindowName(), anchor='w', width=15, bg="gray")
+                           text=windowObject.getWindowName(), anchor='w', width=20, bg="gray")
         name_label.pack(padx=2, pady=2, side="left")
 
         # TODO #23 getfont length of string
@@ -180,7 +175,7 @@ class MainWindow(tk.Tk):
             CreateToolTip(name_label, text=windowObject.getWindowName())
 
         name_label = Label(master=temp_frame,
-                           text=windowObject.getTimeString(name=False), width=60, bg="gray")
+                           text=windowObject.getTimeString(name=False), width=70, bg="gray")
         name_label.pack(padx=2, pady=2, side="left")
         # TODO add/edit filterStrings
         # -> new tkinter with Text(new line = new filterString)
@@ -231,7 +226,7 @@ class MainWindow(tk.Tk):
 
 
 # ----------- ToolTip -----------
-#TODO extra file
+# TODO extra file
 
 class ToolTip(object):
 
@@ -246,7 +241,7 @@ class ToolTip(object):
         self.text = text
         if self.tipwindow or not self.text:
             return
-        x, y, cy = self.widget.bbox("insert")  # x, y, cx, cy
+        x, y, cx, cy = self.widget.bbox("insert")
         x = x + self.widget.winfo_rootx() + 57
         y = y + cy + self.widget.winfo_rooty() + 27
         self.tipwindow = tw = Toplevel(self.widget)
@@ -256,6 +251,7 @@ class ToolTip(object):
                       background="gray", relief="solid", borderwidth=1,
                       font=("roboto", "10", "normal"))
         label.pack(ipadx=1)
+        cx = cx
 
     def hidetip(self):
         tw = self.tipwindow
