@@ -1,7 +1,7 @@
 import sqlite3
 import datetime
 
-#TODO database for all programs: MainName/Title - status(on/off) - filterStrings
+#TODO database for all programs: MainName/Title - status(on/off) - filterStrings - config: count in background
 
 #TODO rename programs to programTimes...
 
