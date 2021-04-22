@@ -23,6 +23,10 @@ saveListDatabase = []  # savelist for database #for later
 
 #TODO: database for active windows - change status on/off...
 
+
+# TODO change windowName -> programName
+
+
 print('#' * 50)
 print("Alle aktiven Fenster:")
 for s in gw.getAllTitles():
@@ -166,6 +170,14 @@ print('*'*50)
 # --------------create mainWindow--------------------
 # mainWindowThread = threading.Thread(target=createMainWindow)
 # mainWindowThread.start()
+
+# Wiondow on startup
+mainWindowThread = threading.Thread(target=createMainWindow)
+mainWindowThread.start()
+
+# print(database.get_times_by_program("Opera")[0])
+
+print(database.get_all())
 
 # ----------pystray----------
 # image = Image.open("threeLines.png")
