@@ -3,6 +3,7 @@ from tkinter import Button
 import database
 import datetime
 
+
 class WindowObject:
     windowName = 0
     passedTime = 0
@@ -19,7 +20,8 @@ class WindowObject:
 
     def addSec(self):
         self.passedTime += 1
-        database.add_time_if_name_exists(self.windowName,datetime.datetime.now().date(),1)
+        database.add_time_if_name_exists(
+            self.windowName, datetime.datetime.now().date(), 1)
         print(self.getTimeString())
 
     # def getTime(self):
@@ -28,19 +30,30 @@ class WindowObject:
     #     ss = int(self.passedTime)-60*60*hh-60*mm
     #     return [hh, mm, ss]
 
-    def getTime(self):
-        fulltime=self.getFullTime()
+    def getTime(self, stringFormart=True):
+        fulltime = self.getFullTime()
         hh = int(fulltime/60/60)
         mm = int(fulltime/60)-60*hh
         ss = int(fulltime)-60*60*hh-60*mm
+        if stringFormart:
+            tempString = [str(hh), str(mm), str(ss)]
+            returnString = []
+            for s in tempString:
+                if len(s) == 1:
+                    s = " "+s
+                    print(s)
+                returnString.append(s)
+            return returnString
         return [hh, mm, ss]
 
     def getTimeString(self, name=True):
         timeString = str(self.windowName + " >>> Vergangene Zeit: " + str(self.getTime()[0]) +
-                         " Stunden " + str(self.getTime()[1]) + " Minuten " + str(self.getTime()[2]) + " Sekunden")
+                         "h " + str(self.getTime()[1]) + "m " + str(self.getTime()[2]) + "s")
+        # timeString = str(self.windowName + " >>> Vergangene Zeit: " + str(self.getTime()[0]) +
+        #                  " Stunden " + str(self.getTime()[1]) + " Minuten " + str(self.getTime()[2]) + " Sekunden")
         if name == False:
             timeString = str("Vergangene Zeit: " + str(self.getTime()[0]) +
-                             " Stunden " + str(self.getTime()[1]) + " Minuten " + str(self.getTime()[2]) + " Sekunden")
+                             "h " + str(self.getTime()[1]) + "m " + str(self.getTime()[2]) + "s")
         return timeString
 
     def getSaveString(self):
