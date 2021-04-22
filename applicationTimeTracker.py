@@ -136,7 +136,7 @@ def loop():
                     if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
                         w.addSec()  # TODO: #13 filter2: nach speicherort???
                         # if saveListDatabase.count(w.windowName) == 1:
-                        # print(saveListDatabase.index(w.windowName))
+                        #   print(saveListDatabase.index(w.windowName))
                         # else:
                         #     saveListDatabase.append(w.windowName)
 
@@ -176,6 +176,7 @@ dc = ImageDraw.Draw(image)
 dc.rectangle([(0, height/5), (width, height/5*2)], fill=(120, 120, 120))
 dc.rectangle([(0, height/5*3), (width, height/5*4)], fill=(120, 120, 120))
 menu = (MenuItem("Show Window", showMainWindow), MenuItem("Exit", end))
+# add item: stop/start tracking?
 icon = pystray.Icon("ApplicationTimeTracker", image,
                     "ApplicationTimeTracker", menu)
 
