@@ -197,7 +197,7 @@ class MainWindow(tk.Tk):
     def viewStats_Window(self, programName):
         root = tk.Tk()
         S = Scrollbar(root)
-        T = Text(root, height=20, width=80)
+        T = Text(root, height=20, width=80,bg="#4a4a4a")
         S.pack(side="right", fill="y")
         T.pack(side="left", fill="y")
         S.config(command=T.yview)
