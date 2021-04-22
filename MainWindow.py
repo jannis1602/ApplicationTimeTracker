@@ -1,5 +1,7 @@
+from tkinter import *
 import tkinter as tk
 from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text
+from tkinter import font as tkfont
 from WindowObject import WindowObject
 import database
 import pygetwindow as gw
@@ -58,7 +60,7 @@ class MainWindow(tk.Tk):
             self.update()
         self.destroy()
 
-    def windowNamesWindow(self):
+    def windowNamesWindow(self):  # TODO change to windowNames_Window + andere
         root = tk.Tk()
         S = Scrollbar(root)
         T = Text(root, height=20, width=80)
@@ -163,26 +165,24 @@ class MainWindow(tk.Tk):
         self.list_frame.destroy()
         self.createListFrame()
 
-    def createWindowFrame(self, master, windowObject):  # TODO WindowObject... # TODO rename
+    # TODO WindowObject... # TODO rename methode
+    def createWindowFrame(self, master, windowObject):
         temp_frame = Frame(
             master=master, height=20, width=200, bg="darkgray")
         temp_frame.pack(side='bottom', padx=5,
                         pady=1, fill="x", expand=False)
-        self.name_label = Label(master=temp_frame,
-                           text=windowObject.getWindowName(),anchor='w', width=15, bg="gray")
-        self.name_label.pack(padx=2, pady=2, side="left")
+        name_label = Label(master=temp_frame,
+                           text=windowObject.getWindowName(), anchor='w', width=15, bg="gray")
+        name_label.pack(padx=2, pady=2, side="left")
 
-        self.name_label.bind("<Enter>", self.on_enter)
-        self.name_label.bind("<Leave>", self.on_leave)
+        # TODO #23 getfont length of string
+
+        if len(windowObject.getWindowName()) > 12:  # nur wenn string zu lang?
+            CreateToolTip(name_label, text=windowObject.getWindowName())
 
         name_label = Label(master=temp_frame,
                            text=windowObject.getTimeString(name=False), width=60, bg="gray")
         name_label.pack(padx=2, pady=2, side="left")
-
-        # void_label = Label(master=temp_frame,
-        #                    text="  "*60, bg="gray")
-        # void_label.pack(padx=2, pady=2, side="left")
-
         # TODO add/edit filterStrings
         # -> new tkinter with Text(new line = new filterString)
 
@@ -193,14 +193,6 @@ class MainWindow(tk.Tk):
         onoff_button = Button(temp_frame, text="on/off",
                               bg="darkgray", command=self.action)       # => change state in database
         onoff_button.pack(padx=2, pady=2, side="right", fill="x")
-
-        # return btn
-
-    def on_enter(self, event):
-        self.name_label.configure(text="test")
-
-    def on_leave(self, enter):
-        self.name_label.configure(text="")
 
     def editFilterStrings(self):
         root = tk.Tk()
@@ -237,3 +229,46 @@ class MainWindow(tk.Tk):
     # windowList.append(WindowObject("Opera"))
     # windowList.append(WindowObject("Visual Studio Code"))
     # MainWindow(windowList)
+
+
+class ToolTip(object):
+
+    def __init__(self, widget):
+        self.widget = widget
+        self.tipwindow = None
+        self.id = None
+        self.x = self.y = 0
+
+    def showtip(self, text):
+        "Display text in tooltip window"
+        self.text = text
+        if self.tipwindow or not self.text:
+            return
+        x, y, cx, cy = self.widget.bbox("insert")
+        x = x + self.widget.winfo_rootx() + 57
+        y = y + cy + self.widget.winfo_rooty() + 27
+        self.tipwindow = tw = Toplevel(self.widget)
+        tw.wm_overrideredirect(1)
+        tw.wm_geometry("+%d+%d" % (x, y))
+        label = Label(tw, text=self.text, justify=LEFT,
+                      background="gray", relief=SOLID, borderwidth=1,
+                      font=("tahoma", "8", "normal"))
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tipwindow
+        self.tipwindow = None
+        if tw:
+            tw.destroy()
+
+
+def CreateToolTip(widget, text):
+    toolTip = ToolTip(widget)
+
+    def enter(event):
+        toolTip.showtip(text)
+
+    def leave(event):
+        toolTip.hidetip()
+    widget.bind('<Enter>', enter)
+    widget.bind('<Leave>', leave)
