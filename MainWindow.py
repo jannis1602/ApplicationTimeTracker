@@ -101,6 +101,7 @@ class MainWindow(tk.Tk):
 
     def hide(self):
         self.withdraw()
+# TODO close all open windows
 
     def createListFrame(self):
         self.list_frame = Frame(master=self)
@@ -110,15 +111,7 @@ class MainWindow(tk.Tk):
         canvas = Canvas(self.list_frame, bg="gray")
         scroll_y = Scrollbar(self.list_frame, orient="vertical",
                              command=canvas.yview)
-        scroll_frame = Frame(canvas, bg="gray")  # blue
-        # for i in range(20):
-        #     Label(scroll_frame, text='label %i' % i).pack()#
-
-        # temp_frame = Frame(
-        #     master=scroll_frame, height=20, width=400, bg="orange")
-        # temp_frame.pack(side='bottom', padx='5',
-        #                 pady='1', fill="x", expand=True)
-
+        scroll_frame = Frame(canvas, bg="gray")
         void_label = Label(master=scroll_frame,
                            text=" "*255, bg="gray")
         void_label.pack(padx=2, pady=2, side="bottom")
@@ -128,6 +121,7 @@ class MainWindow(tk.Tk):
 
         canvas.create_window(0, 0, anchor='nw', window=scroll_frame)
         canvas.update_idletasks()
+        scroll_frame.update()
         canvas.configure(scrollregion=canvas.bbox('all'),  # scrollregion=canvas.bbox('all') #TODO: #20 scrollregion
                          yscrollcommand=scroll_y.set)
         canvas.pack(fill='both', expand=True, side='left')
@@ -169,22 +163,28 @@ class MainWindow(tk.Tk):
         self.list_frame.destroy()
         self.createListFrame()
 
-    def createWindowFrame(self, master, windowObject):  # TODO WindowObject...
+    def createWindowFrame(self, master, windowObject):  # TODO WindowObject... # TODO rename
         temp_frame = Frame(
             master=master, height=20, width=200, bg="darkgray")
         temp_frame.pack(side='bottom', padx=5,
                         pady=1, fill="x", expand=False)
-        name_label = Label(master=temp_frame,
-                           text=windowObject.getWindowName(), bg="gray")
-        name_label.pack(padx=2, pady=2, side="left")
+        self.name_label = Label(master=temp_frame,
+                           text=windowObject.getWindowName(),anchor='w', width=15, bg="gray")
+        self.name_label.pack(padx=2, pady=2, side="left")
+
+        self.name_label.bind("<Enter>", self.on_enter)
+        self.name_label.bind("<Leave>", self.on_leave)
 
         name_label = Label(master=temp_frame,
-                           text=windowObject.getTimeString(name=False), bg="gray")
+                           text=windowObject.getTimeString(name=False), width=60, bg="gray")
         name_label.pack(padx=2, pady=2, side="left")
 
         # void_label = Label(master=temp_frame,
         #                    text="  "*60, bg="gray")
         # void_label.pack(padx=2, pady=2, side="left")
+
+        # TODO add/edit filterStrings
+        # -> new tkinter with Text(new line = new filterString)
 
         remove_button = Button(temp_frame, text="remove",
                                bg="darkgray", command=lambda: self.remove(windowObject))
@@ -195,6 +195,28 @@ class MainWindow(tk.Tk):
         onoff_button.pack(padx=2, pady=2, side="right", fill="x")
 
         # return btn
+
+    def on_enter(self, event):
+        self.name_label.configure(text="test")
+
+    def on_leave(self, enter):
+        self.name_label.configure(text="")
+
+    def editFilterStrings(self):
+        root = tk.Tk()
+        S = Scrollbar(root)
+        T = Text(root, height=20, width=80)
+        S.pack(side="right", fill="y")
+        T.pack(side="left", fill="y")
+        S.config(command=T.yview)
+        T.config(yscrollcommand=S.set)
+        text = ""
+        for s in gw.getAllTitles():
+            if len(s) >= 1:
+                text += s+"\n"
+        T.insert(tk.END, text)
+        T.config(state=tk.DISABLED)
+        root.mainloop()
 
     def action(self):
         print("action")
