@@ -6,7 +6,7 @@ import datetime
 
 class WindowObject:
     windowName = 0
-    state = 1
+    state = True
     # passedTime = 0
 
     def __init__(self, windowName, startTime=0):
