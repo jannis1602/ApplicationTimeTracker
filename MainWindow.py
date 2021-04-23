@@ -86,11 +86,13 @@ class MainWindow(tk.Tk):
         print(name)
         if len(name) > 1 and self.checkForWindowName(name) == False:
             print("add", name, "to Filter")
+            
+            database.add_program_state(name)
+            
             self.windowList.append(WindowObject(name))
             self.string_entry.delete(0, "end")
             self.reload()
             # ---- test ----
-            database.add_program_state(name)
             # database.add_program(name)
             self.updateWindowList()
 
@@ -203,10 +205,10 @@ class MainWindow(tk.Tk):
 
     def switchState(self, button, windowObject):
         if windowObject.state == True:
-            button.configure(text="on")
+            button.configure(text="off")
             windowObject.setState(False)
         elif windowObject.state == False:
-            button.configure(text="off")
+            button.configure(text="on")
             windowObject.setState(True)
         self.updateWindowList()
         # -> update list in apptt...
