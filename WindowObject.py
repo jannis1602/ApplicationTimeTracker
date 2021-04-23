@@ -11,7 +11,7 @@ class WindowObject:
 
     def __init__(self, windowName, startTime=0):
         self.windowName = windowName
-        self.state=database.get_program_state(self.windowName)
+        self.state = database.get_program_state(self.windowName)
         # self.passedTime = startTime
 
     def getWindowName(self):
@@ -40,13 +40,13 @@ class WindowObject:
         return [hh, mm, ss]
 
     def getStateString(self):
-        if self.state == 1:
+        if self.state == True:
             return "on"
         else:
             return "off"
 
     def setState(self, state):
-        self.state =state
+        self.state = state
         database.set_program_state(self.windowName, state)
 
     def getTimeString(self, name=True):
