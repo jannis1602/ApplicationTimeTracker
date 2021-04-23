@@ -6,45 +6,30 @@ import datetime
 import win32gui
 import win32api
 import threading
-import pygetwindow as gw
+import pygetwindow
 from PIL import Image
 from pystray import MenuItem
 from tkinter import Tk, Button, Entry, Label, Scrollbar, Listbox, Frame, Canvas
 from WindowObject import WindowObject
 from MainWindow import MainWindow
 
-# TODO:
-# - Datenbank?
-# - Gui
-###
-
-# test
 global mainWindow
-global mainWindowThread
-##
-
 global windowList
-windowList = []
-windowObjList = []
+global maxIdleTime  # global?
 global running
 running = True
-blacklist = ["NVIDIA GeForce Overlay", "Program Manager",
-             "Microsoft Text Input Application"]  # für später
+maxIdleTime = 2*60  # 120 sec -> 2 min
+saveListDatabase = []  # savelist for database #for later
+
+# TODO change windowName -> programName
+
 print('#' * 50)
 print("Alle aktiven Fenster:")
-for s in gw.getAllTitles():
-    if len(s) >= 1 and blacklist.count(s) == 0:
+for s in pygetwindow.getAllTitles():
+    if len(s) >= 1:
         print(s)
 print('#' * 50)
 
-# global configWindow
-# global frame_configWindowList
-# global entry_addString
-saveFile = "applicationTimeTracker/time.save"
-maxIdleTime = 2*60  # 120 sec -> 2 min
-
-# -------------------
-saveListDatabase = []  # savelist for database #for later
 
 def getIdleTime():  # returns time from last userinput
     return (win32api.GetTickCount() - win32api.GetLastInputInfo()) / 1000.0
@@ -52,33 +37,19 @@ def getIdleTime():  # returns time from last userinput
 
 def loadWindowList():
     global windowList
-    windowList.clear()
-    for s in database.get_all_programs():
+    windowList = []
+    # windowList.clear()
+    # for s in database.get_all_programs():
+    # database.get_all_programs_from_state()
+    for s in database.get_all_programs_from_state():
         windowList.append(WindowObject(s))
-
-
-# def loadList():
-#     import os.path
-#     if os.path.exists(saveFile):
-#         myfile = open(saveFile)
-#         lines = myfile.readlines()
-#         for l in lines:
-#             wobj = WindowObject(l.split('#')[0], int(l.split('#')[1]))
-#             windowList.append(wobj)
-#         myfile.close()
-
-
-def saveList():
-    with open(saveFile, "w") as myfile:
-        for w in windowList:
-            myfile.write("%s\n" % w.getSaveString())
-        myfile.close()
+    # TODO: load from program states database
 
 
 def addWindowName(winName):
     if checkForWindowName(winName) == False:
         windowList.append(WindowObject(winName, 0))
-    saveList()
+# ----> SAVE
 
 
 def removeWindowName(winName):
@@ -86,7 +57,7 @@ def removeWindowName(winName):
         for w in windowList:
             if w.windowName == winName:
                 windowList.remove(w)
-    saveList()
+# ----> SAVE
 
 
 def checkForWindowName(nameString):
@@ -100,94 +71,34 @@ def refresh():
     print("refresh")
 
 
-# def reload():
-#     for wol in windowObjList:
-#         for wo in wol:
-#             wo.destroy()
-    # loadConfigStringList()
-
-
-def checkIfFilterExists(nameString):
-    for w in windowList:
-        if w.windowName.lower() == nameString.lower():
+def checkListForElement(checkList, element, lower=True):
+    for e in checkList:
+        if lower and e.lower() == element.lower():
+            return True
+        elif lower == False and e == element:
             return True
     return False
 
 
 def addStringToFilter(name):
-    if len(name) > 1 and checkIfFilterExists(name) == False:
+    if len(name) > 1 and checkListForElement(windowList, name) == False:
         windowList.append(WindowObject(name))
 
 
-# def addToFilter():
-#     if len(entry_addString.get()) > 1:
-#         print("add", entry_addString.get(), "to Filter")
-#         addWindowName(str(entry_addString.get()))
-#         loadConfigStringList()
-#         entry_addString.delete(0, "end")
-
-
-# def hideConfigWindow():
-#     global configWindow
-#     configWindow.withdraw()
-
-
-# def loadConfigStringList():
-#     for w in windowList:
-#         global frame_configWindowList
-#         windowObjList.append(w.getConfigMenu(frame_configWindowList, 2+windowList.index(w),
-#                              lambda: remove(w.windowName)))
-
-
-# def remove(wname):
-#     print("remove...", wname)
-#     removeWindowName(wname)
-#     reload()
-
-
-# def showConfigWindow():
-#     global configWindow
-#     global frame_configWindowList
-#     global entry_addString
-#     configWindow = Tk()
-#     configWindow.title("ApplicationTimeTracker")
-#     configWindow.geometry('800x400')
-#     frame_configWindowList = Frame(configWindow)
-
-# # MenuBar
-#     menuBar = Frame(configWindow)
-#     button_change = Button(
-#         menuBar, text="Aktive Anwendungen (NoFunktion)", command=refresh)
-#     entry_addString = Entry(menuBar, bd=2, width=40)
-#     button_addString = Button(
-#         menuBar, text="add to Filter", command=addToFilter)
-#     button_reload = Button(
-#         menuBar, text="reload", command=reload)
-#     button_change.grid(row=0, column=0, padx=2)
-#     entry_addString.grid(row=0, column=1, padx=2)
-#     button_addString.grid(row=0, column=2, padx=2)
-#     button_reload.grid(row=0, column=3, padx=2)
-
-#     loadConfigStringList()
-
-#     menuBar.grid(row=0, column=0)
-#     frame_configWindowList.grid(row=1, column=0)
-
-#     configWindow.protocol("WM_DELETE_WINDOW", hideConfigWindow)
-#     configWindow.mainloop()
-
-
-def end():
+def end():  # TODO: rename
     print("EXIT...")
     global running
     running = False
-    # loopThread.join() # ???
-    saveList()
-    # save save-list to database
-    icon.visible = False
-    icon.stop()
+# ----> SAVE -- save save-list to database
+    try:
+        icon.visible = False
+        while icon.visible:
+            pass
+        icon.stop()
+    except:
+        pass
     mainWindow.stopRunning()
-    quit(0)  # or sys.exit(0) ?
+    quit(0)
 
 
 def showMainWindow():
@@ -199,10 +110,8 @@ def showMainWindow():
 
 
 def createMainWindow():
-    # windowList.append(WindowObject("Opera"))
-    # windowList.append(WindowObject("Visual Studio Code"))
-
     global mainWindow
+
     mainWindow = MainWindow(windowList=windowList,
                             updateWindowList=loadWindowList,
                             exitProgram=end)
@@ -210,27 +119,14 @@ def createMainWindow():
         target=mainWindow.createMainWindow(), name="mainWindow-Thread", daemon=True)
     mainWindowThread.start()
 
-# -----------------------sqlite-------------------
-# print('*'*100)
-# if(database.get_time_by_program_date("email", "2021-04-20") == None):
-#     database.add_program("email","2021-04-20",0)
-# database.add_time("email","2021-04-20",5)
-
-# database.delete_by_name("email")
-# print(database.get_times_by_program("email"))
-
-# if(database.get_time_by_program_date("Opera", "2021-04-20") == None):
-#     database.add_program("Opera","2021-04-20",0)
-# print(database.get_times_by_program("Opera"))
-# print(database.get_times_by_program("VScode"))
-# print('*'*100)
-
 # ------------------------------
 
 # database.add_program("Visual Studio Code")
 # database.add_program("Opera")
 
-# MainLoop ------------------------------------------------------------------
+# MainLoop --------------------------------------------
+
+
 def loop():
     icon.visible = True
     lastTime = time.time()
@@ -240,16 +136,22 @@ def loop():
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
                 for w in windowList:
-                    # TODO: #12 alle fenster...
-                    if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
-                        w.addSec()  # TODO: #13 filter2: nach speicherort???
-                        # if saveListDatabase.count(w.windowName) == 1:
-                        # print(saveListDatabase.index(w.windowName))
-                        # else:
-                        #     saveListDatabase.append(w.windowName)
+                    if w.state:
+                        # TODO: #12 alle fenster...
+                        # TODO -> contains or equals?
+                        if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
+                            w.addSec()  # TODO: #13 filter2: nach speicherort???
 
-                        # add window with time to save-list
-            saveList()
+                        # TODO if background tracking is on -> addSec()
+
+
+                            # if saveListDatabase.count(w.windowName) == 1:
+                            #   print(saveListDatabase.index(w.windowName))
+                            # else:
+                            #     saveListDatabase.append(w.windowName)
+
+                            # add window with time to save-list
+# ----> SAVE
             lastTime += 1
         if time.time()-lastTimeMin > 60:
             print("save minute")
@@ -259,29 +161,41 @@ def loop():
 
 
 # if __name__ == '__main__': # test
-print(database.get_all_programs())
 
-for s in database.get_all_programs():
-    windowList.append(WindowObject(s))
 
-# loadList()
+# print(database.get_all_programs())
+loadWindowList()
+
 
 for w in windowList:
     print(w.getTimeString())
 print('*'*50)
 
-# temp: threadList
 # for thread in threading.enumerate():
 #     print(thread.name)
 
-
-# configWindowThread()
-
 # --------------create mainWindow--------------------
-
 # mainWindowThread = threading.Thread(target=createMainWindow)
 # mainWindowThread.start()
 
+# Wiondow on startup
+mainWindowThread = threading.Thread(target=createMainWindow)
+mainWindowThread.start()
+
+
+print("~"*50)
+
+# database.set_program_state("Discord",True)
+# database.delete_program_state("Discord")
+
+# database.add_program_state("Discord")
+print("all programs:", database.get_all_programs_from_state())
+print("active:", database.get_all_active_programs())
+
+for d in database.get_all_programs_from_time():
+    database.add_program_state(d)
+
+# print(database.get_all_active_programs())
 
 # ----------pystray----------
 # image = Image.open("threeLines.png")
@@ -292,10 +206,11 @@ dc = ImageDraw.Draw(image)
 dc.rectangle([(0, height/5), (width, height/5*2)], fill=(120, 120, 120))
 dc.rectangle([(0, height/5*3), (width, height/5*4)], fill=(120, 120, 120))
 menu = (MenuItem("Show Window", showMainWindow), MenuItem("Exit", end))
+# add item: stop/start tracking?
 icon = pystray.Icon("ApplicationTimeTracker", image,
                     "ApplicationTimeTracker", menu)
-# loop
+
 loopThread = threading.Thread(target=loop, name="loop-Thread")
 loopThread.start()
-# start trayIcon
+
 icon.run()

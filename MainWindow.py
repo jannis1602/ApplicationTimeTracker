@@ -1,9 +1,12 @@
 import tkinter as tk
-from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text
+from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text, Toplevel
 from WindowObject import WindowObject
 import database
 import pygetwindow as gw
+import tkinter.messagebox
 
+
+# TODO edit-button for name...
 
 class MainWindow(tk.Tk):
 
@@ -12,10 +15,13 @@ class MainWindow(tk.Tk):
         tk.Tk.__init__(self)
         self.title("ApplicationTimeTracker")
         self.geometry('800x400')
+# TODO icon
         self.resizable(False, False)
         self.running = True
         self.updateWindowList = updateWindowList
         self.exitProgram = exitProgram
+
+        # self.subWindows=[] #TODO immer nur ein window pro art
 
     def createMainWindow(self):
         menu_bar_frame = Frame(
@@ -50,13 +56,14 @@ class MainWindow(tk.Tk):
 
         self.protocol("WM_DELETE_WINDOW", self.hide)
         self.createListFrame()
+        self.after(1, lambda: self.focus_force())
 
         # self.mainloop()  # is blocking
         while self.running:
             self.update()
         self.destroy()
 
-    def windowNamesWindow(self):
+    def windowNamesWindow(self):  # TODO change to windowNames_Window + andere
         root = tk.Tk()
         S = Scrollbar(root)
         T = Text(root, height=20, width=80)
@@ -81,7 +88,8 @@ class MainWindow(tk.Tk):
             self.string_entry.delete(0, "end")
             self.reload()
             # ---- test ----
-            database.add_program(name)
+            database.add_program_state(name)
+            # database.add_program(name)
             self.updateWindowList()
 
     def checkForWindowName(self, nameString):
@@ -99,6 +107,7 @@ class MainWindow(tk.Tk):
 
     def hide(self):
         self.withdraw()
+# TODO close all open windows
 
     def createListFrame(self):
         self.list_frame = Frame(master=self)
@@ -108,15 +117,7 @@ class MainWindow(tk.Tk):
         canvas = Canvas(self.list_frame, bg="gray")
         scroll_y = Scrollbar(self.list_frame, orient="vertical",
                              command=canvas.yview)
-        scroll_frame = Frame(canvas, bg="gray")  # blue
-        # for i in range(20):
-        #     Label(scroll_frame, text='label %i' % i).pack()#
-
-        # temp_frame = Frame(
-        #     master=scroll_frame, height=20, width=400, bg="orange")
-        # temp_frame.pack(side='bottom', padx='5',
-        #                 pady='1', fill="x", expand=True)
-
+        scroll_frame = Frame(canvas, bg="gray")
         void_label = Label(master=scroll_frame,
                            text=" "*255, bg="gray")
         void_label.pack(padx=2, pady=2, side="bottom")
@@ -126,19 +127,28 @@ class MainWindow(tk.Tk):
 
         canvas.create_window(0, 0, anchor='nw', window=scroll_frame)
         canvas.update_idletasks()
+        scroll_frame.update()
         canvas.configure(scrollregion=canvas.bbox('all'),  # scrollregion=canvas.bbox('all') #TODO: #20 scrollregion
                          yscrollcommand=scroll_y.set)
         canvas.pack(fill='both', expand=True, side='left')
         scroll_y.pack(fill='y', side='right')
 
-        # scroll_frame.pack(fill='both', expand=True, side='left') # -> scrollbar funktioniert dann nicht!
-
-        # self.list_frame = Frame(
-        #     master=root, height=20, width=640, bg="gray")
-        # self.list_frame.pack(side='left', padx='5', pady='5')
-
     def remove(self, windowObject):
-        self.windowList.remove(windowObject)
+        # delete-request
+        result = tkinter.messagebox.askquestion(
+            "Delete", "Sure?", icon='warning')
+        if result == 'yes':
+            pass
+        else:
+            return
+        try:  # TODO: verbessern!!!
+            self.windowList.remove(windowObject)
+        except:
+            print("deleted by name")
+            for w in self.windowList:
+                if w.getWindowName() == windowObject.getWindowName():
+                    self.windowList.remove(w)
+
         self.list_frame.destroy()
         self.createListFrame()
         # ---- test ----
@@ -149,36 +159,99 @@ class MainWindow(tk.Tk):
         self.list_frame.destroy()
         self.createListFrame()
 
-    def add(self, name):
-        self.windowList.append(name)
+    def add(self, windowObject):
+        self.windowList.append(windowObject)
         self.list_frame.destroy()
         self.createListFrame()
 
-    def createWindowFrame(self, master, windowObject):  # TODO WindowObject...
+    # TODO WindowObject... # TODO rename methode
+    def createWindowFrame(self, master, windowObject):
+        # TODO rename temp_frame
         temp_frame = Frame(
             master=master, height=20, width=200, bg="darkgray")
         temp_frame.pack(side='bottom', padx=5,
                         pady=1, fill="x", expand=False)
-
-# TODO: add on/off Button
-
         name_label = Label(master=temp_frame,
-                           text=windowObject.getWindowName(), bg="gray")
+                           text=windowObject.getWindowName(), anchor='w', width=20, bg="gray")
         name_label.pack(padx=2, pady=2, side="left")
 
-        name_label = Label(master=temp_frame,
-                           text=windowObject.getTimeString(name=False), bg="gray")
-        name_label.pack(padx=2, pady=2, side="left")
+        # TODO #23 getfont length of string
 
-        # void_label = Label(master=temp_frame,
-        #                    text="  "*60, bg="gray")
-        # void_label.pack(padx=2, pady=2, side="left")
+        if len(windowObject.getWindowName()) > 12:  # nur wenn string zu lang?
+            CreateToolTip(name_label, text=windowObject.getWindowName())
 
-        btn = Button(temp_frame, text="remove",
-                     bg="darkgray", command=lambda: self.remove(windowObject))
-        btn.pack(padx=2, pady=2, side="right", fill="x")
+        # TODO multiple lables for better formatting
+        time_label = Label(master=temp_frame,
+                           text=windowObject.getTimeString(name=False), width=64, bg="gray")
+        time_label.pack(padx=2, pady=2, side="left")
+        # TODO add/edit filterStrings
+        # -> new tkinter with Text(new line = new filterString)
 
-        # return btn
+        remove_button = Button(temp_frame, text="remove",
+                               bg="darkgray", command=lambda: self.remove(windowObject))
+        remove_button.pack(padx=2, pady=2, side="right", fill="x")
+    # On/Off button
+        onoff_button = Button(temp_frame, text=windowObject.getStateString(),
+                              bg="darkgray", command=lambda: self.switchState(onoff_button, windowObject))       # => change state in database
+        onoff_button.pack(padx=2, pady=2, side="right", fill="x")
+    # statistics-Button
+        statistics_button = Button(
+            master=temp_frame, text="statistics", bg="darkgray", command=lambda: self.viewStats_Window(windowObject.getWindowName()))
+        statistics_button.pack(padx=2, pady=2, side="right", fill="x")
+
+    def switchState(self, button, windowObject):
+        if windowObject.state == True:
+            button.configure(text="on")
+            windowObject.setState(False)
+        elif windowObject.state == False:
+            button.configure(text="off")
+            windowObject.setState(True)
+        self.updateWindowList()
+        # -> update list in apptt...
+
+    def viewStats_Window(self, programName):
+        root = tk.Tk()
+        S = Scrollbar(root)
+        T = Text(root, height=20, width=80, bg="#4a4a4a")
+        S.pack(side="right", fill="y")
+        T.pack(side="left", fill="y")
+        S.config(command=T.yview)
+        T.config(yscrollcommand=S.set)
+
+        # ---- stats to text ----
+        text = ""
+        for d in database.get_times_by_program(programName):
+            text += str(d[1])+" - "+self.convertToTimeString(d[2])+"\n"
+
+        # print(database.get_times_by_program(programName))
+
+        T.insert(tk.END, text)
+        T.config(state=tk.DISABLED)
+        root.mainloop()
+
+    def convertToTimeString(self, time):
+        hh = int(time/60/60)
+        mm = int(time/60)-60*hh
+        ss = int(time)-60*60*hh-60*mm
+        timeString = str(str(hh) +
+                         " Stunden " + str(mm) + " Minuten " + str(ss) + " Sekunden")
+        return timeString
+
+    def editFilterStrings(self):
+        root = tk.Tk()
+        S = Scrollbar(root)
+        T = Text(root, height=20, width=80)
+        S.pack(side="right", fill="y")
+        T.pack(side="left", fill="y")
+        S.config(command=T.yview)
+        T.config(yscrollcommand=S.set)
+        text = ""
+        for s in gw.getAllTitles():
+            if len(s) >= 1:
+                text += s+"\n"
+        T.insert(tk.END, text)
+        # T.config(state=tk.DISABLED)
+        root.mainloop()
 
     def action(self):
         print("action")
@@ -199,3 +272,50 @@ class MainWindow(tk.Tk):
     # windowList.append(WindowObject("Opera"))
     # windowList.append(WindowObject("Visual Studio Code"))
     # MainWindow(windowList)
+
+
+# ----------- ToolTip -----------
+# TODO extra file
+
+class ToolTip(object):
+
+    def __init__(self, widget):
+        self.widget = widget
+        self.tipwindow = None
+        self.id = None
+        self.x = self.y = 0
+
+    def showtip(self, text):
+        "Display text in tooltip window"
+        self.text = text
+        if self.tipwindow or not self.text:
+            return
+        x, y, cx, cy = self.widget.bbox("insert")
+        x = x + self.widget.winfo_rootx() + 57
+        y = y + cy + self.widget.winfo_rooty() + 27
+        self.tipwindow = tw = Toplevel(self.widget)
+        tw.wm_overrideredirect(1)
+        tw.wm_geometry("+%d+%d" % (x, y))
+        label = Label(tw, text=self.text, justify="left",
+                      background="gray", relief="solid", borderwidth=1,
+                      font=("roboto", "10", "normal"))
+        label.pack(ipadx=1)
+        cx = cx
+
+    def hidetip(self):
+        tw = self.tipwindow
+        self.tipwindow = None
+        if tw:
+            tw.destroy()
+
+
+def CreateToolTip(widget, text):
+    toolTip = ToolTip(widget)
+
+    def enter(event):
+        toolTip.showtip(text)
+
+    def leave(event):
+        toolTip.hidetip()
+    widget.bind('<Enter>', enter)
+    widget.bind('<Leave>', leave)

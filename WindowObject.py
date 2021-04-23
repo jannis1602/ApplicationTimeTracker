@@ -3,23 +3,27 @@ from tkinter import Button
 import database
 import datetime
 
+
 class WindowObject:
     windowName = 0
-    passedTime = 0
+    state = True
+    # passedTime = 0
 
     def __init__(self, windowName, startTime=0):
         self.windowName = windowName
-        self.passedTime = startTime
+        self.state=database.get_program_state(self.windowName)
+        # self.passedTime = startTime
 
     def getWindowName(self):
         return self.windowName
 
-    def getTimeSeconds(self):
-        return self.passedTime
+    # def getTimeSeconds(self):
+    #     return self.passedTime
 
     def addSec(self):
-        self.passedTime += 1
-        database.add_time_if_name_exists(self.windowName,datetime.datetime.now().date(),1)
+        # self.passedTime += 1
+        database.add_time_if_name_exists(
+            self.windowName, datetime.datetime.now().date(), 1)
         print(self.getTimeString())
 
     # def getTime(self):
@@ -29,22 +33,34 @@ class WindowObject:
     #     return [hh, mm, ss]
 
     def getTime(self):
-        fulltime=self.getFullTime()
+        fulltime = self.getFullTime()
         hh = int(fulltime/60/60)
         mm = int(fulltime/60)-60*hh
         ss = int(fulltime)-60*60*hh-60*mm
         return [hh, mm, ss]
 
+    def getStateString(self):
+        if self.state == 1:
+            return "on"
+        else:
+            return "off"
+
+    def setState(self, state):
+        self.state =state
+        database.set_program_state(self.windowName, state)
+
     def getTimeString(self, name=True):
         timeString = str(self.windowName + " >>> Vergangene Zeit: " + str(self.getTime()[0]) +
-                         " Stunden " + str(self.getTime()[1]) + " Minuten " + str(self.getTime()[2]) + " Sekunden")
+                         "h " + str(self.getTime()[1]) + "m " + str(self.getTime()[2]) + "s")
+        # timeString = str(self.windowName + " >>> Vergangene Zeit: " + str(self.getTime()[0]) +
+        #                  " Stunden " + str(self.getTime()[1]) + " Minuten " + str(self.getTime()[2]) + " Sekunden")
         if name == False:
             timeString = str("Vergangene Zeit: " + str(self.getTime()[0]) +
-                             " Stunden " + str(self.getTime()[1]) + " Minuten " + str(self.getTime()[2]) + " Sekunden")
+                             "h " + str(self.getTime()[1]) + "m " + str(self.getTime()[2]) + "s")
         return timeString
 
-    def getSaveString(self):
-        return self.windowName+'#'+str(self.passedTime)
+    # def getSaveString(self):
+    #     return self.windowName+'#'+str(self.passedTime)
 
     def getFullTime(self):
         return database.get_fulltime_by_program(self.windowName)
