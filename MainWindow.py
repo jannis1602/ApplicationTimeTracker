@@ -197,12 +197,14 @@ class MainWindow(tk.Tk):
         statistics_button.pack(padx=2, pady=2, side="right", fill="x")
 
     def switchState(self, button, windowObject):
-        if button.cget("text") == "on":
+        if windowObject.state == True:
             button.configure(text="off")
             windowObject.setState(False)
-        elif button.cget("text") == "off":
+        elif windowObject.state == False:
             button.configure(text="on")
             windowObject.setState(True)
+        self.updateWindowList()
+        # -> update list in apptt...
 
     def viewStats_Window(self, programName):
         root = tk.Tk()
