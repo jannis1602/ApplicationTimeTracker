@@ -41,7 +41,14 @@ class WindowObject:
     def getStateString(self):
         if self.state == 1:
             return "on"
-        else: return "off"
+        else:
+            return "off"
+
+    def setState(self, state):
+        if state == True:
+            state = 1
+        elif state == False:
+            state = 0
 
     def getTimeString(self, name=True):
         timeString = str(self.windowName + " >>> Vergangene Zeit: " + str(self.getTime()[0]) +

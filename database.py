@@ -14,14 +14,19 @@ c = conn.cursor()
 
 # TODO config if filter equals or contains
 
+# delete Table:
+# with conn:
+#     c.execute("DROP TABLE program_state")
+
 try:
-    c.execute("SELECT * FROM program_state").fetchone()
-except:
     with conn:
-        c.execute("""CREATE TABLE program_state(
-                    name text,
-                    state text
-                    )""")
+        c.execute("SELECT * FROM program_state").fetchone()
+except:  # with conn: ?
+    with conn:
+        c.execute("""CREATE TABLE program_state(    
+                        name text,
+                        state integer
+                        )""")
 
 # with conn:        # for later     # background state per filter?
 #     c.execute("""CREATE TABLE program_filter(
@@ -39,13 +44,15 @@ except:
 #                 )""")
 
 try:
-    c.execute("SELECT * FROM program_times").fetchone()
+    with conn:
+        c.execute("SELECT * FROM program_times").fetchone()
 except:
-    c.execute("""CREATE TABLE program_times(
-                name text,
-                date text,
-                time integer
-                )""")
+    with conn:
+        c.execute("""CREATE TABLE program_times(
+                    name text,
+                    date text,
+                    time integer
+                    )""")
 
 # Rename table:
 # with conn:
@@ -58,31 +65,52 @@ except:
 # ---------- program_state - database ----------
 
 
+def get_program_state(name):
+    with conn:
+        c.execute("SELECT * FROM program_state WHERE name=:name",
+                  {"name": name})
+    return c.fetchone()
+
+
 def add_program_state(name):
-    with conn:
-        c.execute(
-            "INSERT INTO program_state VALUES (:name,:state)", {"name": name, "state": 1})
+    if get_program_state(name) == None:
+        with conn:
+            c.execute(
+                "INSERT INTO program_state VALUES (:name,:state)", {"name": name, "state": 1})
 
 
-def get_all_programs():
+# add_program_state("Opera")
+
+def delete_program_state(name):
     with conn:
-        c.execute("SELEKT * FROM program_state")
-        return c.fetchall
+        c.execute("DELETE FROM program_state WHERE name=:name", {"name": name})
+
+
+def get_all_programs_from_state():
+    with conn:
+        programs = []
+        c.execute("SELECT * FROM program_state")
+        for p in c.fetchall():
+                programs.append(p[0])
+    return programs
 
 
 def get_all_active_programs():
     with conn:
-        c.execute("SELEKT * FROM program_state WHERE state=1")
-        return c.fetchall
+        c.execute("SELECT * FROM program_state  WHERE state=1")
+        programs = []
+        for e in c.fetchall():
+            programs.append(e[0])  
+    return programs
 
 
 def get_all_inactive_programs():
     with conn:
         c.execute("SELEKT * FROM program_state WHERE state=0")
-        return c.fetchall
+    return c.fetchall()
 
 
-def change_program_state(name, state):
+def set_program_state(name, state):
     if state == True:
         with conn:
             c.execute(
@@ -101,14 +129,14 @@ def get_all():
         return c.fetchall()
 
 
-# def get_all_programs(): # get all from program_times
-#     with conn:
-#         programs = []
-#         c.execute("SELECT * FROM program_times")
-#         for p in c.fetchall():
-#             if programs.count(p[0]) == 0:
-#                 programs.append(p[0])
-#     return programs
+def get_all_programs():  # get all from program_times      # TODO remove
+    with conn:
+        programs = []
+        c.execute("SELECT * FROM program_times")
+        for p in c.fetchall():
+            if programs.count(p[0]) == 0:
+                programs.append(p[0])
+    return programs
 
 
 def add_program(name, date=datetime.datetime.now().date(), time=0):

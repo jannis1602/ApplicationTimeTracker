@@ -156,6 +156,8 @@ def loop():
 
 
 # if __name__ == '__main__': # test
+
+
 print(database.get_all_programs())
 loadWindowList()
 
@@ -175,7 +177,19 @@ print('*'*50)
 mainWindowThread = threading.Thread(target=createMainWindow)
 mainWindowThread.start()
 
-# print(database.get_all())
+
+print("~"*50)
+
+database.set_program_state("Discord",True)
+
+database.add_program_state("Discord")
+print("all programs:",database.get_all_programs_from_state())
+print("active:",database.get_all_active_programs())
+
+for d in database.get_all_programs():
+    database.add_program_state(d)
+
+# print(database.get_all_active_programs())
 
 # ----------pystray----------
 # image = Image.open("threeLines.png")
