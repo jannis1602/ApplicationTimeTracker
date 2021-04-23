@@ -14,11 +14,14 @@ c = conn.cursor()
 
 # TODO config if filter equals or contains
 
-# with conn:        
-#     c.execute("""CREATE TABLE program_state(
-#                 name text,
-#                 state text
-#                 )""")
+try:
+    c.execute("SELECT * FROM program_state").fetchone()
+except:
+    with conn:
+        c.execute("""CREATE TABLE program_state(
+                    name text,
+                    state text
+                    )""")
 
 # with conn:        # for later     # background state per filter?
 #     c.execute("""CREATE TABLE program_filter(
@@ -46,11 +49,51 @@ except:
 
 # Rename table:
 # with conn:
-#     c.execute("ALTER TABLE programTimes RENAME TO program_times")                
+#     c.execute("ALTER TABLE programTimes RENAME TO program_times")
 
 # with conn:
 #     c.execute("SELECT * FROM program_times")
 #     print(c.fetchall())
+
+# ---------- program_state - database ----------
+
+
+def add_program_state(name):
+    with conn:
+        c.execute(
+            "INSERT INTO program_state VALUES (:name,:state)", {"name": name, "state": 1})
+
+
+def get_all_programs():
+    with conn:
+        c.execute("SELEKT * FROM program_state")
+        return c.fetchall
+
+
+def get_all_active_programs():
+    with conn:
+        c.execute("SELEKT * FROM program_state WHERE state=1")
+        return c.fetchall
+
+
+def get_all_inactive_programs():
+    with conn:
+        c.execute("SELEKT * FROM program_state WHERE state=0")
+        return c.fetchall
+
+
+def change_program_state(name, state):
+    if state == True:
+        with conn:
+            c.execute(
+                "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state})
+    elif state == False:
+        with conn:
+            c.execute(
+                "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state})
+
+
+# ---------- program_times - database ----------
 
 def get_all():
     with conn:
@@ -58,14 +101,14 @@ def get_all():
         return c.fetchall()
 
 
-def get_all_programs():
-    with conn:
-        programs = []
-        c.execute("SELECT * FROM program_times")
-        for p in c.fetchall():
-            if programs.count(p[0]) == 0:
-                programs.append(p[0])
-    return programs
+# def get_all_programs(): # get all from program_times
+#     with conn:
+#         programs = []
+#         c.execute("SELECT * FROM program_times")
+#         for p in c.fetchall():
+#             if programs.count(p[0]) == 0:
+#                 programs.append(p[0])
+#     return programs
 
 
 def add_program(name, date=datetime.datetime.now().date(), time=0):
