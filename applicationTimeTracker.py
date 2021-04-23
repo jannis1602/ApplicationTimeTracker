@@ -21,7 +21,7 @@ running = True
 maxIdleTime = 2*60  # 120 sec -> 2 min
 saveListDatabase = []  # savelist for database #for later
 
-#TODO: database for active windows - change status on/off...
+# TODO: database for active windows - change status on/off...
 
 
 # TODO change windowName -> programName
@@ -43,7 +43,9 @@ def loadWindowList():
     global windowList
     windowList = []
     # windowList.clear()
-    for s in database.get_all_programs():
+    # for s in database.get_all_programs():
+    # database.get_all_programs_from_state()
+    for s in database.get_all_programs_from_state():
         windowList.append(WindowObject(s))
     # TODO: load from program states database
 
@@ -113,6 +115,7 @@ def showMainWindow():
 
 def createMainWindow():
     global mainWindow
+
     mainWindow = MainWindow(windowList=windowList,
                             updateWindowList=loadWindowList,
                             exitProgram=end)
@@ -137,16 +140,17 @@ def loop():
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
                 for w in windowList:
-                    # TODO: #12 alle fenster...
-                    # TODO -> contains or equals?
-                    if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
-                        w.addSec()  # TODO: #13 filter2: nach speicherort???
-                        # if saveListDatabase.count(w.windowName) == 1:
-                        #   print(saveListDatabase.index(w.windowName))
-                        # else:
-                        #     saveListDatabase.append(w.windowName)
+                    if w.state:
+                        # TODO: #12 alle fenster...
+                        # TODO -> contains or equals?
+                        if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
+                            w.addSec()  # TODO: #13 filter2: nach speicherort???
+                            # if saveListDatabase.count(w.windowName) == 1:
+                            #   print(saveListDatabase.index(w.windowName))
+                            # else:
+                            #     saveListDatabase.append(w.windowName)
 
-                        # add window with time to save-list
+                            # add window with time to save-list
 # ----> SAVE
             lastTime += 1
         if time.time()-lastTimeMin > 60:
@@ -159,7 +163,7 @@ def loop():
 # if __name__ == '__main__': # test
 
 
-print(database.get_all_programs())
+# print(database.get_all_programs())
 loadWindowList()
 
 
@@ -185,10 +189,10 @@ print("~"*50)
 # database.delete_program_state("Discord")
 
 # database.add_program_state("Discord")
-print("all programs:",database.get_all_programs_from_state())
-print("active:",database.get_all_active_programs())
+print("all programs:", database.get_all_programs_from_state())
+print("active:", database.get_all_active_programs())
 
-for d in database.get_all_programs():
+for d in database.get_all_programs_from_time():
     database.add_program_state(d)
 
 # print(database.get_all_active_programs())
