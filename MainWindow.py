@@ -6,6 +6,8 @@ import pygetwindow as gw
 import tkinter.messagebox
 
 
+# TODO edit-button for name...
+
 class MainWindow(tk.Tk):
 
     def __init__(self, windowList, updateWindowList, exitProgram):
@@ -199,10 +201,10 @@ class MainWindow(tk.Tk):
 
     def switchState(self, button, windowObject):
         if windowObject.state == True:
-            button.configure(text="off")
+            button.configure(text="on")
             windowObject.setState(False)
         elif windowObject.state == False:
-            button.configure(text="on")
+            button.configure(text="off")
             windowObject.setState(True)
         self.updateWindowList()
         # -> update list in apptt...
