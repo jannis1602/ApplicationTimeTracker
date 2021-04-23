@@ -71,11 +71,11 @@ def get_program_state(name):
     with conn:
         c.execute("SELECT * FROM program_state WHERE name=:name",
                   {"name": name})
-    print(c.fetchall())
-    # if len(c.fetchone()) == 2:
-    #     return c.fetchone()[1]
-    # else:
-    #     return None
+        temp = c.fetchone()
+    if temp == None:
+        return None
+    else:
+        return temp[1]
 
 
 def add_program_state(name):
@@ -85,19 +85,19 @@ def add_program_state(name):
                 "INSERT INTO program_state VALUES (:name,:state)", {"name": name, "state": 1})
 
 
-# add_program_state("Opera")
-
 def delete_program_state(name):
     with conn:
         c.execute("DELETE FROM program_state WHERE name=:name", {"name": name})
 
 
 def get_all_programs_from_state():
+    lock.acquire(True)
     with conn:
         programs = []
         c.execute("SELECT * FROM program_state")
         for p in c.fetchall():
             programs.append(p[0])
+    lock.release()
     return programs
 
 
