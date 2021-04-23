@@ -64,7 +64,9 @@ class MainWindow(tk.Tk):
         self.destroy()
 
     def windowNamesWindow(self):  # TODO change to windowNames_Window + andere
+        # TODO linewrap!!!
         root = tk.Tk()
+        root.title("ApplicationTimeTracker - all window names")
         S = Scrollbar(root)
         T = Text(root, height=20, width=80)
         S.pack(side="right", fill="y")
