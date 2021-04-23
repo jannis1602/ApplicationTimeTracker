@@ -34,8 +34,11 @@ except:
     with conn:
         c.execute("""CREATE TABLE program_state(    
                         name text,
-                        state integer
+                        state integer       
                         )""")
+                        
+
+# TODO program_state add bg_tracking integer
 
 # with conn:        # for later     # background state per filter?
 #     c.execute("""CREATE TABLE program_filter(
