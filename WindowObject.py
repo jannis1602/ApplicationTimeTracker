@@ -46,12 +46,8 @@ class WindowObject:
             return "off"
 
     def setState(self, state):
-        if state == True:
-            state = 1
-            database.set_program_state(self.windowName, 1)
-        elif state == False:
-            state = 0
-            database.set_program_state(self.windowName, 0)
+        self.state =state
+        database.set_program_state(self.windowName, state)
 
     def getTimeString(self, name=True):
         timeString = str(self.windowName + " >>> Vergangene Zeit: " + str(self.getTime()[0]) +
