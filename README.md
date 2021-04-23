@@ -1,2 +1,3 @@
 # ApplicationTimeTracker
- tracks the time spent on different programs
+Tracks the time spent on different programs.
+to start the program run applicationTimetracker.py
