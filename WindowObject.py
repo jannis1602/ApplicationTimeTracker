@@ -7,20 +7,21 @@ import datetime
 class WindowObject:
     windowName = 0
     state = 1
-    passedTime = 0
+    # passedTime = 0
 
     def __init__(self, windowName, startTime=0):
         self.windowName = windowName
-        self.passedTime = startTime
+        self.state=database.get_program_state(self.windowName)
+        # self.passedTime = startTime
 
     def getWindowName(self):
         return self.windowName
 
-    def getTimeSeconds(self):
-        return self.passedTime
+    # def getTimeSeconds(self):
+    #     return self.passedTime
 
     def addSec(self):
-        self.passedTime += 1
+        # self.passedTime += 1
         database.add_time_if_name_exists(
             self.windowName, datetime.datetime.now().date(), 1)
         print(self.getTimeString())
@@ -47,8 +48,10 @@ class WindowObject:
     def setState(self, state):
         if state == True:
             state = 1
+            database.set_program_state(self.windowName, 1)
         elif state == False:
             state = 0
+            database.set_program_state(self.windowName, 0)
 
     def getTimeString(self, name=True):
         timeString = str(self.windowName + " >>> Vergangene Zeit: " + str(self.getTime()[0]) +
@@ -60,8 +63,8 @@ class WindowObject:
                              "h " + str(self.getTime()[1]) + "m " + str(self.getTime()[2]) + "s")
         return timeString
 
-    def getSaveString(self):
-        return self.windowName+'#'+str(self.passedTime)
+    # def getSaveString(self):
+    #     return self.windowName+'#'+str(self.passedTime)
 
     def getFullTime(self):
         return database.get_fulltime_by_program(self.windowName)
