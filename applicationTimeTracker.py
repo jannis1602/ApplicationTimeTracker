@@ -6,7 +6,7 @@ import datetime
 import win32gui
 import win32api
 import threading
-import pygetwindow as gw
+import pygetwindow
 from PIL import Image
 from pystray import MenuItem
 from tkinter import Tk, Button, Entry, Label, Scrollbar, Listbox, Frame, Canvas
@@ -21,15 +21,11 @@ running = True
 maxIdleTime = 2*60  # 120 sec -> 2 min
 saveListDatabase = []  # savelist for database #for later
 
-# TODO: database for active windows - change status on/off...
-
-
 # TODO change windowName -> programName
-
 
 print('#' * 50)
 print("Alle aktiven Fenster:")
-for s in gw.getAllTitles():
+for s in pygetwindow.getAllTitles():
     if len(s) >= 1:
         print(s)
 print('#' * 50)
@@ -145,6 +141,10 @@ def loop():
                         # TODO -> contains or equals?
                         if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
                             w.addSec()  # TODO: #13 filter2: nach speicherort???
+
+                        # TODO if background tracking is on -> addSec()
+
+
                             # if saveListDatabase.count(w.windowName) == 1:
                             #   print(saveListDatabase.index(w.windowName))
                             # else:
