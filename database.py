@@ -11,14 +11,13 @@ import threading
 
 # TODO files in ApplicationTimeTracker/data/...
 
+# TODO config if filter equals or contains
+
 conn = sqlite3.connect("ApplicationTimeTracker/data.db",
                        check_same_thread=False)
 c = conn.cursor()
 
 lock = threading.Lock()
-
-
-# TODO config if filter equals or contains
 
 # delete Table:
 # with conn:
