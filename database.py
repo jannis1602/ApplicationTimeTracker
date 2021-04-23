@@ -137,7 +137,7 @@ def get_all():
         return c.fetchall()
 
 
-def get_all_programs():  # get all from program_times      # TODO remove
+def get_all_programs_from_time():  # get all from program_times      # TODO remove
     with conn:
         programs = []
         c.execute("SELECT * FROM program_times")
@@ -168,7 +168,7 @@ def add_time(name, date, time):
 def add_time_if_name_exists(name, date, time):
     with conn:
         # TODO replace get times durch program/config database
-        if len(get_times_by_program(name)) >= 1 and get_time_by_program_date(name=name, date=date) == None:
+        if not get_program_state(name) == None and get_time_by_program_date(name=name, date=date) == None:
             add_program(name, date)
         c.execute(
             "UPDATE program_times SET time=time + :time WHERE date=:date AND name=:name", {"name": name, "date": date,  "time": time})
