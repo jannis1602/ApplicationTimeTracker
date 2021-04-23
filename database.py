@@ -7,6 +7,10 @@ import threading
 
 # TODO settings database
 
+# TODO #24 (data_times.db + data_config.db + settings.json)
+
+# TODO files in ApplicationTimeTracker/data/...
+
 conn = sqlite3.connect("ApplicationTimeTracker/data.db",
                        check_same_thread=False)
 c = conn.cursor()
@@ -20,10 +24,14 @@ lock = threading.Lock()
 # with conn:
 #     c.execute("DROP TABLE program_state")
 
+# Rename table:
+# with conn:
+#     c.execute("ALTER TABLE programTimes RENAME TO program_times")
+
 try:
     with conn:
         c.execute("SELECT * FROM program_state").fetchone()
-except:  # with conn: ?
+except:
     with conn:
         c.execute("""CREATE TABLE program_state(    
                         name text,
@@ -55,14 +63,6 @@ except:
                     date text,
                     time integer
                     )""")
-
-# Rename table:
-# with conn:
-#     c.execute("ALTER TABLE programTimes RENAME TO program_times")
-
-# with conn:
-#     c.execute("SELECT * FROM program_times")
-#     print(c.fetchall())
 
 # ---------- program_state - database ----------
 
