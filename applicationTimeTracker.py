@@ -45,6 +45,7 @@ def loadWindowList():
     # windowList.clear()
     for s in database.get_all_programs():
         windowList.append(WindowObject(s))
+    # TODO: load from program states database
 
 
 def addWindowName(winName):
@@ -180,9 +181,10 @@ mainWindowThread.start()
 
 print("~"*50)
 
-database.set_program_state("Discord",True)
+# database.set_program_state("Discord",True)
+# database.delete_program_state("Discord")
 
-database.add_program_state("Discord")
+# database.add_program_state("Discord")
 print("all programs:",database.get_all_programs_from_state())
 print("active:",database.get_all_active_programs())
 
