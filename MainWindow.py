@@ -86,7 +86,8 @@ class MainWindow(tk.Tk):
             self.string_entry.delete(0, "end")
             self.reload()
             # ---- test ----
-            database.add_program(name)
+            database.add_program_state(name)
+            # database.add_program(name)
             self.updateWindowList()
 
     def checkForWindowName(self, nameString):
