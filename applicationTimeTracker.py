@@ -22,6 +22,7 @@ maxIdleTime = 2*60  # 120 sec -> 2 min
 saveListDatabase = []  # savelist for database #for later
 
 # TODO change windowName -> programName
+# 
 
 print('#' * 50)
 print("Alle aktiven Fenster:")
