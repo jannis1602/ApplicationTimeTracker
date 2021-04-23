@@ -6,6 +6,7 @@ import datetime
 
 class WindowObject:
     windowName = 0
+    state = 1
     passedTime = 0
 
     def __init__(self, windowName, startTime=0):
@@ -36,6 +37,11 @@ class WindowObject:
         mm = int(fulltime/60)-60*hh
         ss = int(fulltime)-60*60*hh-60*mm
         return [hh, mm, ss]
+
+    def getStateString(self):
+        if self.state == 1:
+            return "on"
+        else: return "off"
 
     def getTimeString(self, name=True):
         timeString = str(self.windowName + " >>> Vergangene Zeit: " + str(self.getTime()[0]) +
