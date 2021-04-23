@@ -188,13 +188,21 @@ class MainWindow(tk.Tk):
                                bg="darkgray", command=lambda: self.remove(windowObject))
         remove_button.pack(padx=2, pady=2, side="right", fill="x")
     # On/Off button
-        onoff_button = Button(temp_frame, text="on/off",
-                              bg="darkgray", command=self.action)       # => change state in database
+        onoff_button = Button(temp_frame, text=windowObject.getStateString(),
+                              bg="darkgray", command=lambda: self.switchState(onoff_button, windowObject))       # => change state in database
         onoff_button.pack(padx=2, pady=2, side="right", fill="x")
     # statistics-Button
         statistics_button = Button(
             master=temp_frame, text="statistics", bg="darkgray", command=lambda: self.viewStats_Window(windowObject.getWindowName()))
         statistics_button.pack(padx=2, pady=2, side="right", fill="x")
+
+    def switchState(self, button, windowObject):
+        if button.cget("text") == "on":
+            button.configure(text="off")
+            windowObject.setState(False)
+        elif button.cget("text") == "off":
+            button.configure(text="on")
+            windowObject.setState(True)
 
     def viewStats_Window(self, programName):
         root = tk.Tk()
