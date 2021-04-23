@@ -1,6 +1,6 @@
 import sqlite3
 import datetime
-
+import threading
 # TODO database for all programs: MainName/Title - status(on/off) - filterStrings - config: count in background
 
 # TODO rename programs to programTimes...
@@ -10,6 +10,8 @@ import datetime
 conn = sqlite3.connect("ApplicationTimeTracker/data.db",
                        check_same_thread=False)
 c = conn.cursor()
+
+lock = threading.Lock()
 
 
 # TODO config if filter equals or contains
@@ -69,7 +71,11 @@ def get_program_state(name):
     with conn:
         c.execute("SELECT * FROM program_state WHERE name=:name",
                   {"name": name})
-    return c.fetchone()
+    print(c.fetchall())
+    # if len(c.fetchone()) == 2:
+    #     return c.fetchone()[1]
+    # else:
+    #     return None
 
 
 def add_program_state(name):
@@ -91,16 +97,18 @@ def get_all_programs_from_state():
         programs = []
         c.execute("SELECT * FROM program_state")
         for p in c.fetchall():
-                programs.append(p[0])
+            programs.append(p[0])
     return programs
 
 
 def get_all_active_programs():
+    lock.acquire(True)
     with conn:
         c.execute("SELECT * FROM program_state  WHERE state=1")
         programs = []
         for e in c.fetchall():
-            programs.append(e[0])  
+            programs.append(e[0])
+    lock.release()
     return programs
 
 
@@ -181,12 +189,14 @@ def get_times_by_program(name):
 
 
 def get_fulltime_by_program(name):
+    lock.acquire(True)
     with conn:
         c.execute("SELECT * FROM program_times WHERE name=:name",
                   {"name": name})
         fulltime = 0
         for day in c.fetchall():
             fulltime += day[2]
+        lock.release()
         return fulltime
 
 
