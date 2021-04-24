@@ -1,10 +1,11 @@
 import json
+import os.path
 
 file = "ApplicationTimeTracker/settings.json"
 
 # TODO add settings
 
-# TODO idle-time --- window x y --- (sql-settings) --- filter-queue?
+# TODO idle-time --- window x y --- (sql-settings) --- filter-queue?    
 
 
 def save_settings():
@@ -13,6 +14,8 @@ def save_settings():
     with open(file, 'w') as outfile:
         json.dump(data, outfile)
 
+if os.path.exists(file) == False:
+    save_settings()
 
 # save_settings()
 
@@ -32,8 +35,7 @@ def load_settings():
         for e in data:
             print(e, ":", data[e])
 
-
-# load_settings()
+# ----- idleTime -----
 
 def load_idleTime():
     with open(file) as json_file:
@@ -44,16 +46,17 @@ def load_idleTime():
 def set_idleTime(time):
     edit_settings("idleTime", time)
 
+# ----- windowPosition -----
 
 def load_windowPosition():
     with open(file) as json_file:
         data = json.load(json_file)
     return data["windowPosition"]
 
-print(load_windowPosition())
 
 def set_windowPosition(x, y):
     edit_settings("windowPosition", [x, y])
 
 
-# set_windowPosition(200, 200)
+# ----- ----- -----
+
