@@ -3,15 +3,13 @@ import datetime
 import threading
 # TODO database for all programs: MainName/Title - status(on/off) - filterStrings - config: count in background
 
-# TODO rename programs to programTimes...
-
 # TODO #24 (data_times.db + data_config.db + settings.json)
 
 # TODO files in ApplicationTimeTracker/data/...
 
 # TODO config if filter equals or contains
 
-# TODO file var
+# TODO filepath as var
 
 conn = sqlite3.connect("ApplicationTimeTracker/data.db",
                        check_same_thread=False)
