@@ -35,7 +35,7 @@ except:
                         state integer       
                         )""")
                         
-
+# TODO (change state to tracking - 1/0 ?)
 # TODO program_state add bg_tracking integer
 
 # with conn:        # for later     # background state per filter?
