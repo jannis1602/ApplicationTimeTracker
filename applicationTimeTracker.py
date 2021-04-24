@@ -1,4 +1,5 @@
 import database
+import settings
 from PIL import Image, ImageDraw
 import time
 import pystray
@@ -22,7 +23,15 @@ maxIdleTime = 2*60  # 120 sec -> 2 min
 saveListDatabase = []  # savelist for database #for later
 
 # TODO change windowName -> programName
-# 
+#
+
+
+# ---- startup ----
+
+maxIdleTime = settings.load_idleTime()
+print(maxIdleTime)
+
+# ---- end ----
 
 print('#' * 50)
 print("Alle aktiven Fenster:")
@@ -144,7 +153,6 @@ def loop():
                             w.addSec()  # TODO: #13 filter2: nach speicherort???
 
                         # TODO if background tracking is on -> addSec()
-
 
                             # if saveListDatabase.count(w.windowName) == 1:
                             #   print(saveListDatabase.index(w.windowName))
