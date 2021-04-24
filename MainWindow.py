@@ -2,11 +2,12 @@ import tkinter as tk
 from tkinter import Label, Button, Frame, Canvas, Scrollbar, Entry, Text, Toplevel
 from WindowObject import WindowObject
 import database
+import settings
 import pygetwindow as gw
 import tkinter.messagebox
 
-
 # TODO edit-button for name...
+
 
 class MainWindow(tk.Tk):
 
@@ -51,7 +52,7 @@ class MainWindow(tk.Tk):
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
     # Settings-Button
         settings_button = Button(
-            master=menu_bar_frame, text="Settings", command=self.action)  # TODO: #21 @superxyxy add end methode
+            master=menu_bar_frame, text="Settings", command=self.settings_window)  # TODO: #21 @superxyxy add end methode
         settings_button.pack(side='right', padx='5', pady='5', expand=False)
 
         self.protocol("WM_DELETE_WINDOW", self.hide)
@@ -62,6 +63,34 @@ class MainWindow(tk.Tk):
         while self.running:
             self.update()
         self.destroy()
+
+
+# TODO text: sec.
+# TODO textfild?
+
+
+    def settings_window(self):
+        settings_root = tk.Tk()
+        settings_root.title("ApplicationTimeTracker - settings")
+        settings_root.geometry('100x200')
+
+        options = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+
+        variable = tk.StringVar(settings_root)
+        variable.set(settings.load_idleTime())
+
+        opt = tk.OptionMenu(settings_root, variable, *options)
+        opt.config(width=200, font=('roboto', 12))
+        opt.pack(side="top")
+
+        # labelTest = tk.Label(text="hallo", font=('roboto', 12))
+        # labelTest.pack(side="top")
+
+        def callback(*args):
+            print(variable.get())
+            settings.set_idleTime(int(variable.get()))
+        variable.trace("w", callback)
+        settings_root.mainloop()
 
     def windowNamesWindow(self):  # TODO change to windowNames_Window + andere
         # TODO linewrap!!!
@@ -86,9 +115,9 @@ class MainWindow(tk.Tk):
         print(name)
         if len(name) > 1 and self.checkForWindowName(name) == False:
             print("add", name, "to Filter")
-            
+
             database.add_program_state(name)
-            
+
             self.windowList.append(WindowObject(name))
             self.string_entry.delete(0, "end")
             self.reload()
