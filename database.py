@@ -5,8 +5,6 @@ import threading
 
 # TODO rename programs to programTimes...
 
-# TODO #25 settings in json
-
 # TODO #24 (data_times.db + data_config.db + settings.json)
 
 # TODO files in ApplicationTimeTracker/data/...
