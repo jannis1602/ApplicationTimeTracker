@@ -68,7 +68,6 @@ class MainWindow(tk.Tk):
 # TODO text: sec.
 # TODO textfild?
 
-
     def settings_window(self):
         settings_root = tk.Tk()
         settings_root.title("ApplicationTimeTracker - settings")
@@ -215,7 +214,7 @@ class MainWindow(tk.Tk):
 
         # TODO multiple lables for better formatting
         time_label = Label(master=temp_frame,
-                           text=windowObject.getTimeString(name=False), width=64, bg="gray")
+                           text=windowObject.getTimeString(name=False), width=62, bg="gray")
         time_label.pack(padx=2, pady=2, side="left")
         # TODO add/edit filterStrings
         # -> new tkinter with Text(new line = new filterString)
@@ -231,6 +230,21 @@ class MainWindow(tk.Tk):
         statistics_button = Button(
             master=temp_frame, text="statistics", bg="darkgray", command=lambda: self.viewStats_Window(windowObject.getWindowName()))
         statistics_button.pack(padx=2, pady=2, side="right", fill="x")
+    # edit-Button
+        statistics_button = Button(
+            master=temp_frame, text="edit", bg="darkgray", command=lambda: self.edit_Window(windowObject))
+        statistics_button.pack(padx=2, pady=2, side="right", fill="x")
+
+    def edit_Window(self, windowObject):
+        print(windowObject.getWindowName())
+        # database.load_program_config(windwObject.getWindowName())
+        # add string to database-config
+
+
+    # edit:
+    # filter-strings
+    # bg-tracking for each string
+    #
 
     def switchState(self, button, windowObject):
         if windowObject.state == True:
@@ -267,7 +281,7 @@ class MainWindow(tk.Tk):
         mm = int(time/60)-60*hh
         ss = int(time)-60*60*hh-60*mm
         timeString = str(str(hh) +
-                         " Stunden " + str(mm) + " Minuten " + str(ss) + " Sekunden")
+                         "h " + str(mm) + "m " + str(ss) + "s")
         return timeString
 
     def editFilterStrings(self):
