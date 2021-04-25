@@ -13,9 +13,17 @@ class WindowObject:
         self.windowName = windowName
         self.state = database.get_program_state(self.windowName)
         # self.passedTime = startTime
+        self.filterStrings = [self.windowName]  # -> load from database
 
     def getWindowName(self):
         return self.windowName
+
+    def getFilterStrings(self):
+        return self.filterStrings
+
+    def addFilterString(self, filterString):
+        if self.filterStrings.count(filterString) == 0:
+            self.filterStrings.append(filterString)
 
     # def getTimeSeconds(self):
     #     return self.passedTime
