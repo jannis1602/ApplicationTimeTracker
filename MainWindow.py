@@ -15,7 +15,9 @@ class MainWindow(tk.Tk):
         self.windowList = windowList
         tk.Tk.__init__(self)
         self.title("ApplicationTimeTracker")
-        self.geometry('800x400')
+        pos = settings.load_windowPosition()
+        self.geometry('%dx%d+%d+%d' % (800, 400, pos[0], pos[1]))
+        # self.geometry('800x400)
 # TODO icon
         self.resizable(False, False)
         self.running = True
@@ -71,6 +73,7 @@ class MainWindow(tk.Tk):
 
 
 # TODO rename root
+
     def settings_window(self):
 
         self.settings_root = tk.Tk()
@@ -142,6 +145,7 @@ class MainWindow(tk.Tk):
         self.deiconify()
 
     def hide(self):
+        settings.set_windowPosition(self.winfo_x(), self.winfo_y())
         self.withdraw()
 # TODO close all open windows
 
