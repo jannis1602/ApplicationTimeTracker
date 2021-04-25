@@ -22,7 +22,8 @@ class MainWindow(tk.Tk):
         self.updateWindowList = updateWindowList
         self.exitProgram = exitProgram
 
-        # self.subWindows=[] #TODO immer nur ein window pro art
+        # self.subWindows = []  # TODO immer nur ein window pro art
+        self.settings_root = None
 
     def createMainWindow(self):
         menu_bar_frame = Frame(
@@ -32,7 +33,7 @@ class MainWindow(tk.Tk):
 
     # ShowNames-Button
         show_names_button = Button(
-            master=menu_bar_frame, text="show all names", command=self.windowNamesWindow)  # TODO: #21 @superxyxy add end methode
+            master=menu_bar_frame, text="show all names", command=self.windowNames_Window)  # TODO: #21 @superxyxy add end methode
         show_names_button.pack(side='left', padx='5', pady='5', expand=False)
     # String-Entry
         self.string_entry = Entry(
@@ -68,17 +69,20 @@ class MainWindow(tk.Tk):
 # TODO text: sec.
 # TODO textfild?
 
+
+# TODO rename root
     def settings_window(self):
-        settings_root = tk.Tk()
-        settings_root.title("ApplicationTimeTracker - settings")
-        settings_root.geometry('100x200')
+
+        self.settings_root = tk.Tk()
+        self.settings_root.title("ApplicationTimeTracker - settings")
+        self.settings_root.geometry('200x200')
 
         options = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
 
-        variable = tk.StringVar(settings_root)
+        variable = tk.StringVar(self.settings_root)
         variable.set(settings.load_idleTime())
 
-        opt = tk.OptionMenu(settings_root, variable, *options)
+        opt = tk.OptionMenu(self.settings_root, variable, *options)
         opt.config(width=200, font=('roboto', 12))
         opt.pack(side="top")
 
@@ -89,9 +93,9 @@ class MainWindow(tk.Tk):
             print(variable.get())
             settings.set_idleTime(int(variable.get()))
         variable.trace("w", callback)
-        settings_root.mainloop()
+        self.settings_root.mainloop()
 
-    def windowNamesWindow(self):  # TODO change to windowNames_Window + andere
+    def windowNames_Window(self):  # TODO change to windowNames_Window + andere
         # TODO linewrap!!!
         root = tk.Tk()
         root.title("ApplicationTimeTracker - all window names")
@@ -239,7 +243,6 @@ class MainWindow(tk.Tk):
         print(windowObject.getWindowName())
         # database.load_program_config(windwObject.getWindowName())
         # add string to database-config
-
 
     # edit:
     # filter-strings
