@@ -6,8 +6,6 @@ import settings
 import pygetwindow as gw
 import tkinter.messagebox
 
-# TODO edit-button for name...
-
 
 class MainWindow(tk.Tk):
 
@@ -35,7 +33,7 @@ class MainWindow(tk.Tk):
 
     # ShowNames-Button
         show_names_button = Button(
-            master=menu_bar_frame, text="show all names", command=self.windowNames_Window)  # TODO: #21 @superxyxy add end methode
+            master=menu_bar_frame, text="show all names", command=self.windowNames_Window)
         show_names_button.pack(side='left', padx='5', pady='5', expand=False)
     # String-Entry
         self.string_entry = Entry(
@@ -51,11 +49,11 @@ class MainWindow(tk.Tk):
         reload_button.pack(side='left', padx='5', pady='5', expand=False)
     # Exit-Button
         exit_button = Button(
-            master=menu_bar_frame, text="EXIT", command=self.exitProgram)  # TODO: #21 @superxyxy add end methode
+            master=menu_bar_frame, text="EXIT", command=self.exitProgram)
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
     # Settings-Button
         settings_button = Button(
-            master=menu_bar_frame, text="Settings", command=self.settings_window)  # TODO: #21 @superxyxy add end methode
+            master=menu_bar_frame, text="Settings", command=self.settings_window)
         settings_button.pack(side='right', padx='5', pady='5', expand=False)
 
         self.protocol("WM_DELETE_WINDOW", self.hide)
@@ -73,6 +71,7 @@ class MainWindow(tk.Tk):
 
 
 # TODO rename root
+
 
     def settings_window(self):
 
@@ -224,7 +223,7 @@ class MainWindow(tk.Tk):
         time_label = Label(master=temp_frame,
                            text=windowObject.getTimeString(name=False), width=62, bg="gray")
         time_label.pack(padx=2, pady=2, side="left")
-        # TODO add/edit filterStrings
+        # TODO add & edit filterStrings
         # -> new tkinter with Text(new line = new filterString)
 
         remove_button = Button(temp_frame, text="remove",
@@ -240,8 +239,12 @@ class MainWindow(tk.Tk):
         statistics_button.pack(padx=2, pady=2, side="right", fill="x")
     # edit-Button
         statistics_button = Button(
-            master=temp_frame, text="edit", bg="darkgray", command=lambda: self.edit_Window(windowObject))
+            master=temp_frame, text="edit", bg="darkgray", command=lambda: self.editFilterStrings_Window(windowObject))  # command=lambda: self.edit_Window(windowObject))
         statistics_button.pack(padx=2, pady=2, side="right", fill="x")
+
+
+# TODO
+
 
     def edit_Window(self, windowObject):
         print(windowObject.getWindowName())
@@ -251,7 +254,24 @@ class MainWindow(tk.Tk):
     # edit:
     # filter-strings
     # bg-tracking for each string
-    #
+
+    def editFilterStrings_Window(self, windowObject):
+        root = tk.Tk()
+        S = Scrollbar(root)
+        T = Text(root, height=20, width=80)
+        S.pack(side="right", fill="y")
+        T.pack(side="left", fill="y")
+        S.config(command=T.yview)
+        T.config(yscrollcommand=S.set)
+        text = ""
+        # TODO all filterstrings in windowObject -> list
+        # text = windowObject.getWindowName()+"\n"
+        for s in windowObject.getFilterStrings():
+            text += s + "\n"
+        # for f in windowObject
+        T.insert(tk.END, text)
+        # self.protocol("WM_DELETE_WINDOW", self.hide) # TODO save filter
+        root.mainloop()
 
     def switchState(self, button, windowObject):
         if windowObject.state == True:
@@ -277,59 +297,23 @@ class MainWindow(tk.Tk):
         for d in database.get_times_by_program(programName):
             text += str(d[1])+" - "+self.convertToTimeString(d[2])+"\n"
 
-        # print(database.get_times_by_program(programName))
-
         T.insert(tk.END, text)
         T.config(state=tk.DISABLED)
         root.mainloop()
 
-    def convertToTimeString(self, time):
-        hh = int(time/60/60)
-        mm = int(time/60)-60*hh
-        ss = int(time)-60*60*hh-60*mm
-        timeString = str(str(hh) +
-                         "h " + str(mm) + "m " + str(ss) + "s")
+    def convertToTimeString(self, time_sec):
+        hh = int(time_sec/60/60)
+        mm = int(time_sec/60)-60*hh
+        ss = int(time_sec)-60*60*hh-60*mm
+        timeString = str(str(hh) + "h " + str(mm) + "m " + str(ss) + "s")
         return timeString
-
-    def editFilterStrings(self):
-        root = tk.Tk()
-        S = Scrollbar(root)
-        T = Text(root, height=20, width=80)
-        S.pack(side="right", fill="y")
-        T.pack(side="left", fill="y")
-        S.config(command=T.yview)
-        T.config(yscrollcommand=S.set)
-        text = ""
-        for s in gw.getAllTitles():
-            if len(s) >= 1:
-                text += s+"\n"
-        T.insert(tk.END, text)
-        # T.config(state=tk.DISABLED)
-        root.mainloop()
 
     def action(self):
         print("action")
 
-        # self.label = Label(root, text="GUI")
-        # self.label.pack()
-
-        # self.greet_button = Button(root, text="Greet", command=self.greet)
-        # self.greet_button.pack()
-
-        # self.close_button = Button(root, text="Close", command=root.quit)
-        # self.close_button.pack()
-
-# if __name__ == '__main__': # test
-#     windowList = []
-#     for i in range(20):
-#         windowList.append(WindowObject("test"+str(i)))
-    # windowList.append(WindowObject("Opera"))
-    # windowList.append(WindowObject("Visual Studio Code"))
-    # MainWindow(windowList)
-
 
 # ----------- ToolTip -----------
-# TODO extra file
+# TODO extra file?
 
 class ToolTip(object):
 
