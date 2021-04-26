@@ -96,10 +96,10 @@ class MainWindow(tk.Tk):
             # self.settings_Window.protocol("WM_DELETE_WINDOW", command=close)
             self.settings_Window.mainloop()
 
-    # TODO change to windowNames_Window + other
     # TODO rename names -> titles
     def showAllWindowNames(self):
         # TODO linewrap!!!
+        # TODO lable + add-button in frame -> in scrollbar
         try:
             self.allWindowNames_Window.lift(self)
         except:
@@ -125,9 +125,7 @@ class MainWindow(tk.Tk):
         print(name)
         if len(name) > 1 and self.checkForWindowName(name) == False:
             print("add", name, "to Filter")
-
             database.add_program_state(name)
-
             self.windowList.append(WindowObject(name))
             self.string_entry.delete(0, "end")
             self.reload()
@@ -151,6 +149,11 @@ class MainWindow(tk.Tk):
     def hide(self):
         settings.set_windowPosition(self.winfo_x(), self.winfo_y())
         self.withdraw()
+
+    #TODO destroy if window exists...
+        # self.settings_Window.destroy()
+        # self.allWindowNames_Window.destroy()
+
 # TODO close all open windows
 
     def createListFrame(self):      #TODO rename 
