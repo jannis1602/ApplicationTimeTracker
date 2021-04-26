@@ -22,8 +22,10 @@ class MainWindow(tk.Tk):
         self.updateWindowList = updateWindowList
         self.exitProgram = exitProgram
 
-        # self.subWindows = []  # TODO immer nur ein window pro art
-        self.settings_root = None
+        # self.subWindows = [] # unused
+        # init all subwindows:
+        self.settings_Window = None
+        self.allWindowNames_Window = None
 
     def createMainWindow(self):
         menu_bar_frame = Frame(
@@ -33,7 +35,7 @@ class MainWindow(tk.Tk):
 
     # ShowNames-Button
         show_names_button = Button(
-            master=menu_bar_frame, text="show all names", command=self.windowNames_Window)
+            master=menu_bar_frame, text="show all names", command=self.showAllWindowNames)
         show_names_button.pack(side='left', padx='5', pady='5', expand=False)
     # String-Entry
         self.string_entry = Entry(
@@ -53,7 +55,7 @@ class MainWindow(tk.Tk):
         exit_button.pack(side='right', padx='5', pady='5', expand=False)
     # Settings-Button
         settings_button = Button(
-            master=menu_bar_frame, text="Settings", command=self.settings_window)
+            master=menu_bar_frame, text="Settings", command=self.showSettings)
         settings_button.pack(side='right', padx='5', pady='5', expand=False)
 
         self.protocol("WM_DELETE_WINDOW", self.hide)
@@ -65,57 +67,58 @@ class MainWindow(tk.Tk):
             self.update()
         self.destroy()
 
-
-# TODO text: sec.
-# TODO textfild?
-
-
-# TODO rename root -> window
-
-
-    def settings_window(self):
+    def showSettings(self):
         try:
-            self.settings_root.lift(self)
+            self.settings_Window.lift(self)
+# TODO focus ...
         except:
-            self.settings_root = tk.Tk()
-            self.settings_root.title("ApplicationTimeTracker - settings")
-            self.settings_root.geometry('200x200')
+            self.settings_Window = tk.Tk()
+            self.settings_Window.title("ApplicationTimeTracker - settings")
+            self.settings_Window.geometry('200x200')
 
             options = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
-            variable = tk.StringVar(self.settings_root)
+            variable = tk.StringVar(self.settings_Window)
             variable.set(settings.load_idleTime())
 
-            opt = tk.OptionMenu(self.settings_root, variable, *options)
+            labelTest = tk.Label(
+                self.settings_Window, text="max seconds of idle-time:", font=('roboto', 10))
+            labelTest.pack(side="top")
+
+        # TODO Dropdown-Menu -> change to textbox
+            opt = tk.OptionMenu(self.settings_Window, variable, *options)
             opt.config(width=200, font=('roboto', 12))
             opt.pack(side="top")
-
-            # labelTest = tk.Label(text="hallo", font=('roboto', 12))
-            # labelTest.pack(side="top")
 
             def callback(*args):
                 print(variable.get())
                 settings.set_idleTime(int(variable.get()))
             variable.trace("w", callback)
-            # self.settings_root.protocol("WM_DELETE_WINDOW", command=close)
-            self.settings_root.mainloop()
+            # self.settings_Window.protocol("WM_DELETE_WINDOW", command=close)
+            self.settings_Window.mainloop()
 
-    def windowNames_Window(self):  # TODO change to windowNames_Window + andere
+    # TODO change to windowNames_Window + other
+    # TODO rename names -> titles
+    def showAllWindowNames(self):
         # TODO linewrap!!!
-        root = tk.Tk()
-        root.title("ApplicationTimeTracker - all window names")
-        S = Scrollbar(root)
-        T = Text(root, height=20, width=80)
-        S.pack(side="right", fill="y")
-        T.pack(side="left", fill="y")
-        S.config(command=T.yview)
-        T.config(yscrollcommand=S.set)
-        text = ""
-        for s in gw.getAllTitles():
-            if len(s) >= 1:
-                text += s+"\n"
-        T.insert(tk.END, text)
-        T.config(state=tk.DISABLED)
-        root.mainloop()
+        try:
+            self.allWindowNames_Window.lift(self)
+        except:
+            self.allWindowNames_Window = tk.Tk()
+            self.allWindowNames_Window.title(
+                "ApplicationTimeTracker - all window titles")
+            S = Scrollbar(self.allWindowNames_Window)
+            T = Text(self.allWindowNames_Window, height=20, width=80)
+            S.pack(side="right", fill="y")
+            T.pack(side="left", fill="y")
+            S.config(command=T.yview)
+            T.config(yscrollcommand=S.set)
+            text = ""
+            for s in gw.getAllTitles():
+                if len(s) >= 1:
+                    text += s+"\n"
+            T.insert(tk.END, text)
+            T.config(state=tk.DISABLED)
+            self.allWindowNames_Window.mainloop()
 
     def addStringToFilter(self):
         name = self.string_entry.get()
@@ -150,7 +153,7 @@ class MainWindow(tk.Tk):
         self.withdraw()
 # TODO close all open windows
 
-    def createListFrame(self):
+    def createListFrame(self):      #TODO rename 
         self.list_frame = Frame(master=self)
         self.list_frame.pack(side='left', padx=0,
                              pady=0, fill="both", expand=True)
