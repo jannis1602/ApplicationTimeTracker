@@ -172,10 +172,10 @@ class MainWindow(tk.Tk):
         canvas.pack(fill='both', expand=True, side='left')
         scroll_y.pack(fill='y', side='right')
 
-    def remove(self, windowObject):
+    def remove(self, windowObject): #TODO rename -> delete!!!
         # delete-request
         result = tkinter.messagebox.askquestion(
-            "Delete", "Sure?", icon='warning')
+            "Delete", "all data of " +windowObject.getWindowName() +" will be deleted!", icon='warning')
         if result == 'yes':
             pass
         else:
@@ -192,6 +192,8 @@ class MainWindow(tk.Tk):
         self.createListFrame()
         # ---- test ----
         database.delete_by_name(windowObject.getWindowName())
+        #TODO delete from config
+        database.delete_program_state(windowObject.getWindowName())
         self.updateWindowList()
 
     def reload(self):
