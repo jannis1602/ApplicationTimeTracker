@@ -70,32 +70,34 @@ class MainWindow(tk.Tk):
 # TODO textfild?
 
 
-# TODO rename root
+# TODO rename root -> window
 
 
     def settings_window(self):
+        try:
+            self.settings_root.lift(self)
+        except:
+            self.settings_root = tk.Tk()
+            self.settings_root.title("ApplicationTimeTracker - settings")
+            self.settings_root.geometry('200x200')
 
-        self.settings_root = tk.Tk()
-        self.settings_root.title("ApplicationTimeTracker - settings")
-        self.settings_root.geometry('200x200')
+            options = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+            variable = tk.StringVar(self.settings_root)
+            variable.set(settings.load_idleTime())
 
-        options = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+            opt = tk.OptionMenu(self.settings_root, variable, *options)
+            opt.config(width=200, font=('roboto', 12))
+            opt.pack(side="top")
 
-        variable = tk.StringVar(self.settings_root)
-        variable.set(settings.load_idleTime())
+            # labelTest = tk.Label(text="hallo", font=('roboto', 12))
+            # labelTest.pack(side="top")
 
-        opt = tk.OptionMenu(self.settings_root, variable, *options)
-        opt.config(width=200, font=('roboto', 12))
-        opt.pack(side="top")
-
-        # labelTest = tk.Label(text="hallo", font=('roboto', 12))
-        # labelTest.pack(side="top")
-
-        def callback(*args):
-            print(variable.get())
-            settings.set_idleTime(int(variable.get()))
-        variable.trace("w", callback)
-        self.settings_root.mainloop()
+            def callback(*args):
+                print(variable.get())
+                settings.set_idleTime(int(variable.get()))
+            variable.trace("w", callback)
+            # self.settings_root.protocol("WM_DELETE_WINDOW", command=close)
+            self.settings_root.mainloop()
 
     def windowNames_Window(self):  # TODO change to windowNames_Window + andere
         # TODO linewrap!!!
@@ -172,10 +174,10 @@ class MainWindow(tk.Tk):
         canvas.pack(fill='both', expand=True, side='left')
         scroll_y.pack(fill='y', side='right')
 
-    def remove(self, windowObject): #TODO rename -> delete!!!
+    def remove(self, windowObject):  # TODO rename -> delete!!!
         # delete-request
         result = tkinter.messagebox.askquestion(
-            "Delete", "all data of " +windowObject.getWindowName() +" will be deleted!", icon='warning')
+            "Delete", "all data of " + windowObject.getWindowName() + " will be deleted!", icon='warning')
         if result == 'yes':
             pass
         else:
@@ -192,7 +194,7 @@ class MainWindow(tk.Tk):
         self.createListFrame()
         # ---- test ----
         database.delete_by_name(windowObject.getWindowName())
-        #TODO delete from config
+        # TODO delete from config
         database.delete_program_state(windowObject.getWindowName())
         self.updateWindowList()
 
