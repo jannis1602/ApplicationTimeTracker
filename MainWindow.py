@@ -146,6 +146,7 @@ class MainWindow(tk.Tk):
 
     def stopRunning(self):
         print("quit MainWindow...")
+        settings.set_windowPosition(self.winfo_x(), self.winfo_y())
         self.running = False
 
     def show(self):
