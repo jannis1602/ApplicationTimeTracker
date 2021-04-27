@@ -48,6 +48,12 @@ class WindowObject:
             self.windowName, datetime.datetime.now().date(), 1)
         print(self.getTimeString())
 
+    # def addSecBgTime(self):
+    #     # self.passedTime += 1
+    #     database.add_bg_time_if_name_exists(
+    #         self.windowName, datetime.datetime.now().date(), 1)
+    #     print(self.getTimeString())
+
     # def getTime(self):
     #     hh = int(self.passedTime/60/60)
     #     mm = int(self.passedTime/60)-60*hh
