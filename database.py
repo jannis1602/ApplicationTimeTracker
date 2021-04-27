@@ -33,7 +33,7 @@ except:
     with conn:
         c.execute("""CREATE TABLE program_state(
                         name TEXT,
-                        state INTEGER      
+                        state INTEGER,    
                         bg_tracking INTEGER      
                         )""")       # 0=false - 1=true
 
@@ -60,7 +60,7 @@ except:
         c.execute("""CREATE TABLE program_times(
                     name TEXT,
                     date TEXT,
-                    time INTEGER
+                    time INTEGER,
                     bg_time INTEGER
                     )""")
 
@@ -79,11 +79,22 @@ def get_program_state(name):
         return temp[1]
 
 
+def get_program_bg_tracking_state(name):
+    with conn:
+        c.execute("SELECT * FROM program_state WHERE name=:name",
+                  {"name": name})
+        temp = c.fetchone()
+    if temp == None:
+        return None
+    else:
+        return temp[2]
+
+
 def add_program_state(name):
     if get_program_state(name) == None:
         with conn:
             c.execute(
-                "INSERT INTO program_state VALUES (:name,:state)", {"name": name, "state": 1})
+                "INSERT INTO program_state VALUES (:name,:state,:bg_tracking)", {"name": name, "state": 1, "bg_tracking": 1})
 
 
 def delete_program_state(name):
@@ -137,7 +148,7 @@ def get_all_program_filter():
         c.execute("SELECT * FROM program_filter")
         return c.fetchall()
 
-print(get_all_program_filter())
+# print(get_all_program_filter())
 
 
 def get_program_filter(name):
@@ -153,13 +164,13 @@ def get_program_filter(name):
 
 
 def add_program_filter(name, filterString):
-    if get_program_state(name) is not None and get_program_filter(name).count(filterString) == 0:   # TODO if prog.state exists
+    # TODO if prog.state exists
+    if get_program_state(name) is not None and get_program_filter(name).count(filterString) == 0:
         with conn:
             c.execute(
                 "INSERT INTO program_filter VALUES (:name,:string)", {"name": name, "string": filterString})
 
 # add_program_filter("Opera","web")
-
 
 
 def delete_program_filter(name, filterString):
@@ -168,9 +179,6 @@ def delete_program_filter(name, filterString):
             "DELETE FROM program_filter WHERE name =:name AND filter_string=:string", {"name": name, "string": filterString})
 
 # delete_program_filter("Opera","web")
-
-
-
 
 
 # ---------- program_times - database ----------
@@ -191,10 +199,13 @@ def get_all_programs_from_time():  # get all from program_times      # TODO remo
     return programs
 
 
-def add_program(name, date=datetime.datetime.now().date(), time=0): # TODO rename to add_program_time
+# TODO rename to add_program_time
+def add_program(name, date=datetime.datetime.now().date(), time=0, bg_time=0):
     with conn:
         c.execute(
-            "INSERT INTO program_times VALUES (:name,:date,:time)", {"name": name, "date": date, "time": time})
+            "INSERT INTO program_times VALUES (:name,:date,:time,:bg_time)", {"name": name, "date": date, "time": time, "bg_time": bg_time})
+
+# TODO -------- change parameters...
 
 
 def set_time(name, date, time):
