@@ -284,8 +284,7 @@ class MainWindow(tk.Tk):
         if windowObject.getBgTracking():
             bg_tracking_button.configure(text="bg-tracking on")
         bg_tracking_button.pack(side='left', padx=5, pady=5, expand=False)
-        # TODO info: bg_tracking...
-        # -> update apptt
+        # TODO info: what is bg_tracking...
 
 # TODO rename-methode in database
 
