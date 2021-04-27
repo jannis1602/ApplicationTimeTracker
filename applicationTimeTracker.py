@@ -128,13 +128,13 @@ def loop():
                                 w.addSec()  # TODO: #13 filter2: program-speicherort???
                                 counted = True  
                                 break
-                    if w.getBgTracking() and counted == False:
-                        for fs in w.getFilterStringList():
-                            if counted == False:
-                                for bgt in getBackgroundWindowTitles():
-                                    if bgt.count(fs) >= 1:  # TODO 1 name & 2 windows -> warning?
-                                        w.addSecBgTime()
-                                        counted = True  # -> add only one sec per sec per program
+                        if w.getBgTracking() and counted == False:
+                            for fs in w.getFilterStringList():
+                                if counted == False:
+                                    for bgt in getBackgroundWindowTitles():
+                                        if bgt.count(fs) >= 1:  # TODO 1 name & 2 windows -> warning?
+                                            w.addSecBgTime()
+                                            counted = True  # -> add only one sec per sec per program
             lastTime += 1
 
 # if __name__ == '__main__': # test
