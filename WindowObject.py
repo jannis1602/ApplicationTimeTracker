@@ -13,6 +13,7 @@ class WindowObject:
     def __init__(self, windowName, startTime=0):
         self.windowName = windowName
         self.state = database.get_program_state(self.windowName)
+        self.bgTracking = database.get_program_bg_tracking_state(self.windowName)
         # self.passedTime = startTime
         self.filterStrings = [self.windowName]  # -> load from database
         # TODO load from database-program_config
@@ -44,7 +45,7 @@ class WindowObject:
 
     def addSec(self):
         # self.passedTime += 1
-        database.add_time_if_name_exists(
+        database.add_time(
             self.windowName, datetime.datetime.now().date(), 1)
         print(self.getTimeString())
 

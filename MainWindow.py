@@ -199,9 +199,9 @@ class MainWindow(tk.Tk):
         self.list_frame.destroy()
         self.createListFrame()
         # ---- test ----
-        database.delete_by_name(windowObject.getWindowName())
-        # TODO delete from config
         database.delete_program_state(windowObject.getWindowName())
+        database.delete_program_time_by_name(windowObject.getWindowName())
+        database.delete_all_program_filter(windowObject.getWindowName())
         self.updateWindowList()
 
     def reload(self):
