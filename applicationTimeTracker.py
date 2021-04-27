@@ -48,7 +48,7 @@ def getIdleTime():  # returns time from last userinput
 def loadWindowList():
     global windowList
     windowList = []
-    for s in database.get_all_programs_from_state():
+    for s in database.get_all_programs():
         windowList.append(WindowObject(s))
 
 
@@ -160,8 +160,7 @@ def loop():
                         for fs in w.getFilterStringList():
                             # TODO: #12 alle fenster...
                             # TODO -> contains or equals?
-                            # if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
-                            if getForegroundWindowTitle().count(fs) >= 1:  # TODO == -> else warning?
+                            if getForegroundWindowTitle().count(fs) >= 1:
                                 w.addSec()  # TODO: #13 filter2: program-speicherort???
                                 # (here unused->faster?) ->for bgTracking  # -> add only one sec per sec per program
                                 # counted = True # for bgTracking
@@ -223,11 +222,11 @@ print("~"*50)
 # database.delete_program_state("Discord")
 
 # database.add_program_state("Discord")
-print("all programs:", database.get_all_programs_from_state())
+print("all programs:", database.get_all_programs())
 print("active:", database.get_all_active_programs())
 
-for d in database.get_all_programs_from_time():
-    database.add_program_state(d)
+# for d in database.get_all_programs_from_time():
+#     database.add_program_state(d)
 
 # print(database.get_all_active_programs())
 
