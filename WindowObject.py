@@ -36,7 +36,6 @@ class WindowObject:
         return self.windowName
 
     def getFilterStringList(self):
-        # print(self.windowName,self.filterStrings)
         return self.filterStrings
 
     # def addToFilterStringList(self, filterString):
@@ -47,16 +46,17 @@ class WindowObject:
     #     return self.passedTime
 
     def addSec(self):
-        # self.passedTime += 1
         database.add_time(
             self.windowName, datetime.datetime.now().date(), 1)
-        print(self.getTimeString())
+        print(self.windowName,"+1 sec")
+        # print(self.getTimeString()) # do not use for better performance?
 
-    # def addSecBgTime(self):
-    #     # self.passedTime += 1
-    #     database.add_bg_time_if_name_exists(
-    #         self.windowName, datetime.datetime.now().date(), 1)
-    #     print(self.getTimeString())
+    def addSecBgTime(self):
+        database.add_bg_time(
+            self.windowName, datetime.datetime.now().date(), 1)
+        print(self.windowName,"+1 sec")
+        # print("bg-Tracking is work in progress...")
+        # print(self.getTimeString()) # TODO -> bgTimeString
 
     # def getTime(self):
     #     hh = int(self.passedTime/60/60)
@@ -71,7 +71,7 @@ class WindowObject:
         ss = int(fulltime)-60*60*hh-60*mm
         return [hh, mm, ss]
 
-    def getStateString(self):
+    def getStateString(self):   # TODO -> change: chech in MainWindow
         if self.state == True:
             return "on"
         else:
