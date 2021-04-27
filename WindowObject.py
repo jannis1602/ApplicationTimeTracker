@@ -8,14 +8,16 @@ class WindowObject:
     windowName = 0
     state = True
     bgTracking = False  # BackgroundTracking
+    filterStrings = []
     # passedTime = 0
 
     def __init__(self, windowName, startTime=0):
         self.windowName = windowName
         self.state = database.get_program_state(self.windowName)
-        self.bgTracking = database.get_program_bg_tracking_state(self.windowName)
+        self.bgTracking = database.get_program_bg_tracking_state(
+            self.windowName)
+        self.filterStrings = database.get_program_filter(self.windowName)
         # self.passedTime = startTime
-        self.filterStrings = [self.windowName]  # -> load from database
         # TODO load from database-program_config
         # load bg tracking from database
         print("================>>>", self.windowName)
@@ -24,21 +26,22 @@ class WindowObject:
             print("---- TRUE! ----")
 
     def getBgTracking(self):    # TODO only for testing
-        # return self.bgTracking
-        if self.windowName.count("Visual Studio Code") == 1:
-            return True
-        else:
-            return False
+        return self.bgTracking
+
+    def setBgTracking(self, bg_tracking):    # TODO only for testing
+        self.bgTracking = bg_tracking
+        database.set_program_bg_tracking_state(self.windowName, bg_tracking)
 
     def getWindowName(self):
         return self.windowName
 
     def getFilterStringList(self):
+        # print(self.windowName,self.filterStrings)
         return self.filterStrings
 
-    def addToFilterStringList(self, filterString):
-        if self.filterStrings.count(filterString) == 0:
-            self.filterStrings.append(filterString)
+    # def addToFilterStringList(self, filterString):
+    #     if self.filterStrings.count(filterString) == 0:
+    #         self.filterStrings.append(filterString)
 
     # def getTimeSeconds(self):
     #     return self.passedTime
