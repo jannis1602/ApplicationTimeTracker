@@ -29,12 +29,12 @@ saveListDatabase = []  # savelist for database #for later
 # ---- startup ----
 
 maxIdleTime = settings.load_idleTime()
-print(maxIdleTime)
+print("max Idle-Time:", maxIdleTime)
 
 # ---- end ----
 
 print('#' * 50)
-print("Alle aktiven Fenster:")
+print("all active windows:")
 for s in pygetwindow.getAllTitles():
     if len(s) >= 1:
         print(s)
@@ -48,13 +48,11 @@ def getIdleTime():  # returns time from last userinput
 def loadWindowList():
     global windowList
     windowList = []
-    # windowList.clear()
-    # for s in database.get_all_programs():
-    # database.get_all_programs_from_state()
     for s in database.get_all_programs_from_state():
         windowList.append(WindowObject(s))
-    # TODO: load from program states database
 
+
+# TODO add & remove unused?
 
 def addWindowName(winName):
     if checkForWindowName(winName) == False:
@@ -121,7 +119,6 @@ def showMainWindow():
 
 def createMainWindow():
     global mainWindow
-
     mainWindow = MainWindow(windowList=windowList,
                             updateWindowList=loadWindowList,
                             exitProgram=end)
@@ -129,6 +126,17 @@ def createMainWindow():
         target=mainWindow.createMainWindow(), name="mainWindow-Thread", daemon=True)
     mainWindowThread.start()
 
+
+def getForegroundWindowTitle():
+    return str(win32gui.GetWindowText(win32gui.GetForegroundWindow()))
+
+
+def getBackgroundWindowTitles():
+    backgroundTitles = []
+    for s in pygetwindow.getAllTitles():
+        if len(s) >= 1:
+            backgroundTitles.append(s)
+    return backgroundTitles
 # ------------------------------
 
 # database.add_program("Visual Studio Code")
@@ -147,19 +155,30 @@ def loop():
             if getIdleTime() < maxIdleTime:
                 for w in windowList:
                     if w.state:
-                        # TODO: #12 alle fenster...
-                        # TODO -> contains or equals?
-                        if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
-                            w.addSec()  # TODO: #13 filter2: nach speicherort???
+                        for fs in w.getFilterStringList():
+                            # TODO: #12 alle fenster...
+                            # TODO -> contains or equals?
+                            # if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
+                            if getForegroundWindowTitle().count(fs) >= 1:  # TODO == -> else warning?
+                                w.addSec()  # TODO: #13 filter2: nach speicherort???
+                                # (here unused->faster?) ->for bgTracking  # -> add only one sec per sec per program
+                                break
+                            # TODO if background tracking is on -> addSec()
+                    if w.bgTracking:    # -> state = foregroundTracking? -> bg=true => state=false
+                        counted = False
+                        for fs in w.getFilterStringList():
+                            if counted == False:
+                                for bgt in getBackgroundWindowTitles():
+                                    if bgt.count(fs) >= 1:  # TODO == -> else warning?
+                                        w.addSec()  # TODO: #13 filter2: nach speicherort???
+                                        counted = True  # -> add only one sec per sec per program
 
-                        # TODO if background tracking is on -> addSec()
+                                # if saveListDatabase.count(w.windowName) == 1:
+                                #   print(saveListDatabase.index(w.windowName))
+                                # else:
+                                #     saveListDatabase.append(w.windowName)
 
-                            # if saveListDatabase.count(w.windowName) == 1:
-                            #   print(saveListDatabase.index(w.windowName))
-                            # else:
-                            #     saveListDatabase.append(w.windowName)
-
-                            # add window with time to save-list
+                                # add window with time to save-list
 # ----> SAVE
             lastTime += 1
         if time.time()-lastTimeMin > 60:
