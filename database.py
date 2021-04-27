@@ -80,6 +80,18 @@ except:
 
 # TODO rename filter ...
 
+def rename_program(oldName, newName):
+    with conn:
+        c.execute(
+            "UPDATE program_state SET name=:newname WHERE name=:oldname", {"newname": newName, "oldname": oldName})
+        c.execute(
+            "UPDATE program_filter SET name=:newname WHERE name=:oldname", {"newname": newName, "oldname": oldName})
+        c.execute(
+            "UPDATE program_times SET name=:newname WHERE name=:oldname", {"newname": newName, "oldname": oldName})
+        # rename filter if only one
+
+
+# rename_program("Opera","opera")
 
 # ---------- program_state - database ----------
 def get_program_state(name):
