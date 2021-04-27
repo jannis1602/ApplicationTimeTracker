@@ -255,52 +255,56 @@ class MainWindow(tk.Tk):
 
 # TODO
 
-
     def edit_Window(self, windowObject):
         print(windowObject.getWindowName())
         # database.load_program_config(windwObject.getWindowName())
         # add string to database-config
 
-    # edit:
-    # filter-strings
-    # bg-tracking for each string
-
 
 # TODO save edit to database...
-# TODO add one line for title
-
+# TODO add one line for each title
 
     def editFilterStrings_Window(self, windowObject):  # TODO Reset?
         root = tk.Tk()  # rename root
-# TODO layout...
         frame = Frame(
             master=root, height=20, width=200, bg="darkgray")
-        frame.pack(side='top',
-                        pady=1, fill="x", expand=False)
-        name_entry = Entry(
-            frame, bd=2, width=40, bg="lightgray")
+        frame.pack(side='top', pady=1, fill="x", expand=False)
+        name_entry = Entry(frame, bd=2, width=40, bg="lightgray")
         name_entry.pack(side='left', padx=5, pady=1, expand=False)
         name_entry.insert(tk.END, windowObject.getWindowName())
         rename_button = Button(
-            master=frame, text="rename Filter", command=lambda: print("rename in database"))
+            master=frame, text="rename Filter Name", command=lambda: print("rename in database..."))
         rename_button.pack(side='left', padx=5, pady=5, expand=False)
 # TODO rename-methode in database
 
-        S = Scrollbar(root)
-        T = Text(root, height=20, width=80, bg="lightgray")
-        S.pack(side="right", fill="y")
-        T.pack(side="left", fill="y")
-        S.config(command=T.yview)
-        T.config(yscrollcommand=S.set)
+        scroll_y = Scrollbar(root)
+        filter_Text = Text(root, height=20, width=80, bg="lightgray")
+        scroll_y.pack(side="right", fill="y")
+        filter_Text.pack(side="left", fill="y")
+        scroll_y.config(command=filter_Text.yview)
+        filter_Text.config(yscrollcommand=scroll_y.set)
         text = ""
         # TODO all filterstrings in windowObject -> list
         # text = windowObject.getWindowName()+"\n"
         for s in windowObject.getFilterStringList():
             text += s + "\n"
         # for f in windowObject
-        T.insert(tk.END, text)
-        # self.protocol("WM_DELETE_WINDOW", self.hide) # TODO override -> save filter to database
+        filter_Text.insert(tk.END, text)
+
+        save_button = Button(
+            master=frame, text="save Filter", command=lambda: self.updateStringFilter(text=filter_Text.get("1.0", "end-1c")))
+        save_button.pack(side='left', padx=5, pady=5, expand=False)
+
+        # self.protocol("WM_DELETE_WINDOW", self.hide) # TODO override:quit or save -> save filter to database
         root.mainloop()
+
+    def updateStringFilter(self, text):
+        filter = []
+        for l in text.splitlines():
+            if len(l) >= 1:
+                filter.append(l)
+        print(filter)
+# TODO delete all old filterStrings in database -> create new ### or: delete if old and create new for new
 
     def switchState(self, button, windowObject):
         if windowObject.state == True:
