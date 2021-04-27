@@ -40,7 +40,7 @@ class MainWindow(tk.Tk):
 
     # ShowNames-Button
         show_names_button = Button(
-            master=menu_bar_frame, text="show all names", command=self.showAllWindowNames)
+            master=menu_bar_frame, text="show all titles", command=self.showAllWindowTitles)
         show_names_button.pack(side='left', padx='5', pady='5', expand=False)
     # String-Entry
         self.string_entry = Entry(
@@ -102,7 +102,7 @@ class MainWindow(tk.Tk):
             self.settings_Window.mainloop()
 
     # TODO rename names -> titles
-    def showAllWindowNames(self):
+    def showAllWindowTitles(self):
         # TODO linewrap!!!
         # TODO lable + add-button in frame -> in scrollbar
         try:
@@ -112,7 +112,7 @@ class MainWindow(tk.Tk):
             self.allWindowNames_Window.title(
                 "ApplicationTimeTracker - all window titles")
             S = Scrollbar(self.allWindowNames_Window)
-            T = Text(self.allWindowNames_Window, height=20, width=80)
+            T = Text(self.allWindowNames_Window, height=20, width=80,bg="lightgray")
             S.pack(side="right", fill="y")
             T.pack(side="left", fill="y")
             S.config(command=T.yview)
@@ -237,7 +237,12 @@ class MainWindow(tk.Tk):
 
         # TODO multiple lables for better formatting
         time_label = Label(master=temp_frame,
-                           text=windowObject.getTimeString(), width=62, bg="gray")
+                           text="passed Time: "+self.convertToTimeString(windowObject.getTimeSec()), width=62, bg="gray")
+# TODO  if not 0: -> +"  ---  Background Time: "+self.convertToTimeString(windowObject.getFullTime())
+        if windowObject.getBgTimeSec() > 0:
+            time_label.config(text="passed Time: "+self.convertToTimeString(windowObject.getTimeSec()) +
+                              "  ---  Background Time: "+self.convertToTimeString(windowObject.getBgTimeSec()))
+
         time_label.pack(padx=2, pady=2, side="left")
     # remove-Button
         remove_button = Button(temp_frame, text="remove",
@@ -263,13 +268,14 @@ class MainWindow(tk.Tk):
 # TODO save edit to database...
 # TODO add one line for each title
 
+
     def editFilterStrings_Window(self, windowObject):  # TODO Reset?
         try:
             self.stats_Window.lift(self)
         except:
             self.edit_Window = tk.Tk()
             self.edit_Window.title("ApplicationTimeTracker - editing: " +
-                    windowObject.getWindowName())
+                                   windowObject.getWindowName())
             frame = Frame(
                 master=self.edit_Window, height=20, width=200, bg="darkgray")
             frame.pack(side='top', pady=1, fill="x", expand=False)
@@ -297,7 +303,8 @@ class MainWindow(tk.Tk):
             bg_tracking_button.pack(side='left', padx=5, pady=5, expand=False)
     # TODO info: what is bg_tracking...
             scroll_y = Scrollbar(self.edit_Window)
-            filter_Text = Text(self.edit_Window, height=20, width=80, bg="lightgray")
+            filter_Text = Text(self.edit_Window, height=20,
+                               width=80, bg="lightgray")
             scroll_y.pack(side="right", fill="y")
             filter_Text.pack(side="left", fill="y")
             scroll_y.config(command=filter_Text.yview)
@@ -329,7 +336,6 @@ class MainWindow(tk.Tk):
 
 # TODO delete all old filterStrings in database -> create new ### or: delete if old and create new for new
 
-
     def switchState(self, button, windowObject):
         if windowObject.state == True:
             button.configure(text="off")
@@ -350,15 +356,17 @@ class MainWindow(tk.Tk):
         time.sleep(2)   # -> bug...
         self.updateWindowList()  # -> update list in apptt...
 
-    def viewStats_Window(self, programName): #TODO replace programName by windowObject?
+    # TODO replace programName by windowObject?
+    def viewStats_Window(self, programName):
         try:
             self.stats_Window.lift(self)
         except:
             self.stats_Window = tk.Tk()
             self.stats_Window.title("ApplicationTimeTracker - stats: " +
-                    programName)
+                                    programName)
             scroll_y = Scrollbar(self.stats_Window)
-            stats_Text = Text(self.stats_Window, height=20, width=80, bg="#4a4a4a")
+            stats_Text = Text(self.stats_Window, height=20,
+                              width=80, bg="#4a4a4a")
             scroll_y.pack(side="right", fill="y")
             stats_Text.pack(side="left", fill="y")
             scroll_y.config(command=stats_Text.yview)
