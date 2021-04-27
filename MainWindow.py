@@ -5,6 +5,7 @@ import database
 import settings
 import pygetwindow as gw
 import tkinter.messagebox
+import time
 
 # tkinter.messagebox.showwarning("Warning", "work in progress", icon='warning')
 
@@ -28,6 +29,8 @@ class MainWindow(tk.Tk):
         # init all subwindows:
         self.settings_Window = None
         self.allWindowNames_Window = None
+        self.stats_Window = None
+        self.edit_Window = None
 
     def createMainWindow(self):
         menu_bar_frame = Frame(
@@ -215,7 +218,7 @@ class MainWindow(tk.Tk):
         self.list_frame.destroy()
         self.createListFrame()
 
-    # TODO WindowObject... # TODO rename methode
+    # TODO WindowObject... # TODO rename methode -> windowObject
     def createWindowFrame(self, master, windowObject):
         # TODO rename temp_frame
         temp_frame = Frame(
@@ -233,91 +236,82 @@ class MainWindow(tk.Tk):
 
         # TODO multiple lables for better formatting
         time_label = Label(master=temp_frame,
-                           text=windowObject.getTimeString(name=False), width=62, bg="gray")
+                           text=windowObject.getTimeString(), width=62, bg="gray")
         time_label.pack(padx=2, pady=2, side="left")
-        # TODO add & edit filterStrings
-        # -> new tkinter with Text(new line = new filterString)
-
+    # remove-Button
         remove_button = Button(temp_frame, text="remove",
                                bg="darkgray", command=lambda: self.remove(windowObject))
         remove_button.pack(padx=2, pady=2, side="right", fill="x")
-    # On/Off button
-        onoff_button = Button(temp_frame, text=windowObject.getStateString(),
-                              bg="darkgray", command=lambda: self.switchState(onoff_button, windowObject))       # => change state in database
-        onoff_button.pack(padx=2, pady=2, side="right", fill="x")
+    # state-Button
+        state_button = Button(temp_frame, text="off",
+                              bg="darkgray", command=lambda: self.switchState(state_button, windowObject))       # => change state in database
+        state_button.pack(padx=2, pady=2, side="right", fill="x")
+        if windowObject.getState():
+            state_button.configure(text="on")
+
     # statistics-Button
         statistics_button = Button(
             master=temp_frame, text="statistics", bg="darkgray", command=lambda: self.viewStats_Window(windowObject.getWindowName()))
         statistics_button.pack(padx=2, pady=2, side="right", fill="x")
     # edit-Button
-        statistics_button = Button(
+        edit_button = Button(
             master=temp_frame, text="edit", bg="darkgray", command=lambda: self.editFilterStrings_Window(windowObject))  # command=lambda: self.edit_Window(windowObject))
-        statistics_button.pack(padx=2, pady=2, side="right", fill="x")
-
-
-# TODO
-
-    # def edit_Window(self, windowObject):
-    #     print(windowObject.getWindowName())
-        # database.load_program_config(windwObject.getWindowName())
-        # add string to database-config
+        edit_button.pack(padx=2, pady=2, side="right", fill="x")
 
 
 # TODO save edit to database...
 # TODO add one line for each title
 
     def editFilterStrings_Window(self, windowObject):  # TODO Reset?
-        root = tk.Tk()  # rename root
-        root.title("ApplicationTimeTracker - editing: " +
-                   windowObject.getWindowName())
-        frame = Frame(
-            master=root, height=20, width=200, bg="darkgray")
-        frame.pack(side='top', pady=1, fill="x", expand=False)
-        name_entry = Entry(frame, bd=2, width=40, bg="lightgray")
-        name_entry.pack(side='left', padx=5, pady=1, expand=False)
-        name_entry.insert(tk.END, windowObject.getWindowName())
+        try:
+            self.stats_Window.lift(self)
+        except:
+            self.edit_Window = tk.Tk()
+            self.edit_Window.title("ApplicationTimeTracker - editing: " +
+                    windowObject.getWindowName())
+            frame = Frame(
+                master=self.edit_Window, height=20, width=200, bg="darkgray")
+            frame.pack(side='top', pady=1, fill="x", expand=False)
+            name_entry = Entry(frame, bd=2, width=40, bg="lightgray")
+            name_entry.pack(side='left', padx=5, pady=1, expand=False)
+            name_entry.insert(tk.END, windowObject.getWindowName())
 
-        def rename():
-            database.rename_program(
-                windowObject.getWindowName(), name_entry.get())
-            windowObject.windowName = name_entry.get()
-            self.reload()
+            def rename():
+                database.rename_program(
+                    windowObject.getWindowName(), name_entry.get())
+                windowObject.windowName = name_entry.get()
+                self.reload()
+                text = ""
+                for s in windowObject.getFilterStringList():
+                    text += s + "\n"
+                filter_Text.insert(tk.END, text)
+
+            rename_button = Button(
+                master=frame, text="rename filter name", command=rename)
+            rename_button.pack(side='left', padx=5, pady=5, expand=False)
+            bg_tracking_button = Button(
+                master=frame, text="bg-tracking off", command=lambda: self.switch_bg_tracking_State(bg_tracking_button, windowObject))
+            if windowObject.getBgTracking():
+                bg_tracking_button.configure(text="bg-tracking on")
+            bg_tracking_button.pack(side='left', padx=5, pady=5, expand=False)
+    # TODO info: what is bg_tracking...
+            scroll_y = Scrollbar(self.edit_Window)
+            filter_Text = Text(self.edit_Window, height=20, width=80, bg="lightgray")
+            scroll_y.pack(side="right", fill="y")
+            filter_Text.pack(side="left", fill="y")
+            scroll_y.config(command=filter_Text.yview)
+            filter_Text.config(yscrollcommand=scroll_y.set)
             text = ""
             for s in windowObject.getFilterStringList():
                 text += s + "\n"
             filter_Text.insert(tk.END, text)
 
-        rename_button = Button(
-            master=frame, text="rename Filter Name (noFunction)", command=rename)
-        # rename windowObject here?
-        rename_button.pack(side='left', padx=5, pady=5, expand=False)
+            save_button = Button(
+                master=frame, text="save Filter", command=lambda: self.updateStringFilter(windowObject, text=filter_Text.get("1.0", "end-1c")))
+            save_button.pack(side='left', padx=5, pady=5, expand=False)
 
-        bg_tracking_button = Button(
-            master=frame, text="bg-tracking off", command=lambda: self.switch_bg_tracking_State(bg_tracking_button, windowObject))
-        if windowObject.getBgTracking():
-            bg_tracking_button.configure(text="bg-tracking on")
-        bg_tracking_button.pack(side='left', padx=5, pady=5, expand=False)
-        # TODO info: what is bg_tracking...
-
-# TODO rename-methode in database
-
-        scroll_y = Scrollbar(root)
-        filter_Text = Text(root, height=20, width=80, bg="lightgray")
-        scroll_y.pack(side="right", fill="y")
-        filter_Text.pack(side="left", fill="y")
-        scroll_y.config(command=filter_Text.yview)
-        filter_Text.config(yscrollcommand=scroll_y.set)
-        text = ""
-        for s in windowObject.getFilterStringList():
-            text += s + "\n"
-        filter_Text.insert(tk.END, text)
-
-        save_button = Button(
-            master=frame, text="save Filter", command=lambda: self.updateStringFilter(windowObject, text=filter_Text.get("1.0", "end-1c")))
-        save_button.pack(side='left', padx=5, pady=5, expand=False)
-
-        # self.protocol("WM_DELETE_WINDOW", self.hide) # TODO override:quit or save -> save filter to database
-        root.mainloop()
+            # self.protocol("WM_DELETE_WINDOW", self.hide) # TODO override:quit or save -> save filter to database
+            self.edit_Window.mainloop()
 
     def updateStringFilter(self, windowObject, text):
         filter = []
@@ -332,8 +326,8 @@ class MainWindow(tk.Tk):
         print(database.get_program_filter(windowObject.getWindowName()))
 
 
-        
 # TODO delete all old filterStrings in database -> create new ### or: delete if old and create new for new
+
 
     def switchState(self, button, windowObject):
         if windowObject.state == True:
@@ -342,6 +336,7 @@ class MainWindow(tk.Tk):
         elif windowObject.state == False:
             button.configure(text="on")
             windowObject.setState(True)
+        time.sleep(2)   # -> bug...
         self.updateWindowList()  # -> update list in apptt...
 
     def switch_bg_tracking_State(self, button, windowObject):
@@ -351,25 +346,34 @@ class MainWindow(tk.Tk):
         elif windowObject.getBgTracking() == False:
             button.configure(text="bg-tracking on")
             windowObject.setBgTracking(True)
+        time.sleep(2)   # -> bug...
         self.updateWindowList()  # -> update list in apptt...
 
-    def viewStats_Window(self, programName):
-        root = tk.Tk()
-        S = Scrollbar(root)
-        T = Text(root, height=20, width=80, bg="#4a4a4a")
-        S.pack(side="right", fill="y")
-        T.pack(side="left", fill="y")
-        S.config(command=T.yview)
-        T.config(yscrollcommand=S.set)
+    def viewStats_Window(self, programName): #TODO replace programName by windowObject?
+        try:
+            self.stats_Window.lift(self)
+        except:
+            self.stats_Window = tk.Tk()
+            self.stats_Window.title("ApplicationTimeTracker - stats: " +
+                    programName)
+            scroll_y = Scrollbar(self.stats_Window)
+            stats_Text = Text(self.stats_Window, height=20, width=80, bg="#4a4a4a")
+            scroll_y.pack(side="right", fill="y")
+            stats_Text.pack(side="left", fill="y")
+            scroll_y.config(command=stats_Text.yview)
+            stats_Text.config(yscrollcommand=scroll_y.set)
 
-        # ---- stats to text ----
-        text = ""
-        for d in database.get_times_by_program(programName):
-            text += str(d[1])+" - "+self.convertToTimeString(d[2])+"\n"
+            # ---- stats to text ----
+            text = ""
+            for d in database.get_all_times_by_program(programName):
+                text += str(d[1])+" - "+self.convertToTimeString(d[2])
+                text += " -  bg-Time: "+self.convertToTimeString(d[3])
+                text += " =>  full-Time: "+self.convertToTimeString(d[2]+d[3])
+                text += "\n"
 
-        T.insert(tk.END, text)
-        T.config(state=tk.DISABLED)
-        root.mainloop()
+            stats_Text.insert(tk.END, text)
+            stats_Text.config(state=tk.DISABLED)
+            self.stats_Window.mainloop()
 
     def convertToTimeString(self, time_sec):
         hh = int(time_sec/60/60)
