@@ -63,7 +63,6 @@ except:
                     date text,
                     time integer
                     )""")
-
                     #TODO add backgroundTime integer
 
 # ---------- program_state - database ----------
