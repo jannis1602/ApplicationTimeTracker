@@ -25,45 +25,45 @@ lock = threading.Lock()
 # with conn:
 #     c.execute("ALTER TABLE programTimes RENAME TO program_times")
 
+# program_state
 try:
     with conn:
         c.execute("SELECT * FROM program_state").fetchone()
 except:
     with conn:
-        c.execute("""CREATE TABLE program_state(    
-                        name text,
-                        state integer       
-                        )""")
-                        
+        c.execute("""CREATE TABLE program_state(
+                        name TEXT,
+                        state INTEGER      
+                        bg_tracking INTEGER      
+                        )""")       # 0=false - 1=true
+
 # TODO (change state to tracking - 1/0 ?)
-# TODO program_state add bg_tracking integer
+# TODO program_state add bg_tracking INTEGER
 
-# with conn:        # for later     # background state per filter?
-#     c.execute("""CREATE TABLE program_filter(
-#                 name text,
-#                 filter text
-#                 )""")
+# program_filter
+try:
+    with conn:
+        c.execute("SELECT * FROM program_filter").fetchone()
+except:
+    with conn:
+        c.execute("""CREATE TABLE program_filter(
+                    name TEXT,
+                    filter_string TEXT
+                    )""")
 
-
-# with conn:
-#     c.execute("""CREATE TABLE program_config(
-#                 name text,
-#                 state text,
-#                 background integer,   #1=true
-#                 filter_string text
-#                 )""")
-
+# program_times
 try:
     with conn:
         c.execute("SELECT * FROM program_times").fetchone()
 except:
     with conn:
         c.execute("""CREATE TABLE program_times(
-                    name text,
-                    date text,
-                    time integer
+                    name TEXT,
+                    date TEXT,
+                    time INTEGER
+                    bg_time INTEGER
                     )""")
-                    #TODO add backgroundTime integer
+
 
 # ---------- program_state - database ----------
 
@@ -105,7 +105,7 @@ def get_all_programs_from_state():
 def get_all_active_programs():
     lock.acquire(True)
     with conn:
-        c.execute("SELECT * FROM program_state  WHERE state=1")
+        c.execute("SELECT * FROM program_state WHERE state=1")
         programs = []
         for e in c.fetchall():
             programs.append(e[0])
@@ -130,9 +130,52 @@ def set_program_state(name, state):
                 "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state})
 
 
+# ---------- program_filter - database ----------           # TODO if exists requests for all!!!
+
+def get_all_program_filter():
+    with conn:
+        c.execute("SELECT * FROM program_filter")
+        return c.fetchall()
+
+print(get_all_program_filter())
+
+
+def get_program_filter(name):
+    with conn:
+        c.execute("SELECT * FROM program_filter WHERE name =:name",
+                  {"name": name})
+        filterStrings = []
+        for s in c.fetchall():
+            filterStrings.append(s[1])
+    return filterStrings
+
+# print(get_program_filter("Opera"))
+
+
+def add_program_filter(name, filterString):
+    if get_program_state(name) is not None and get_program_filter(name).count(filterString) == 0:   # TODO if prog.state exists
+        with conn:
+            c.execute(
+                "INSERT INTO program_filter VALUES (:name,:string)", {"name": name, "string": filterString})
+
+# add_program_filter("Opera","web")
+
+
+
+def delete_program_filter(name, filterString):
+    with conn:
+        c.execute(
+            "DELETE FROM program_filter WHERE name =:name AND filter_string=:string", {"name": name, "string": filterString})
+
+# delete_program_filter("Opera","web")
+
+
+
+
+
 # ---------- program_times - database ----------
 
-def get_all():
+def get_all():               # TODO rename times
     with conn:
         c.execute("SELECT * FROM program_times")
         return c.fetchall()
@@ -148,7 +191,7 @@ def get_all_programs_from_time():  # get all from program_times      # TODO remo
     return programs
 
 
-def add_program(name, date=datetime.datetime.now().date(), time=0):
+def add_program(name, date=datetime.datetime.now().date(), time=0): # TODO rename to add_program_time
     with conn:
         c.execute(
             "INSERT INTO program_times VALUES (:name,:date,:time)", {"name": name, "date": date, "time": time})
