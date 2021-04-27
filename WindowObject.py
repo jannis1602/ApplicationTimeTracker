@@ -93,6 +93,9 @@ class WindowObject:
     def getTimeSec(self):
         return database.get_time_by_program(self.windowName)
 
+    def getBgTimeSec(self):
+        return database.get_bg_time_by_program(self.windowName)
+
     def getFullTime(self):
         return database.get_time_by_program(self.windowName)+database.get_bg_time_by_program(self.windowName)
 
