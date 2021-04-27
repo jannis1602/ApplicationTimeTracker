@@ -276,7 +276,7 @@ class MainWindow(tk.Tk):
         text = ""
         # TODO all filterstrings in windowObject -> list
         # text = windowObject.getWindowName()+"\n"
-        for s in windowObject.getFilterStrings():
+        for s in windowObject.getFilterStringList():
             text += s + "\n"
         # for f in windowObject
         T.insert(tk.END, text)
