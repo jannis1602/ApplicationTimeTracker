@@ -106,6 +106,7 @@ def add_program_state(name):
         with conn:
             c.execute(
                 "INSERT INTO program_state VALUES (:name,:state,:bg_tracking)", {"name": name, "state": 1, "bg_tracking": 1})
+        add_program_filter(name,name) # for default value
 
 
 def delete_program_state(name):
@@ -170,6 +171,8 @@ def get_program_filter(name):
         filterStrings = []
         for s in c.fetchall():
             filterStrings.append(s[1])
+        if len(filterStrings)==0:   # -> no bugs?
+            return name
     return filterStrings
 
 # print(get_program_filter("Opera"))
