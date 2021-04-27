@@ -8,7 +8,7 @@ import tkinter.messagebox
 import time
 
 # tkinter.messagebox.showwarning("Warning", "work in progress", icon='warning')
-
+# TODO close all subwindows...
 
 class MainWindow(tk.Tk):
 
