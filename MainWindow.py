@@ -255,8 +255,8 @@ class MainWindow(tk.Tk):
 
 # TODO
 
-    def edit_Window(self, windowObject):
-        print(windowObject.getWindowName())
+    # def edit_Window(self, windowObject):
+    #     print(windowObject.getWindowName())
         # database.load_program_config(windwObject.getWindowName())
         # add string to database-config
 
@@ -264,8 +264,11 @@ class MainWindow(tk.Tk):
 # TODO save edit to database...
 # TODO add one line for each title
 
+
     def editFilterStrings_Window(self, windowObject):  # TODO Reset?
         root = tk.Tk()  # rename root
+        root.title("ApplicationTimeTracker - editing: " +
+                   windowObject.getWindowName())
         frame = Frame(
             master=root, height=20, width=200, bg="darkgray")
         frame.pack(side='top', pady=1, fill="x", expand=False)
@@ -273,12 +276,16 @@ class MainWindow(tk.Tk):
         name_entry.pack(side='left', padx=5, pady=1, expand=False)
         name_entry.insert(tk.END, windowObject.getWindowName())
         rename_button = Button(
-            master=frame, text="rename Filter Name", command=lambda: print("rename in database..."))
+            master=frame, text="rename Filter Name (noFunction)", command=lambda: tkinter.messagebox.showwarning("Warning", "work in progress", icon='warning'))
         rename_button.pack(side='left', padx=5, pady=5, expand=False)
 
-
-        # TODO bg-Tracking button?
-
+        bg_tracking_button = Button(
+            master=frame, text="bg-tracking off", command=lambda: self.switch_bg_tracking_State(bg_tracking_button, windowObject))
+        if windowObject.getBgTracking():
+            bg_tracking_button.configure(text="bg-tracking on")
+        bg_tracking_button.pack(side='left', padx=5, pady=5, expand=False)
+        # TODO info: bg_tracking...
+        # -> update apptt
 
 # TODO rename-methode in database
 
@@ -297,18 +304,23 @@ class MainWindow(tk.Tk):
         filter_Text.insert(tk.END, text)
 
         save_button = Button(
-            master=frame, text="save Filter", command=lambda: self.updateStringFilter(text=filter_Text.get("1.0", "end-1c")))
+            master=frame, text="save Filter", command=lambda: self.updateStringFilter(windowObject, text=filter_Text.get("1.0", "end-1c")))
         save_button.pack(side='left', padx=5, pady=5, expand=False)
 
         # self.protocol("WM_DELETE_WINDOW", self.hide) # TODO override:quit or save -> save filter to database
         root.mainloop()
 
-    def updateStringFilter(self, text):
+    def updateStringFilter(self, windowObject, text):
         filter = []
         for l in text.splitlines():
             if len(l) >= 1:
                 filter.append(l)
-        print(filter)
+        print("---->>> new filter:", filter)
+        database.delete_all_program_filter(windowObject.getWindowName())
+        for s in filter:
+            database.add_program_filter(windowObject.getWindowName(), s)
+
+        print(database.get_program_filter(windowObject.getWindowName()))
 # TODO delete all old filterStrings in database -> create new ### or: delete if old and create new for new
 
     def switchState(self, button, windowObject):
@@ -318,8 +330,16 @@ class MainWindow(tk.Tk):
         elif windowObject.state == False:
             button.configure(text="on")
             windowObject.setState(True)
-        self.updateWindowList()
-        # -> update list in apptt...
+        self.updateWindowList()  # -> update list in apptt...
+
+    def switch_bg_tracking_State(self, button, windowObject):
+        if windowObject.getBgTracking() == True:
+            button.configure(text="bg-tracking off")
+            windowObject.setBgTracking(False)
+        elif windowObject.getBgTracking() == False:
+            button.configure(text="bg-tracking on")
+            windowObject.setBgTracking(True)
+        self.updateWindowList()  # -> update list in apptt...
 
     def viewStats_Window(self, programName):
         root = tk.Tk()
