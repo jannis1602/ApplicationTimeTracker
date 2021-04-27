@@ -155,7 +155,7 @@ def loop():
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
                 for w in windowList:
-                    # counted = False # for bgTracking
+                    counted = False # for bgTracking
                     if w.state:
                         for fs in w.getFilterStringList():
                             # TODO: #12 alle fenster...
@@ -163,19 +163,19 @@ def loop():
                             if getForegroundWindowTitle().count(fs) >= 1:
                                 w.addSec()  # TODO: #13 filter2: program-speicherort???
                                 # (here unused->faster?) ->for bgTracking  # -> add only one sec per sec per program
-                                # counted = True # for bgTracking
+                                counted = True # for bgTracking
                                 break
 
 # TODO BG-Tracking is in work...
 #### ---- ####
-#                     if w.getBgTracking() and counted == False:
-#                         for fs in w.getFilterStringList():
-#                             if counted == False:
-#                                 for bgt in getBackgroundWindowTitles():
-#                                     if bgt.count(fs) >= 1:  # TODO == -> else warning?
-#                                         w.addSec()
-#                                         counted = True  # -> add only one sec per sec per program
-#
+                    if w.getBgTracking() and counted == False:
+                        for fs in w.getFilterStringList():
+                            if counted == False:
+                                for bgt in getBackgroundWindowTitles():
+                                    if bgt.count(fs) >= 1:  # TODO == -> else warning?
+                                        # w.addSec()
+                                        w.addSecBgTime()
+                                        counted = True  # -> add only one sec per sec per program
 #### ---- ####
                         # if save is only ones per minute?:
                                 # if saveListDatabase.count(w.windowName) == 1:
