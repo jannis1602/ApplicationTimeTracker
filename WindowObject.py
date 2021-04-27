@@ -16,6 +16,18 @@ class WindowObject:
         # self.passedTime = startTime
         self.filterStrings = [self.windowName]  # -> load from database
         # TODO load from database-program_config
+        # load bg tracking from database
+        print("================>>>", self.windowName)
+        if self.windowName.count("Code") >= 1:
+            self.bgTracking == True
+            print("---- TRUE! ----")
+
+    def getBgTracking(self):    # TODO only for testing
+        # return self.bgTracking
+        if self.windowName.count("Visual Studio Code") == 1:
+            return True
+        else:
+            return False
 
     def getWindowName(self):
         return self.windowName
