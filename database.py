@@ -65,9 +65,20 @@ except:
                     )""")
 
 
+# ---------- program_methodes ----------
+
+# def add_program(name):
+#     if get_program_state(name) == None:
+#         with conn:
+#             c.execute(
+#                 "INSERT INTO program_state VALUES (:name,:state,:bg_tracking)", {"name": name, "state": 1, "bg_tracking": 1})
+        # new in other tables...
+
+
+# TODO rename filter ...
+
+
 # ---------- program_state - database ----------
-
-
 def get_program_state(name):
     with conn:
         c.execute("SELECT * FROM program_state WHERE name=:name",
@@ -100,9 +111,10 @@ def add_program_state(name):
 def delete_program_state(name):
     with conn:
         c.execute("DELETE FROM program_state WHERE name=:name", {"name": name})
+    # TODO delete times and filter
 
 
-def get_all_programs_from_state():
+def get_all_programs():
     lock.acquire(True)
     with conn:
         programs = []
@@ -173,67 +185,100 @@ def add_program_filter(name, filterString):
 # add_program_filter("Opera","web")
 
 
-def delete_program_filter(name, filterString):
+def delete_program_filter_string(name, filterString):
     with conn:
         c.execute(
-            "DELETE FROM program_filter WHERE name =:name AND filter_string=:string", {"name": name, "string": filterString})
+            "DELETE FROM program_filter WHERE name =:name AND filter_string=:filter_string", {"name": name, "filter_string": filterString})
+
+
+def delete_all_program_filter(filterString):
+    with conn:
+        c.execute("DELETE FROM program_filter WHERE filter_string=:filter_string",
+                  {"filter_string": filterString})
 
 # delete_program_filter("Opera","web")
 
 
 # ---------- program_times - database ----------
 
-def get_all():               # TODO rename times
+def get_all_program_times():
     with conn:
         c.execute("SELECT * FROM program_times")
         return c.fetchall()
 
 
-def get_all_programs_from_time():  # get all from program_times      # TODO remove
-    with conn:
-        programs = []
-        c.execute("SELECT * FROM program_times")
-        for p in c.fetchall():
-            if programs.count(p[0]) == 0:
-                programs.append(p[0])
-    return programs
+# def get_all_programs_from_time():  # get all from program_times      # TODO remove? -> or check wrong on startup?
+#     with conn:
+#         programs = []
+#         c.execute("SELECT * FROM program_times")
+#         for p in c.fetchall():
+#             if programs.count(p[0]) == 0:
+#                 programs.append(p[0])
+#     return programs
 
 
-# TODO rename to add_program_time
-def add_program(name, date=datetime.datetime.now().date(), time=0, bg_time=0):
+def add_program_time(name, date=datetime.datetime.now().date(), time=0, bg_time=0):
     with conn:
         c.execute(
             "INSERT INTO program_times VALUES (:name,:date,:time,:bg_time)", {"name": name, "date": date, "time": time, "bg_time": bg_time})
 
-# TODO -------- change parameters...
-
 
 def set_time(name, date, time):
     with conn:
-        c.execute(
-            "UPDATE program_times SET time=:time WHERE date=:date AND name=:name", {"name": name, "date": date, "time": time})
+        if not get_program_state(name) == None and get_time_by_program_date(name=name, date=date) == None:
+            add_program_time(name, date, time)
+        else:
+            c.execute(
+                "UPDATE program_times SET time=:time WHERE date=:date AND name=:name", {"name": name, "date": date, "time": time})
 
 
 def add_time(name, date, time):
     with conn:
-        c.execute(
-            "UPDATE program_times SET time=time + :time WHERE date=:date AND name=:name", {"name": name, "date": date,  "time": time})
-
-
-def add_time_if_name_exists(name, date, time):
-    with conn:
-        # TODO replace get times durch program/config database
         if not get_program_state(name) == None and get_time_by_program_date(name=name, date=date) == None:
-            add_program(name, date)
-        c.execute(
-            "UPDATE program_times SET time=time + :time WHERE date=:date AND name=:name", {"name": name, "date": date,  "time": time})
+            add_program_time(name, date, time)
+        else:
+            c.execute(
+                "UPDATE program_times SET time=time + :time WHERE date=:date AND name=:name", {"name": name, "date": date,  "time": time})
+
+
+def set_bg_time(name, date, bg_time):
+    with conn:
+        if not get_program_state(name) == None and get_time_by_program_date(name=name, date=date) == None:
+            add_program_time(name, date, bg_time=bg_time)
+        else:
+            c.execute(
+                "UPDATE program_times SET bg_time=:bg_time WHERE date=:date AND name=:name", {"name": name, "date": date, "bg_time": bg_time})
+
+
+def add_bg_time(name, date, bg_time):
+    with conn:
+        if not get_program_state(name) == None and get_time_by_program_date(name=name, date=date) == None:
+            add_program_time(name, date, bg_time=bg_time)
+        else:
+            c.execute(
+                "UPDATE program_times SET bg_time=bg_time + :bg_time WHERE date=:date AND name=:name", {"name": name, "date": date,  "bg_time": bg_time})
+
+
+# def add_time_if_name_exists(name, date, time):    # replaced by default...
+#     with conn:
+#         if not get_program_state(name) == None and get_time_by_program_date(name=name, date=date) == None:
+#             add_program_time(name, date)
+#         c.execute(
+#             "UPDATE program_times SET time=time + :time WHERE date=:date AND name=:name", {"name": name, "date": date,  "time": time})
 
 
 def get_time_by_program_date(name, date):
     with conn:
         c.execute("SELECT * FROM program_times WHERE date=:date AND name=:name",
                   {"date": date, "name": name})
-        return c.fetchone()
+        return c.fetchone()#[2] if not none
+
+
+def get_bg_time_by_program_date(name, date):
+    with conn:
+        c.execute("SELECT * FROM program_times WHERE date=:date AND name=:name",
+                  {"date": date, "name": name})
+        return c.fetchone()#[3] if not none
 
 
 def get_times_by_program(name):
@@ -243,7 +288,7 @@ def get_times_by_program(name):
         return c.fetchall()
 
 
-def get_fulltime_by_program(name):
+def get_fulltime_by_program(name):      # TODO + bgTime?
     lock.acquire(True)
     with conn:
         c.execute("SELECT * FROM program_times WHERE name=:name",
@@ -255,13 +300,13 @@ def get_fulltime_by_program(name):
         return fulltime
 
 
-def delete_by_name(name):
+def delete_program_time_by_name(name):
     with conn:
         c.execute("DELETE FROM program_times WHERE name=:name",
                   {"name": name})
 
 
-def delete_by_name_and_date(name, date):
+def delete_program_time_by_name_and_date(name, date):
     with conn:
         c.execute("DELETE FROM program_times WHERE name=:name AND date=:date",
                   {"name": name, "date": date})
