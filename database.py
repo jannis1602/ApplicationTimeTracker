@@ -159,14 +159,12 @@ def get_all_inactive_programs():
 
 
 def set_program_state(name, state):
-    # if state == True:
+    lock.acquire(True)
     with conn:
         c.execute(
             "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state})
-    # elif state == False:
-    #     with conn:
-    #         c.execute(
-    #             "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state})
+    lock.release()
+
 
 
 def set_program_bg_tracking_state(name, bg_tracking):
