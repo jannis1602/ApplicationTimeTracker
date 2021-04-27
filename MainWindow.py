@@ -150,13 +150,13 @@ class MainWindow(tk.Tk):
         settings.set_windowPosition(self.winfo_x(), self.winfo_y())
         self.withdraw()
 
-    #TODO destroy if window exists...
+    # TODO destroy if window exists...
         # self.settings_Window.destroy()
         # self.allWindowNames_Window.destroy()
 
-# TODO close all open windows 
+# TODO close all open windows
 
-    def createListFrame(self):      #TODO rename 
+    def createListFrame(self):  # TODO rename
         self.list_frame = Frame(master=self)
         self.list_frame.pack(side='left', padx=0,
                              pady=0, fill="both", expand=True)
@@ -267,10 +267,27 @@ class MainWindow(tk.Tk):
 
 
 # TODO save edit to database...
-    def editFilterStrings_Window(self, windowObject):
-        root = tk.Tk()
+# TODO add one line for title
+
+
+    def editFilterStrings_Window(self, windowObject):  # TODO Reset?
+        root = tk.Tk()  # rename root
+# TODO layout...
+        frame = Frame(
+            master=root, height=20, width=200, bg="darkgray")
+        frame.pack(side='top',
+                        pady=1, fill="x", expand=False)
+        name_entry = Entry(
+            frame, bd=2, width=40, bg="lightgray")
+        name_entry.pack(side='left', padx=5, pady=1, expand=False)
+        name_entry.insert(tk.END, windowObject.getWindowName())
+        rename_button = Button(
+            master=frame, text="rename Filter", command=lambda: print("rename in database"))
+        rename_button.pack(side='left', padx=5, pady=5, expand=False)
+# TODO rename-methode in database
+
         S = Scrollbar(root)
-        T = Text(root, height=20, width=80)
+        T = Text(root, height=20, width=80, bg="lightgray")
         S.pack(side="right", fill="y")
         T.pack(side="left", fill="y")
         S.config(command=T.yview)
@@ -282,7 +299,7 @@ class MainWindow(tk.Tk):
             text += s + "\n"
         # for f in windowObject
         T.insert(tk.END, text)
-        # self.protocol("WM_DELETE_WINDOW", self.hide) # TODO save filter
+        # self.protocol("WM_DELETE_WINDOW", self.hide) # TODO override -> save filter to database
         root.mainloop()
 
     def switchState(self, button, windowObject):
