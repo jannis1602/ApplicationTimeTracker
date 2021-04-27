@@ -275,6 +275,11 @@ class MainWindow(tk.Tk):
         rename_button = Button(
             master=frame, text="rename Filter Name", command=lambda: print("rename in database..."))
         rename_button.pack(side='left', padx=5, pady=5, expand=False)
+
+
+        # TODO bg-Tracking button?
+
+
 # TODO rename-methode in database
 
         scroll_y = Scrollbar(root)
