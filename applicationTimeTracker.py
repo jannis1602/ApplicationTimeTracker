@@ -19,29 +19,19 @@ global windowList
 global maxIdleTime  # global?
 global running
 running = True
-maxIdleTime = 2*60  # 120 sec -> 2 min
-saveListDatabase = []  # savelist for database #for later
+maxIdleTime = 2*60 
 
 # TODO change windowName -> programName
-#
+
+# print('#' * 50)
+# print("all active windows:")
+# for s in pygetwindow.getAllTitles():
+#     if len(s) >= 1:
+#         print(s)
+# print('#' * 50)
 
 
-# ---- startup ----
-
-maxIdleTime = settings.load_idleTime()
-print("max Idle-Time:", maxIdleTime)
-
-# ---- end ----
-
-print('#' * 50)
-print("all active windows:")
-for s in pygetwindow.getAllTitles():
-    if len(s) >= 1:
-        print(s)
-print('#' * 50)
-
-
-def getIdleTime():  # returns time from last userinput
+def getIdleTime():  # returns the time from last userinput
     return (win32api.GetTickCount() - win32api.GetLastInputInfo()) / 1000.0
 
 
@@ -52,31 +42,11 @@ def loadWindowList():
         windowList.append(WindowObject(s))
 
 
-# TODO add & remove unused?
-
-def addWindowName(winName):
-    if checkForWindowName(winName) == False:
-        windowList.append(WindowObject(winName, 0))
-# ----> SAVE
-
-
-def removeWindowName(winName):
-    if checkForWindowName(winName) == True:
-        for w in windowList:
-            if w.windowName == winName:
-                windowList.remove(w)
-# ----> SAVE
-
-
 def checkForWindowName(nameString):
     for w in windowList:
         if w.windowName.lower() == nameString.lower():
             return True
     return False
-
-
-def refresh():
-    print("refresh")
 
 
 def checkListForElement(checkList, element, lower=True):
@@ -93,11 +63,10 @@ def addStringToFilter(name):
         windowList.append(WindowObject(name))
 
 
-def end():  # TODO: rename
+def end():
     print("EXIT...")
     global running
     running = False
-# ----> SAVE -- save save-list to database
     try:
         icon.visible = False
         while icon.visible:
@@ -136,12 +105,8 @@ def getBackgroundWindowTitles():
     for s in pygetwindow.getAllTitles():
         if len(s) >= 1 and bgTitles.count(s) == 0:
             bgTitles.append(s)
-    # print(bgTitles)
     return bgTitles
-# ------------------------------
 
-# database.add_program("Visual Studio Code")
-# database.add_program("Opera")
 
 # MainLoop --------------------------------------------
 
@@ -149,39 +114,38 @@ def getBackgroundWindowTitles():
 def loop():
     icon.visible = True
     lastTime = time.time()
-    lastTimeMin = time.time()
     global running
     while running:
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
                 for w in windowList:
-                    counted = False  # for bgTracking
+                    counted = False
                     if w.state:
                         for fs in w.getFilterStringList():
-                            # TODO: #12 alle fenster...
+                            # TODO: all windows...
                             # TODO -> contains or equals?
                             if getForegroundWindowTitle().count(fs) >= 1:
                                 w.addSec()  # TODO: #13 filter2: program-speicherort???
-                                # (here unused->faster?) ->for bgTracking  # -> add only one sec per sec per program
-                                counted = True  # for bgTracking
+                                counted = True  
                                 break
                     if w.getBgTracking() and counted == False:
                         for fs in w.getFilterStringList():
                             if counted == False:
                                 for bgt in getBackgroundWindowTitles():
-                                    if bgt.count(fs) >= 1:  # TODO == -> else warning?
-                                        # w.addSec()
+                                    if bgt.count(fs) >= 1:  # TODO 1 name & 2 windows -> warning?
                                         w.addSecBgTime()
                                         counted = True  # -> add only one sec per sec per program
             lastTime += 1
 
 # if __name__ == '__main__': # test
 
+# ---- startup ----
 
-# print(database.get_all_programs())
+maxIdleTime = settings.load_idleTime()
+print("max Idle-Time:", maxIdleTime)
+
 loadWindowList()
-
-
+print('*'*50)
 for w in windowList:
     print(w.getTimeString())
 print('*'*50)
@@ -189,23 +153,14 @@ print('*'*50)
 # for thread in threading.enumerate():
 #     print(thread.name)
 
-# --------------create mainWindow--------------------
-# mainWindowThread = threading.Thread(target=createMainWindow)
-# mainWindowThread.start()
-
-# Wiondow on startup
+# Window on startup
 mainWindowThread = threading.Thread(target=createMainWindow)
 mainWindowThread.start()
 
-
 print("~"*50)
-
-# database.set_program_state("Discord",True)
-# database.delete_program_state("Discord")
-
-# database.add_program_state("Discord")
 print("all programs:", database.get_all_programs())
 print("active:", database.get_all_active_programs())
+print("~"*50)
 
 # for d in database.get_all_programs_from_time():
 #     database.add_program_state(d)
