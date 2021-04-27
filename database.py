@@ -11,6 +11,9 @@ import threading
 
 # TODO filepath as var
 
+# TODO lock.acquire(True) and lock.release() for all!
+
+
 conn = sqlite3.connect("ApplicationTimeTracker/data.db",
                        check_same_thread=False)
 c = conn.cursor()
@@ -147,7 +150,7 @@ def set_program_state(name, state):
     # if state == True:
     with conn:
         c.execute(
-            "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state}) 
+            "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state})
     # elif state == False:
     #     with conn:
     #         c.execute(
@@ -155,9 +158,11 @@ def set_program_state(name, state):
 
 
 def set_program_bg_tracking_state(name, bg_tracking):
+    lock.acquire(True)
     with conn:
         c.execute(
             "UPDATE program_state SET bg_tracking=:bg_tracking WHERE name=:name", {"name": name, "bg_tracking": bg_tracking})
+    lock.release()
 
 
 # ---------- program_filter - database ----------           # TODO if exists requests for all!!!
