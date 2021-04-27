@@ -6,6 +6,8 @@ import settings
 import pygetwindow as gw
 import tkinter.messagebox
 
+# tkinter.messagebox.showwarning("Warning", "work in progress", icon='warning')
+
 
 class MainWindow(tk.Tk):
 
@@ -264,7 +266,6 @@ class MainWindow(tk.Tk):
 # TODO save edit to database...
 # TODO add one line for each title
 
-
     def editFilterStrings_Window(self, windowObject):  # TODO Reset?
         root = tk.Tk()  # rename root
         root.title("ApplicationTimeTracker - editing: " +
@@ -275,8 +276,20 @@ class MainWindow(tk.Tk):
         name_entry = Entry(frame, bd=2, width=40, bg="lightgray")
         name_entry.pack(side='left', padx=5, pady=1, expand=False)
         name_entry.insert(tk.END, windowObject.getWindowName())
+
+        def rename():
+            database.rename_program(
+                windowObject.getWindowName(), name_entry.get())
+            windowObject.windowName = name_entry.get()
+            self.reload()
+            text = ""
+            for s in windowObject.getFilterStringList():
+                text += s + "\n"
+            filter_Text.insert(tk.END, text)
+
         rename_button = Button(
-            master=frame, text="rename Filter Name (noFunction)", command=lambda: tkinter.messagebox.showwarning("Warning", "work in progress", icon='warning'))
+            master=frame, text="rename Filter Name (noFunction)", command=rename)
+        # rename windowObject here?
         rename_button.pack(side='left', padx=5, pady=5, expand=False)
 
         bg_tracking_button = Button(
@@ -295,11 +308,8 @@ class MainWindow(tk.Tk):
         scroll_y.config(command=filter_Text.yview)
         filter_Text.config(yscrollcommand=scroll_y.set)
         text = ""
-        # TODO all filterstrings in windowObject -> list
-        # text = windowObject.getWindowName()+"\n"
         for s in windowObject.getFilterStringList():
             text += s + "\n"
-        # for f in windowObject
         filter_Text.insert(tk.END, text)
 
         save_button = Button(
@@ -320,6 +330,9 @@ class MainWindow(tk.Tk):
             database.add_program_filter(windowObject.getWindowName(), s)
 
         print(database.get_program_filter(windowObject.getWindowName()))
+
+
+        
 # TODO delete all old filterStrings in database -> create new ### or: delete if old and create new for new
 
     def switchState(self, button, windowObject):
