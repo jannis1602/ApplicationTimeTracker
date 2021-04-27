@@ -305,23 +305,45 @@ def get_bg_time_by_program_date(name, date):
         return c.fetchone()  # [3] if not none
 
 
-def get_times_by_program(name):
+def get_all_times_by_program(name):
     with conn:
         c.execute("SELECT * FROM program_times WHERE name=:name",
                   {"name": name})
         return c.fetchall()
 
 
-def get_fulltime_by_program(name):      # TODO + bgTime?
+def get_time_by_program(name):  
     lock.acquire(True)
     with conn:
         c.execute("SELECT * FROM program_times WHERE name=:name",
                   {"name": name})
-        fulltime = 0
+        time = 0
         for day in c.fetchall():
-            fulltime += day[2]
+            time += day[2]
         lock.release()
-        return fulltime
+        return time
+
+def get_bg_time_by_program(name):  
+    lock.acquire(True)
+    with conn:
+        c.execute("SELECT * FROM program_times WHERE name=:name",
+                  {"name": name})
+        time = 0
+        for day in c.fetchall():
+            time += day[3]
+        lock.release()
+        return time
+
+# def get_fulltime_by_program(name):      # TODO + bgTime? => time+bg_time
+#     lock.acquire(True)
+#     with conn:
+#         c.execute("SELECT * FROM program_times WHERE name=:name",
+#                   {"name": name})
+#         fulltime = 0
+#         for day in c.fetchall():
+#             fulltime += day[2]
+#         lock.release()
+#         return fulltime
 
 
 def delete_program_time_by_name(name):
