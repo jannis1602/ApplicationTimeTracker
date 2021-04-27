@@ -18,10 +18,10 @@ class WindowObject:
     def getWindowName(self):
         return self.windowName
 
-    def getFilterStrings(self):
+    def getFilterStringList(self):
         return self.filterStrings
 
-    def addFilterString(self, filterString):
+    def addToFilterStringList(self, filterString):
         if self.filterStrings.count(filterString) == 0:
             self.filterStrings.append(filterString)
 
