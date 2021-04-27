@@ -155,33 +155,37 @@ def loop():
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
                 for w in windowList:
-                    counted = False
+                    # counted = False # for bgTracking
                     if w.state:
                         for fs in w.getFilterStringList():
                             # TODO: #12 alle fenster...
                             # TODO -> contains or equals?
                             # if str(win32gui.GetWindowText(win32gui.GetForegroundWindow())).count(w.windowName) >= 1:
                             if getForegroundWindowTitle().count(fs) >= 1:  # TODO == -> else warning?
-                                w.addSec()  # TODO: #13 filter2: nach speicherort???
+                                w.addSec()  # TODO: #13 filter2: program-speicherort???
                                 # (here unused->faster?) ->for bgTracking  # -> add only one sec per sec per program
-                                counted = True
+                                # counted = True # for bgTracking
                                 break
-                            # TODO if background tracking is on -> addSec()
-                    if w.getBgTracking() and counted == False:    # -> state = foregroundTracking? -> bg=true => state=false
-                        for fs in w.getFilterStringList():
-                            if counted == False:
-                                for bgt in getBackgroundWindowTitles():
-                                    if bgt.count(fs) >= 1:  # TODO == -> else warning?
-                                        w.addSec()  # TODO: #13 filter2: nach speicherort???
-                                        counted = True  # -> add only one sec per sec per program
 
+# TODO BG-Tracking is in work...
+#### ---- ####
+#                     if w.getBgTracking() and counted == False:
+#                         for fs in w.getFilterStringList():
+#                             if counted == False:
+#                                 for bgt in getBackgroundWindowTitles():
+#                                     if bgt.count(fs) >= 1:  # TODO == -> else warning?
+#                                         w.addSec()
+#                                         counted = True  # -> add only one sec per sec per program
+#
+#### ---- ####
+                        # if save is only ones per minute?:
                                 # if saveListDatabase.count(w.windowName) == 1:
                                 #   print(saveListDatabase.index(w.windowName))
                                 # else:
                                 #     saveListDatabase.append(w.windowName)
 
-                                # add window with time to save-list
 # ----> SAVE
+
             lastTime += 1
         if time.time()-lastTimeMin > 60:
             print("save minute")
