@@ -6,6 +6,7 @@ file = "ApplicationTimeTracker/settings.json"
 # TODO add settings
 
 # TODO idle-time --- window x y --- (sql-settings) --- filter-queue?    
+# TODO show window on startup?
 
 
 def save_settings():
