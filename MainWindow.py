@@ -265,6 +265,8 @@ class MainWindow(tk.Tk):
     # filter-strings
     # bg-tracking for each string
 
+
+# TODO save edit to database...
     def editFilterStrings_Window(self, windowObject):
         root = tk.Tk()
         S = Scrollbar(root)
