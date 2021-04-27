@@ -217,10 +217,10 @@ def delete_program_filter_string(name, filterString):
             "DELETE FROM program_filter WHERE name =:name AND filter_string=:filter_string", {"name": name, "filter_string": filterString})
 
 
-def delete_all_program_filter(filterString):
+def delete_all_program_filter(name):
     with conn:
-        c.execute("DELETE FROM program_filter WHERE filter_string=:filter_string",
-                  {"filter_string": filterString})
+        c.execute("DELETE FROM program_filter WHERE name=:name",
+                  {"name": name})
 
 # delete_program_filter("Opera","web")
 
