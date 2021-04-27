@@ -7,6 +7,7 @@ import datetime
 class WindowObject:
     windowName = 0
     state = True
+    bgTracking = False  # BackgroundTracking
     # passedTime = 0
 
     def __init__(self, windowName, startTime=0):
@@ -14,6 +15,7 @@ class WindowObject:
         self.state = database.get_program_state(self.windowName)
         # self.passedTime = startTime
         self.filterStrings = [self.windowName]  # -> load from database
+        # TODO load from database-program_config
 
     def getWindowName(self):
         return self.windowName
