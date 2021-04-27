@@ -154,7 +154,7 @@ class MainWindow(tk.Tk):
         # self.settings_Window.destroy()
         # self.allWindowNames_Window.destroy()
 
-# TODO close all open windows
+# TODO close all open windows 
 
     def createListFrame(self):      #TODO rename 
         self.list_frame = Frame(master=self)
