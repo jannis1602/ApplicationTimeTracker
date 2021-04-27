@@ -105,8 +105,8 @@ def add_program_state(name):
     if get_program_state(name) == None:
         with conn:
             c.execute(
-                "INSERT INTO program_state VALUES (:name,:state,:bg_tracking)", {"name": name, "state": 1, "bg_tracking": 1})
-        add_program_filter(name,name) # for default value
+                "INSERT INTO program_state VALUES (:name,:state,:bg_tracking)", {"name": name, "state": 1, "bg_tracking": 0})
+        add_program_filter(name, name)  # for default value
 
 
 def delete_program_state(name):
@@ -144,14 +144,20 @@ def get_all_inactive_programs():
 
 
 def set_program_state(name, state):
-    if state == True:
-        with conn:
-            c.execute(
-                "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state})
-    elif state == False:
-        with conn:
-            c.execute(
-                "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state})
+    # if state == True:
+    with conn:
+        c.execute(
+            "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state}) 
+    # elif state == False:
+    #     with conn:
+    #         c.execute(
+    #             "UPDATE program_state SET state=:state WHERE name=:name", {"name": name, "state": state})
+
+
+def set_program_bg_tracking_state(name, bg_tracking):
+    with conn:
+        c.execute(
+            "UPDATE program_state SET bg_tracking=:bg_tracking WHERE name=:name", {"name": name, "bg_tracking": bg_tracking})
 
 
 # ---------- program_filter - database ----------           # TODO if exists requests for all!!!
@@ -171,8 +177,8 @@ def get_program_filter(name):
         filterStrings = []
         for s in c.fetchall():
             filterStrings.append(s[1])
-        if len(filterStrings)==0:   # -> no bugs?
-            return name
+        if len(filterStrings) == 0:   # -> no bugs?
+            return [name]
     return filterStrings
 
 # print(get_program_filter("Opera"))
@@ -274,14 +280,14 @@ def get_time_by_program_date(name, date):
     with conn:
         c.execute("SELECT * FROM program_times WHERE date=:date AND name=:name",
                   {"date": date, "name": name})
-        return c.fetchone()#[2] if not none
+        return c.fetchone()  # [2] if not none
 
 
 def get_bg_time_by_program_date(name, date):
     with conn:
         c.execute("SELECT * FROM program_times WHERE date=:date AND name=:name",
                   {"date": date, "name": name})
-        return c.fetchone()#[3] if not none
+        return c.fetchone()  # [3] if not none
 
 
 def get_times_by_program(name):
