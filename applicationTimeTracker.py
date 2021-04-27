@@ -132,11 +132,12 @@ def getForegroundWindowTitle():
 
 
 def getBackgroundWindowTitles():
-    backgroundTitles = []
+    bgTitles = []
     for s in pygetwindow.getAllTitles():
-        if len(s) >= 1:
-            backgroundTitles.append(s)
-    return backgroundTitles
+        if len(s) >= 1 and bgTitles.count(s) == 0:
+            bgTitles.append(s)
+    # print(bgTitles)
+    return bgTitles
 # ------------------------------
 
 # database.add_program("Visual Studio Code")
@@ -154,6 +155,7 @@ def loop():
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
                 for w in windowList:
+                    counted = False
                     if w.state:
                         for fs in w.getFilterStringList():
                             # TODO: #12 alle fenster...
@@ -162,10 +164,10 @@ def loop():
                             if getForegroundWindowTitle().count(fs) >= 1:  # TODO == -> else warning?
                                 w.addSec()  # TODO: #13 filter2: nach speicherort???
                                 # (here unused->faster?) ->for bgTracking  # -> add only one sec per sec per program
+                                counted = True
                                 break
                             # TODO if background tracking is on -> addSec()
-                    if w.bgTracking:    # -> state = foregroundTracking? -> bg=true => state=false
-                        counted = False
+                    if w.getBgTracking() and counted == False:    # -> state = foregroundTracking? -> bg=true => state=false
                         for fs in w.getFilterStringList():
                             if counted == False:
                                 for bgt in getBackgroundWindowTitles():
