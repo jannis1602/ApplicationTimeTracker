@@ -125,7 +125,7 @@ def loop():
                             # TODO: all windows...
                             # TODO -> contains or equals?
                             if getForegroundWindowTitle().count(fs) >= 1:
-                                w.addSec()  # TODO: #13 filter2: program-speicherort???
+                                w.addSec()  # TODO: #13 filter2: program-location???
                                 counted = True  
                                 break
                         if w.getBgTracking() and counted == False:
