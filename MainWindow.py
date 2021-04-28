@@ -274,8 +274,7 @@ class MainWindow(tk.Tk):
             self.stats_Window.lift(self)
         except:
             self.edit_Window = tk.Tk()
-            self.edit_Window.title("ApplicationTimeTracker - editing: " +
-                                   windowObject.getWindowName())
+            self.edit_Window.title("ApplicationTimeTracker - editing: ") #+windowObject.getWindowName())
             frame = Frame(
                 master=self.edit_Window, height=20, width=200, bg="darkgray")
             frame.pack(side='top', pady=1, fill="x", expand=False)
@@ -362,8 +361,7 @@ class MainWindow(tk.Tk):
             self.stats_Window.lift(self)
         except:
             self.stats_Window = tk.Tk()
-            self.stats_Window.title("ApplicationTimeTracker - stats: " +
-                                    programName)
+            self.stats_Window.title("ApplicationTimeTracker - statistics ")# programName)
             scroll_y = Scrollbar(self.stats_Window)
             stats_Text = Text(self.stats_Window, height=20,
                               width=80, bg="#4a4a4a")
