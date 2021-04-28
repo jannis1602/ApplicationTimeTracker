@@ -118,7 +118,7 @@ def loop():
     while running:
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
-                for w in windowList:
+                for w in windowList:        # -> warning if 2 windows have 1 same FilterString 
                     counted = False
                     if w.state:
                         for fs in w.getFilterStringList():
