@@ -108,6 +108,13 @@ def getBackgroundWindowTitles():
     return bgTitles
 
 
+# def getForegroundWindowPfad():
+#     hwnd = win32gui.GetForegroundWindow()
+#     pid = win32process.GetWindowThreadProcessId(hwnd)
+#     path = psutil.Process(pid).exe()
+#     print(path)
+
+
 # MainLoop --------------------------------------------
 
 
