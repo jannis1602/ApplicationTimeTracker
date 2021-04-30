@@ -56,7 +56,7 @@ except:
         c.execute("""CREATE TABLE program_filter(
                     name TEXT,
                     filter_string TEXT
-                    )""")
+                    )""") # TODO -> new var for contains/equals
 
 # ---- program_times ----
 try:
