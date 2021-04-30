@@ -9,6 +9,8 @@ import threading
 
 # TODO config if filter equals or contains
 
+# TODO Filter: pragramPfad
+
 # TODO filepath as var
 
 # TODO lock.acquire(True) and lock.release() for all!
