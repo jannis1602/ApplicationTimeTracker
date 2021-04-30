@@ -11,7 +11,7 @@ import threading
 
 # TODO Filter: pragramPfad
 
-# TODO filepath as var
+# TODO database-filepath as var
 
 # TODO lock.acquire(True) and lock.release() for all!
 
@@ -30,7 +30,7 @@ lock = threading.Lock()
 # with conn:
 #     c.execute("ALTER TABLE programTimes RENAME TO program_times")
 
-# program_state
+# ---- program_state ----
 try:
     with conn:
         c.execute("SELECT * FROM program_state").fetchone()
@@ -42,10 +42,12 @@ except:
                         bg_tracking INTEGER      
                         )""")       # 0=false - 1=true
 
-# TODO (change state to tracking - 1/0 ?)
-# TODO program_state add bg_tracking INTEGER
+                        # TODO add programPath -> if none=>no filter
 
-# program_filter
+# TODO (change state to tracking - 1/0 ?)
+
+
+# ---- program_filter ----
 try:
     with conn:
         c.execute("SELECT * FROM program_filter").fetchone()
@@ -56,7 +58,7 @@ except:
                     filter_string TEXT
                     )""")
 
-# program_times
+# ---- program_times ----
 try:
     with conn:
         c.execute("SELECT * FROM program_times").fetchone()
