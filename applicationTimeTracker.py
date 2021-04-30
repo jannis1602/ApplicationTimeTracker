@@ -14,12 +14,15 @@ from tkinter import Tk, Button, Entry, Label, Scrollbar, Listbox, Frame, Canvas
 from WindowObject import WindowObject
 from MainWindow import MainWindow
 
+import win32process
+import psutil
+
 global mainWindow
 global windowList
 global maxIdleTime  # global?
 global running
 running = True
-maxIdleTime = 2*60 
+maxIdleTime = 2*60
 
 # TODO change windowName -> programName
 
@@ -108,11 +111,12 @@ def getBackgroundWindowTitles():
     return bgTitles
 
 
-# def getForegroundWindowPfad():
-#     hwnd = win32gui.GetForegroundWindow()
-#     pid = win32process.GetWindowThreadProcessId(hwnd)
-#     path = psutil.Process(pid).exe()
-#     print(path)
+def getFgwProgramPath(): # TODO (+ only .exe filename?) 
+    _, pid = win32process.GetWindowThreadProcessId(
+        win32gui.GetForegroundWindow())
+    return psutil.Process(pid).exe()
+
+# print(getFgwProgramPath())
 
 
 # MainLoop --------------------------------------------
@@ -125,7 +129,7 @@ def loop():
     while running:
         if time.time()-lastTime > 1:
             if getIdleTime() < maxIdleTime:
-                for w in windowList:        # -> warning if 2 windows have 1 same FilterString 
+                for w in windowList:        # -> warning if 2 windows have 1 same FilterString
                     counted = False
                     if w.state:
                         for fs in w.getFilterStringList():
@@ -133,13 +137,14 @@ def loop():
                             # TODO -> contains or equals?
                             if getForegroundWindowTitle().count(fs) >= 1:
                                 w.addSec()  # TODO: #13 filter2: program-location???
-                                counted = True  
+                                counted = True
                                 break
                         if w.getBgTracking() and counted == False:
                             for fs in w.getFilterStringList():
                                 if counted == False:
                                     for bgt in getBackgroundWindowTitles():
-                                        if bgt.count(fs) >= 1:  # TODO 1 name & 2 windows -> warning?
+                                        # TODO 1 name & 2 windows -> warning?
+                                        if bgt.count(fs) >= 1:
                                             w.addSecBgTime()
                                             counted = True  # -> add only one sec per sec per program
             lastTime += 1
@@ -147,6 +152,7 @@ def loop():
 # if __name__ == '__main__': # test
 
 # ---- startup ----
+
 
 maxIdleTime = settings.load_idleTime()
 print("max Idle-Time:", maxIdleTime)
