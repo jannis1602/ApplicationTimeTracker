@@ -111,7 +111,7 @@ def getBackgroundWindowTitles():
     return bgTitles
 
 
-def getFgwProgramPath(): # TODO (+ only .exe filename?) 
+def getFgwProgramPath():  # TODO (+ only .exe filename?)
     _, pid = win32process.GetWindowThreadProcessId(
         win32gui.GetForegroundWindow())
     return psutil.Process(pid).exe()
@@ -149,10 +149,23 @@ def loop():
                                             counted = True  # -> add only one sec per sec per program
             lastTime += 1
 
+
+
+# def activeWindowName():
+# 	hwnd = win32gui.GetForegroundWindow()
+# 	tid, current_pid = win32process.GetWindowThreadProcessId(hwnd)
+# 	return psutil.Process(current_pid).name() 
+
+
+
+
 # if __name__ == '__main__': # test
 
 
 # ---- startup ----
+
+# days=6 -> bsp. mo-sa # days=7-> mo-mo
+# print((datetime.datetime.now() - datetime.timedelta(days=7)).date())
 
 
 maxIdleTime = settings.load_idleTime()
