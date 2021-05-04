@@ -6,6 +6,7 @@ import settings
 import pygetwindow as gw
 import tkinter.messagebox
 import time
+from FilterWindow import FilterWindow
 
 # tkinter.messagebox.showwarning("Warning", "work in progress", icon='warning')
 # TODO close all subwindows...
@@ -270,8 +271,16 @@ class MainWindow(tk.Tk):
 
 
     def editFilterStrings_Window(self, windowObject):  # TODO Reset?
+
+        # try:
+        #     self.edit_Window.lift(self)
+        # except:
+        #     self.edit_Window = FilterWindow(windowObject) 
+        
+
+
         try:
-            self.stats_Window.lift(self)
+            self.edit_Window.lift(self)
         except:
             self.edit_Window = tk.Tk()
             self.edit_Window.title("ApplicationTimeTracker - editing: ") #+windowObject.getWindowName())
