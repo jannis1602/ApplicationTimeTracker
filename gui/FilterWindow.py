@@ -19,7 +19,7 @@ class FilterWindow(tk.Tk):
         self.stats_Window = None
         self.edit_Window = None
 
-    def createMainWindow(self):
+    def createFilterWindow(self):
         menu_bar_frame = Frame(
             master=self, height=20, width=640, bg="gray")
         menu_bar_frame.pack(side='top', padx=2,
@@ -27,7 +27,7 @@ class FilterWindow(tk.Tk):
 
     # ShowNames-Button
         show_names_button = Button(
-            master=menu_bar_frame, text="show all titles", command=self.showAllWindowTitles)
+            master=menu_bar_frame, text="show all titles", command=self.action)
         show_names_button.pack(side='left', padx='5', pady='5', expand=False)
     # String-Entry
         self.string_entry = Entry(
@@ -35,26 +35,38 @@ class FilterWindow(tk.Tk):
         self.string_entry.pack(side='left', padx='5', pady='5', expand=False)
     # Add-Button
         addfilter_button = Button(
-            master=menu_bar_frame, text="Add to Filter", command=self.addStringToFilter)
+            master=menu_bar_frame, text="Add Filter", command=self.addFilter)
         addfilter_button.pack(side='left', padx='5', pady='5', expand=False)
-    # reload-Button
-        reload_button = Button(
-            master=menu_bar_frame, text="reload", command=self.reload)
-        reload_button.pack(side='left', padx='5', pady='5', expand=False)
-    # Exit-Button
-        exit_button = Button(
-            master=menu_bar_frame, text="EXIT", command=self.exitProgram)
-        exit_button.pack(side='right', padx='5', pady='5', expand=False)
-    # Settings-Button
-        settings_button = Button(
-            master=menu_bar_frame, text="Settings", command=self.showSettings)
-        settings_button.pack(side='right', padx='5', pady='5', expand=False)
 
-        self.protocol("WM_DELETE_WINDOW", self.hide)
-        self.createListFrame()
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        # self.createListFrame()
         self.after(1, lambda: self.focus_force())
 
         # self.mainloop()  # is blocking
         while self.running:
             self.update()
         self.destroy()
+
+    def action(self):
+        print("aktion")
+
+
+    def stopRunning(self):
+        print("quit MainWindow...")
+        self.running = False
+
+    def close(self):
+        self.running = False
+
+    def addFilter(self):
+        print("adding filter to list...")
+
+    # def show(self):
+    #     self.deiconify()
+
+    # def hide(self):
+    #     self.withdraw()
+
+
+
+FilterWindow().createFilterWindow()
