@@ -20,10 +20,10 @@ class WindowObject:
         # self.passedTime = startTime
         # TODO load from database-program_config
         # load bg tracking from database
-        print("================>>>", self.windowName)
+        # print("================>>>", self.windowName)
         if self.windowName.count("Code") >= 1:
             self.bgTracking == True
-            print("---- TRUE! ----")
+            # print("---- TRUE! ----")
 
     def getBgTracking(self):    # TODO only for testing
         return self.bgTracking
