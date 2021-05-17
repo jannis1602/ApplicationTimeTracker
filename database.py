@@ -14,7 +14,7 @@ import threading
 # TODO lock.acquire(True) and lock.release() for all!
 
 
-conn = sqlite3.connect("ApplicationTimeTracker/data.db",
+conn = sqlite3.connect("data.db",
                        check_same_thread=False)
 c = conn.cursor()
 
