@@ -1,7 +1,7 @@
 import json
 import os.path
 
-file = "ApplicationTimeTracker/settings.json"
+file = "settings.json"  # ApplicationTimeTracker/
 
 # TODO add settings
 
